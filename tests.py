@@ -11,8 +11,8 @@ class TranslateTests(unittest.TestCase):
         assert result.text == 'The truth is my light'
 
     def test_unicode(self):
-        result = translator.translate(u'안녕하세요.', src='ko', dest='ja')
-        assert result.text == 'こんにちは。'
+        result = translator.translate('안녕하세요.', src='ko', dest='ja')
+        assert result.text == u'こんにちは。'
 
     def test_list_translation(self):
         translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'],

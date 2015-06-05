@@ -26,7 +26,11 @@ def install():
             'Programming Language :: Python :: 3.2',
             'Programming Language :: Python :: 3.3',
             'Programming Language :: Python :: 3.4'],
-        packages=find_packages()
+        packages=find_packages(),
+        install_requires=[
+            'requests',
+            'future',
+        ],
     )
 
 if __name__ == "__main__":

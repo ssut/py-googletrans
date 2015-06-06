@@ -4,10 +4,18 @@ googletrans package
 Submodules
 ----------
 
-googletrans.translated module
+googletrans.conversion module
 -----------------------------
 
-.. automodule:: googletrans.translated
+.. automodule:: googletrans.conversion
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+googletrans.response module
+---------------------------
+
+.. automodule:: googletrans.response
     :members:
     :undoc-members:
     :show-inheritance:

@@ -6,3 +6,4 @@
 
    googletrans
    setup
+   tests

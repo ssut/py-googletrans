@@ -66,6 +66,38 @@ $ pip install py-googletrans
 
 ---
 
+## GoogleTrans as a command line application
+
+```bash
+$ translate -h
+usage: translate [-h] [-d DEST] [-s SRC] [-c] text
+
+Python Google Translator as a command-line tool
+
+positional arguments:
+  text                  The text you want to translate.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DEST, --dest DEST  The destination language you want to translate.
+                        (Default: en)
+  -s SRC, --src SRC     The source language you want to translate. (Default:
+                        auto)
+  -c, --detect
+  
+$ translate "veritas lux mea" -s la -d en
+[veritas] veritas lux mea
+    ->
+[en] The truth is my light
+[pron.] The truth is my light
+
+$ translate -c "안녕하세요."
+[ko, 1] 안녕하세요.
+```
+
+
+---
+
 ## A note on library usage
 
 Due to limitations of Google Translate, this API does not guarantee that the library would work properly. (please use this library if you don't care about stability.)

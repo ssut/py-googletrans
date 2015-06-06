@@ -6,7 +6,7 @@ def install():
     desc = googletrans.__doc__
     setup(
         name='py-googletrans',
-        version='1.1',
+        version='1.1.1',
         description=desc,
         long_description=desc,
         author='SuHun Han',
@@ -31,6 +31,7 @@ def install():
             'requests',
             'future',
         ],
+        scripts=['translate'],
     )
 
 if __name__ == "__main__":

@@ -50,6 +50,20 @@ $ pip install py-googletrans
 # the lazy dog  ->  게으른 개
 ```
 
+### Language detection
+
+```python
+>>> from googletrans import translator
+>>> translator.detect('이 문장은 한글로 쓰여졌습니다.')
+# <Detected lang=ko confidence=0.27041003>
+>>> translator.detect('この文章は日本語で書かれました。')
+# <Detected lang=ja confidence=0.64889508>
+>>> translator.detect('This sentence is written in English.')
+# <Detected lang=en confidence=0.22348526>
+>>> translator.detect('Tiu frazo estas skribita en Esperanto.')
+# <Detected lang=eo confidence=0.10538048>
+```
+
 ---
 
 ## A note on library usage

@@ -11,7 +11,18 @@ def main():
         help='The destination language you want to translate. (Default: en)')
     parser.add_argument('-s', '--src', default='auto',
         help='The source language you want to translate. (Default: auto)')
+    parser.add_argument('-c', '--detect', action='store_true', default=False,
+        help='')
     args = parser.parse_args()
+
+    if args.detect:
+        result = translator.detect(args.text)
+        result = """
+[{lang}, {confidence}] {text}
+        """.strip().format(text=args.text,
+            lang=result.lang, confidence=result.confidence)
+        print(result)
+        return
 
     result = translator.translate(args.text, dest=args.dest, src=args.src)
     result = """

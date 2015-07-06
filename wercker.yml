@@ -1,0 +1,26 @@
+box: wercker/python
+services:
+    # - wercker/postgresql # Don't forget to add your databases as a service
+
+# Build definition
+build:
+
+  # The steps that will be executed on build
+  steps:
+    - virtualenv:
+        name: setup virtual environment
+
+    - pip-install:
+        requirements_file: "test-requirements.txt" # Optional argument.
+
+    # A custom script step, name value is used in the UI
+    # and the code value contains the command that get executed
+    - script:
+        name: execute setup script
+        code: |
+          echo "python version $(python --version) running"
+          echo "python3 version $(python3 --version) running"
+          echo "pip version $(pip --version) running"
+          coverage run --source=googletrans tests.py -v
+          COVERALLS_REPO_TOKEN=r9pnKBevvgJu7kUvP61BwFxodyKUq8vIO coveralls
+

@@ -12,9 +12,10 @@ from future.moves.urllib.parse import quote
 from . import __version__
 from googletrans import urls
 from googletrans.conversion import format_json
+from googletrans.conversion import LANGUAGES
 from googletrans.response import Translated, Detected
 
-user_agent = 'PyGt/{0}'.format(__version__)
+user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36 Gt/{0}'.format(__version__)
 
 EXCLUDES = ['en', 'ca', 'fr']
 RE_SRC = re.compile(',\[\["([\w]{2})"\]')
@@ -165,3 +166,8 @@ Advanced usage:
     result = Detected(lang=src, confidence=confidence)
 
     return result
+
+
+def get_languages():
+    return LANGUAGES
+

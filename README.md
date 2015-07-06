@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/ssut/py-googletrans.svg?branch=master)](https://travis-ci.org/ssut/py-googletrans)
 [![Documentation Status](https://readthedocs.org/projects/py-googletrans/badge/?version=latest)](https://readthedocs.org/projects/py-googletrans/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/py-googletrans.svg)](http://badge.fury.io/py/py-googletrans)
+[![Coverage Status](https://coveralls.io/repos/ssut/py-googletrans/badge.svg)](https://coveralls.io/r/ssut/py-googletrans)
 [![Code Climate](https://codeclimate.com/github/ssut/py-googletrans/badges/gpa.svg)](https://codeclimate.com/github/ssut/py-googletrans)
 
 Py-GoogleTrans is a Python library that translates the text you want to translate using Google Translate.

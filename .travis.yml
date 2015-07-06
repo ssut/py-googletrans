@@ -8,5 +8,5 @@ install:
   - "pip install coveralls"
 before_script:
   - "pip install -r requirements.txt --use-mirrors"
-script: "coverage run --source=py-googletrans test.py -v"
+script: "coverage run --source=py-googletrans tests.py -v"
 after_success: "coveralls"

@@ -1,26 +1,19 @@
-box: wercker/python
-services:
-    # - wercker/postgresql # Don't forget to add your databases as a service
-
-# Build definition
+box:
+  id: ubuntu:trusty
 build:
-
-  # The steps that will be executed on build
   steps:
-    - virtualenv:
-        name: setup virtual environment
-
-    - pip-install:
-        requirements_file: "test-requirements.txt" # Optional argument.
-
-    # A custom script step, name value is used in the UI
-    # and the code value contains the command that get executed
+    - install-packages:
+        packages: python python3 pypy python-pip
     - script:
-        name: execute setup script
+        name: python versions
         code: |
-          echo "python version $(python --version) running"
-          echo "python3 version $(python3 --version) running"
-          echo "pip version $(pip --version) running"
-          coverage run --source=googletrans tests.py -v
-          COVERALLS_REPO_TOKEN=r9pnKBevvgJu7kUvP61BwFxodyKUq8vIO coveralls
-
+           python --version
+           python3 --version
+    - pip-install:
+        requirements_file: "test-requirements.txt"
+        packages_list: "tox"
+    - script:
+        name: tests
+        code: |
+           tox
+           COVERALLS_REPO_TOKEN=r9pnKBevvgJu7kUvP61BwFxodyKUq8vIO coveralls

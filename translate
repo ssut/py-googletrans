@@ -30,8 +30,10 @@ def main():
     ->
 [{dest}] {text}
 [pron.] {pronunciation}
-    """.strip().format(src=result.src, dest=result.dest, original=result.origin,
-               text=result.text, pronunciation=result.pronunciation)
+    """.strip().format(src=result.src, dest=result.dest, original=result.origin, 
+                       text=result.text.encode('utf-8', 'ignore'),
+                       pronunciation=result.pronunciation.encode('utf-8', 
+                                                                 'ignore'))
     print(result)
 
 if __name__ == '__main__':

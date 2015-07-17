@@ -12,7 +12,7 @@ from future.moves.urllib.parse import quote
 from . import __version__
 from googletrans import urls
 from googletrans.conversion import format_json
-from googletrans.conversion import LANGUAGES
+from googletrans.conversion import LANGUAGES, SPECIAL_CASES
 from googletrans.response import Translated, Detected
 
 user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36 Gt/{0}'.format(__version__)
@@ -74,10 +74,15 @@ Advanced usage:
             result.append(translated)
         return result
 
-    if dest not in LANGUAGES.keys():
-        raise ValueError('incorrect destination language')
-    if src != 'auto' and src not in LANGUAGES.keys():
+    if src != 'auto' and src not in LANGUAGES.keys() and src in SPECIAL_CASES.keys():
+        src = SPECIAL_CASES[src]
+    elif src != 'auto' and src not in LANGUAGES.keys():
         raise ValueError('incorrect source language')
+
+    if dest not in LANGUAGES.keys() and dest in SPECIAL_CASES.keys():
+        dest = SPECIAL_CASES[dest]
+    elif dest not in LANGUAGES.keys():
+        raise ValueError('incorrect destination language')
 
     result = ''
     sess = agent() # acquire requests session

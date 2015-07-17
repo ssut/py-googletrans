@@ -1,4 +1,4 @@
-class Translated:
+class Translated(object):
     """
     The Translated object, which contains Google Translator's result.
 
@@ -22,7 +22,7 @@ class Translated:
         return u'<Translated src={src} dest={dest} text={text} pronunciation={pronunciation}>'.format(
             src=self.src, dest=self.dest, text=self.text, pronunciation=self.pronunciation)
 
-class Detected:
+class Detected(object):
     """
     The detected object, which contains Google Translator's langauge detection result.
 

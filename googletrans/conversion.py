@@ -37,6 +37,10 @@ def format_json(original):
         traceback.print_exc()
     return converted
 
+SPECIAL_CASES = {
+    'ee': 'et',
+}
+
 LANGUAGES = {
     'af': 'afrikaans',
     'sq': 'albanian',

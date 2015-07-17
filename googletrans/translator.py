@@ -74,6 +74,11 @@ Advanced usage:
             result.append(translated)
         return result
 
+    if dest not in LANGUAGES.keys():
+        raise ValueError('incorrect destination language')
+    if src != 'auto' and src not in LANGUAGES.keys():
+        raise ValueError('incorrect source language')
+
     result = ''
     sess = agent() # acquire requests session
     origin = text

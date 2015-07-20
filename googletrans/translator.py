@@ -6,6 +6,7 @@ You can translate text using this module.
 """
 import re
 import requests
+import sys
 from collections import namedtuple
 from future.moves.urllib.parse import quote
 
@@ -19,6 +20,7 @@ user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10) AppleWebKit/537.36 (
 
 EXCLUDES = ['en', 'ca', 'fr']
 RE_SRC = re.compile(',\[\["([\w]{2})"\]')
+PY3 = sys.version_info > (3, 1)
 
 __agent = None
 __headers = {
@@ -112,8 +114,16 @@ Advanced usage:
     try:
         pron = data[0][1][-1]
     except: pass
+    if not PY3 and isinstance(pron, unicode) and isinstance(origin, str):
+        origin = origin.decode('utf-8')
     if dest in EXCLUDES and pron == origin:
         pron = translated
+
+    # for python 2.x compatbillity
+    if not PY3:
+        if isinstance(src, str): src = src.decode('utf-8')
+        if isinstance(dest, str): dest = dest.decode('utf-8')
+        if isinstance(translated, str): translated = translated.decode('utf-8')
 
     # put final values into new Translated object
     result = Translated(src=src, dest=dest, origin=origin,

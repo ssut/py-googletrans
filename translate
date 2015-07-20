@@ -4,8 +4,6 @@ import argparse
 import sys
 from googletrans import translator
 
-PY3 = sys.version_info > (3, 1)
-
 def main():
     parser = argparse.ArgumentParser(
         description='Python Google Translator as a command-line tool')
@@ -28,16 +26,13 @@ def main():
         return
 
     result = translator.translate(args.text, dest=args.dest, src=args.src)
-    text = result.text if PY3 else result.text.encode('utf-8', 'ignore')
-    pronunciation = result.pronunciation if PY3 else result.pronunciation.encode('utf-8', 'ignore')
-    result = """
+    result = u"""
 [{src}] {original}
     ->
 [{dest}] {text}
 [pron.] {pronunciation}
     """.strip().format(src=result.src, dest=result.dest, original=result.origin, 
-                       text=text,
-                       pronunciation=pronunciation)
+                       text=result.text, pronunciation=result.pronunciation)
     print(result)
 
 if __name__ == '__main__':

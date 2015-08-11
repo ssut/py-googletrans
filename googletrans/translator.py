@@ -94,7 +94,7 @@ Advanced usage:
     r = sess.get(url, headers=__headers)
 
     """
-    Resposne Sample (20150605)
+    Response Sample (20150605)
     $ ./translate "republique" -d ko
 
     [[["공화국","republique"],[,,"gonghwagug"]],,"fr",,,[["republique",1,[["공화국",1000,true,false],["공화국의",0,true,false],["공화국에",0,true,false],["공화국에서",0,true,false]],[[0,10]],"republique",0,1]],0.94949496,,[["fr"],,[0.94949496]],,,[["명사",[[["communauté","démocratie"],""]],"république"]]]

@@ -8,6 +8,8 @@
 [![Code Climate](https://codeclimate.com/github/ssut/py-googletrans/badges/gpa.svg)](https://codeclimate.com/github/ssut/py-googletrans)
 [![Dependency Status](https://gemnasium.com/ssut/py-googletrans.svg)](https://gemnasium.com/ssut/py-googletrans)
 
+**NOTICE: Py-googletrans is no longer supported in favor of [@soimort/translate-shell](https://github.com/soimort/translate-shell).**
+
 Py-GoogleTrans is a Python library that translates the text you want to translate using Google Translate.
 
 Compatible with Python 2.7 and 3.4 (cPython and PyPy. Py 2.6 and 3.3 are not tested yet.)

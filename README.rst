@@ -1,7 +1,7 @@
 Py-GoogleTrans
 ==============
 
-|GitHub license| |wercker status| |Documentation Status| |PyPI version|
+|GitHub license| |travis status| |Documentation Status| |PyPI version|
 |Coverage Status| |Code Climate|
 
 Py-GoogleTrans is a **free** and **unlimited** python library that
@@ -229,13 +229,13 @@ follows:
 
 .. |GitHub license| image:: https://img.shields.io/github/license/mashape/apistatus.svg
    :target: http://opensource.org/licenses/MIT
-.. |wercker status| image:: https://app.wercker.com/status/b888422b2e335c431f9a10bd8b2768cd/s
-   :target: https://app.wercker.com/project/bykey/b888422b2e335c431f9a10bd8b2768cd
+.. |travis status| image:: https://travis-ci.org/ssut/py-googletrans.svg?branch=master
+   :target: https://travis-ci.org/ssut/py-googletrans
 .. |Documentation Status| image:: https://readthedocs.org/projects/py-googletrans/badge/?version=latest
    :target: https://readthedocs.org/projects/py-googletrans/?badge=latest
-.. |PyPI version| image:: https://badge.fury.io/py/py-googletrans.svg
-   :target: http://badge.fury.io/py/py-googletrans
-.. |Coverage Status| image:: https://coveralls.io/repos/ssut/py-googletrans/badge.svg
-   :target: https://coveralls.io/r/ssut/py-googletrans
+.. |PyPI version| image:: https://badge.fury.io/py/googletrans.svg
+   :target: http://badge.fury.io/py/googletrans
+.. |Coverage Status| image:: https://coveralls.io/repos/github/ssut/py-googletrans/badge.svg
+   :target: https://coveralls.io/github/ssut/py-googletrans
 .. |Code Climate| image:: https://codeclimate.com/github/ssut/py-googletrans/badges/gpa.svg
    :target: https://codeclimate.com/github/ssut/py-googletrans

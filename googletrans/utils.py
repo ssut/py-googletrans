@@ -1,8 +1,26 @@
 """A conversion module for googletrans"""
 from __future__ import print_function
 import re
-import traceback
 import json
+
+
+def build_params(query, src, dest, token):
+    params = {
+        'client': 't',
+        'sl': src,
+        'tl': dest,
+        'hl': dest,
+        'dt': ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
+        'ie': 'UTF-8',
+        'oe': 'UTF-8',
+        'otf': 1,
+        'ssel': 0,
+        'tsel': 0,
+        'tk': token,
+        'q': query,
+    }
+    return params
+
 
 def format_json(original):
     # save state

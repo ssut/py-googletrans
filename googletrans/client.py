@@ -4,23 +4,17 @@ A Translation module.
 
 You can translate text using this module.
 """
-import re
 import requests
-import sys
-from collections import namedtuple
-from future.moves.urllib.parse import quote
 
-from googletrans import __version__
-from googletrans import urls
+from googletrans import urls, utils
 from googletrans.compat import PY3
+from googletrans.compat import unicode
 from googletrans.gtoken import TokenAcquirer
-from googletrans.utils import format_json
 from googletrans.constants import DEFAULT_USER_AGENT, LANGUAGES, SPECIAL_CASES
 from googletrans.models import Translated, Detected
 
 
-EXCLUDES = ['en', 'ca', 'fr']
-RE_SRC = re.compile(',\[\["([\w]{2})"\]')
+EXCLUDES = ('en', 'ca', 'fr')
 
 
 class Translator(object):
@@ -38,6 +32,27 @@ class Translator(object):
             self.session.mount(urls.BASE, HTTP20Adapter())
         except ImportError:  # pragma: nocover
             pass
+
+    def _translate(self, text, dest='en', src='auto'):
+        if src != 'auto' and src not in LANGUAGES.keys() and src in SPECIAL_CASES.keys():
+            src = SPECIAL_CASES[src]
+        elif src != 'auto' and src not in LANGUAGES.keys():
+            raise ValueError('invalid source language')
+
+        if dest not in LANGUAGES.keys() and dest in SPECIAL_CASES.keys():
+            dest = SPECIAL_CASES[dest]
+        elif dest not in LANGUAGES.keys():
+            raise ValueError('invalid destination language')
+
+        if not PY3 and isinstance(text, str):  # pragma: nocover
+            text = text.decode('utf-8')
+
+        token = self.token_acquirer.do(text)
+        params = utils.build_params(query=text, src=src, dest=dest, token=token)
+        r = self.session.get(urls.TRANSLATE, params=params)
+
+        data = utils.format_json(r.text)
+        return data
 
     def translate(self, text, dest='en', src='auto'):
         """
@@ -75,30 +90,8 @@ class Translator(object):
                 result.append(translated)
             return result
 
-        if src != 'auto' and src not in LANGUAGES.keys() and src in SPECIAL_CASES.keys():
-            src = SPECIAL_CASES[src]
-        elif src != 'auto' and src not in LANGUAGES.keys():
-            raise ValueError('invalid source language')
-
-        if dest not in LANGUAGES.keys() and dest in SPECIAL_CASES.keys():
-            dest = SPECIAL_CASES[dest]
-        elif dest not in LANGUAGES.keys():
-            raise ValueError('invalid destination language')
-
-        result = ''
         origin = text
-        token = self.token_acquirer.do(text)
-        text = quote(text)
-        url = urls.TRANSLATE.format(query=text, src=src, dest=dest, token=token)
-        r = self.session.get(url)
-
-        """
-        Response Sample (20150605)
-        $ ./translate "republique" -d ko
-
-        [[["공화국","republique"],[,,"gonghwagug"]],,"fr",,,[["republique",1,[["공화국",1000,true,false],["공화국의",0,true,false],["공화국에",0,true,false],["공화국에서",0,true,false]],[[0,10]],"republique",0,1]],0.94949496,,[["fr"],,[0.94949496]],,,[["명사",[[["communauté","démocratie"],""]],"république"]]]
-        """
-        data = format_json(r.text)
+        data = self._translate(text, dest, src)
 
         # this code will be updated when the format is changed.
         translated = data[0][0][0]
@@ -107,13 +100,13 @@ class Translator(object):
         # src passed is equal to auto.
         try:
             src = data[-1][0][0]
-        except:  # pragma: nocover
+        except Exception:  # pragma: nocover
             pass
 
         pron = origin
         try:
             pron = data[0][1][-1]
-        except:  # pragma: nocover
+        except Exception:  # pragma: nocover
             pass
         if not PY3 and isinstance(pron, unicode) and isinstance(origin, str):  # pragma: nocover
             origin = origin.decode('utf-8')
@@ -122,13 +115,16 @@ class Translator(object):
 
         # for python 2.x compatbillity
         if not PY3:  # pragma: nocover
-            if isinstance(src, str): src = src.decode('utf-8')
-            if isinstance(dest, str): dest = dest.decode('utf-8')
-            if isinstance(translated, str): translated = translated.decode('utf-8')
+            if isinstance(src, str):
+                src = src.decode('utf-8')
+            if isinstance(dest, str):
+                dest = dest.decode('utf-8')
+            if isinstance(translated, str):
+                translated = translated.decode('utf-8')
 
         # put final values into a new Translated object
         result = Translated(src=src, dest=dest, origin=origin,
-            text=translated, pronunciation=pron)
+                            text=translated, pronunciation=pron)
 
         return result
 
@@ -168,22 +164,16 @@ class Translator(object):
                 result.append(lang)
             return result
 
-        result = ''
-        origin = text
-        token = self.token_acquirer.do(text)
-        text = quote(text)
-        url = urls.DETECT.format(query=text, token=token)
-        r = self.session.get(url)
-        data = format_json(r.text)
+        data = self._translate(text, dest='en', src='auto')
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.
         src = ''
         confidence = 0.0
         try:
-            src = ''.join(data[-1][0])
-            confidence = data[-1][-1][0]
-        except:  # pragma: nocover
+            src = ''.join(data[8][0])
+            confidence = data[8][-2][0]
+        except Exception:  # pragma: nocover
             pass
         result = Detected(lang=src, confidence=confidence)
 

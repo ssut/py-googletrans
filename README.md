@@ -6,34 +6,52 @@
 [![PyPI version](https://badge.fury.io/py/py-googletrans.svg)](http://badge.fury.io/py/py-googletrans)
 [![Coverage Status](https://coveralls.io/repos/ssut/py-googletrans/badge.svg)](https://coveralls.io/r/ssut/py-googletrans)
 [![Code Climate](https://codeclimate.com/github/ssut/py-googletrans/badges/gpa.svg)](https://codeclimate.com/github/ssut/py-googletrans)
-[![Dependency Status](https://gemnasium.com/ssut/py-googletrans.svg)](https://gemnasium.com/ssut/py-googletrans)
 
-**NOTICE: Py-googletrans is no longer supported in favor of [@soimort/translate-shell](https://github.com/soimort/translate-shell).**
+Py-GoogleTrans is a **free** and **unlimited** python library that implemented Google Translate API. This uses the [Google Translate Ajax API](https://translate.google.com) to make calls to such methods as detect and translate.
 
-Py-GoogleTrans is a Python library that translates the text you want to translate using Google Translate.
-
-Compatible with Python 2.7 and 3.4 (cPython and PyPy. Py 2.6 and 3.3 are not tested yet.)
+Compatible with Python 2.7+ and 3.4+ (cPython and PyPy. Py 2.6 and 3.3 are not tested yet.)
 
 For details refer to the [API Documentation](https://py-googletrans.readthedocs.org/en/latest/googletrans.html).
+
+## Features
+
+- Fast and reliable - it uses the same servers that translate.google.com uses
+- Auto language detection
+- Bulk translations
+- Connection pooling (the advantage of using requests.Session)
+- HTTP/2 support
+
+### TODO
+
+more features are coming soon.
+
+- Proxy support
+- Internal session management (for better bulk translations)
+- Customizable service URL (translate.google.***com***)
+
+### HTTP/2 support
+
+This is a great deal for everyone! (up to 2x times faster in my test) If you want to get googletrans faster you should install [hyper](https://github.com/Lukasa/hyper) package. Googletrans will automatically detect if hyper is installed and if so, it will be used for http networking.
+
+### How does this library work
+
+You may wondering why this library works properly, whereas other approaches such like goslate won't work since Google has updated its translation service recently with a ticket mechanism to prevent a lot of crawler programs.
+
+I eventually figure out a way to generate a ticket by reverse engineering on the [obfuscated and minified code used by Google to generate such token](https://translate.google.com/translate/releases/twsfe_w_20170306_RC00/r/js/desktop_module_main.js), and implemented on the top of Python. However, this could be blocked at any time.
 
 ---
 
 ## Installation
 
-To install, either use things like pip with the package "py-googletrans" or download the package and put the "googletrans" directory into your python path.
+To install, either use things like pip with the package "py-googletrans" or download the package and put the "googletrans" directory into your python path. Anyway, it is noteworthy that, this just requires two modules: requests and future.
 
 ```bash
 $ pip install py-googletrans
 ```
 
-### Requirements
-
-- requests
-- future
-
----
-
 ## Basic Usage
+
+If source language is not given, google translate attempts to detect the source language.
 
 ```python
 >>> from googletrans import translator
@@ -45,7 +63,9 @@ $ pip install py-googletrans
 # <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
 ```
 
-### Advanced Usage (Batch)
+### Advanced Usage (Bulk)
+
+Array can be used to translate a batch of strings in a single method call and a single HTTP session. The exact same method shown above work for arrays as well.
 
 ```python
 >>> translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
@@ -58,6 +78,8 @@ $ pip install py-googletrans
 
 ### Language detection
 
+The detect method, as its name implies, identifies the language used in a given sentence.
+
 ```python
 >>> from googletrans import translator
 >>> translator.detect('이 문장은 한글로 쓰여졌습니다.')
@@ -69,8 +91,6 @@ $ pip install py-googletrans
 >>> translator.detect('Tiu frazo estas skribita en Esperanto.')
 # <Detected lang=eo confidence=0.10538048>
 ```
-
----
 
 ## GoogleTrans as a command line application
 
@@ -101,18 +121,27 @@ $ translate -c "안녕하세요."
 [ko, 1] 안녕하세요.
 ```
 
+---
+
+## Note on library usage
+
+- The maximum character limit on a single text is 15k.
+
+- Due to limitations of the web version of google translate, this API does not guarantee that the library would work properly at all times. (so please use this library if you don't care about stability.)
+
+- If you want to use a stable API, I highly recommend you to use [Google's official translate API](https://cloud.google.com/translate/docs).
+
+- If you get HTTP 5xx error or errors like #6, it's probably because Google has banned your client IP address.
 
 ---
 
-## A note on library usage
+## Versioning
 
-Due to limitations of Google Translate, this API does not guarantee that the library would work properly. (please use this library if you don't care about stability.)
-
-If you want to a stable, I recommend you to use [Google's official translate API](https://cloud.google.com/translate/docs).
-
----
+This library follows [Semantic Versioning](http://semver.org/) from v2.0.0. Any release versioned 0.x.y is subject to backwards incompatible changes at any time.
 
 ## Submitting a Pull Request
+
+Contributions to this library are always welcome and highly encouraged :)
 
 1. Fork this project.
 2. Create a topic branch.

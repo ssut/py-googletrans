@@ -1,0 +1,10 @@
+language: python
+python:
+  - 2.7
+  - 3.6
+  - pypy
+install:
+  - pip install tox-travis
+  - pip install pytest-cov coveralls
+script: tox
+after_success: coveralls

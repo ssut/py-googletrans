@@ -15,12 +15,13 @@ class Translated(object):
         self.text = text
         self.pronunciation = pronunciation
 
-    def __str__(self):
+    def __str__(self):  # pragma: nocover
         return self.__unicode__()
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: nocover
         return u'<Translated src={src} dest={dest} text={text} pronunciation={pronunciation}>'.format(
             src=self.src, dest=self.dest, text=self.text, pronunciation=self.pronunciation)
+
 
 class Detected(object):
     """
@@ -33,10 +34,9 @@ class Detected(object):
         self.lang = lang
         self.confidence = confidence
 
-    def __str__(self):
+    def __str__(self):  # pragma: nocover
         return self.__unicode__()
 
-    def __unicode__(self):
+    def __unicode__(self):  # pragma: nocover
         return u'<Detected lang={lang} confidence={confidence}>'.format(
             lang=self.lang, confidence=self.confidence)
-

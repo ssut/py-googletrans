@@ -39,7 +39,8 @@ class TokenAcquirer(object):
         950629.577246
     """
 
-    RE_TKK = re.compile(r'TKK=eval\(\'\(\(function\(\)\{(.+?)\}\)\(\)\)\'\);', re.DOTALL)
+    RE_TKK = re.compile(r'TKK=eval\(\'\(\(function\(\)\{(.+?)\}\)\(\)\)\'\);',
+                        re.DOTALL)
 
     def __init__(self, tkk='0', session=None):
         self.session = session or requests.Session()
@@ -96,7 +97,8 @@ class TokenAcquirer(object):
                     elif isinstance(node, ast.BitXor):  # pragma: nocover
                         operator = '^'
             # a safety way to avoid Exceptions
-            clause = compile('{1}{0}{2}'.format(operator, keys['a'], keys['b']), '', 'eval')
+            clause = compile('{1}{0}{2}'.format(
+                operator, keys['a'], keys['b']), '', 'eval')
             value = eval(clause, dict(__builtin__={}))
             result = '{}.{}'.format(n, value)
 
@@ -150,7 +152,8 @@ class TokenAcquirer(object):
             elif l < 2048:
                 e.append(l >> 6 | 192)
             # append calculated value if l matches special condition
-            elif (l & 64512) == 55296 and g + 1 < size and ord(text[g + 1]) & 64512 == 56320:
+            elif (l & 64512) == 55296 and g + 1 < size and \
+                    ord(text[g + 1]) & 64512 == 56320:
                 g += 1
                 l = 65536 + ((l & 1023) << 10) + ord(text[g]) & 1023
                 e.append(l >> 18 | 240)

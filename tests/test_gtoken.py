@@ -25,7 +25,12 @@ def test_acquire_token_ascii_less_than_2048(acquirer):
 
 
 def test_acquire_token_ascii_matches_special_condition(acquirer):
-    text = chr(55296) + chr(56320)
+    def unichar(i):
+        try:
+            return unichr(i)
+        except NameError:
+            return chr(i)
+    text = unichar(55296) + unichar(56320)
 
     result = acquirer.do(text)
 

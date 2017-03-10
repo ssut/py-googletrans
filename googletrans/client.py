@@ -33,21 +33,24 @@ class Translator(object):
             pass
 
     def _translate(self, text, dest='en', src='auto'):
-        if src != 'auto' and src not in LANGUAGES.keys() and src in SPECIAL_CASES.keys():
-            src = SPECIAL_CASES[src]
-        elif src != 'auto' and src not in LANGUAGES.keys():
-            raise ValueError('invalid source language')
+        if src != 'auto':
+            if src not in LANGUAGES.keys() and src in SPECIAL_CASES.keys():
+                src = SPECIAL_CASES[src]
+            elif src not in LANGUAGES.keys():
+                raise ValueError('invalid source language')
 
-        if dest not in LANGUAGES.keys() and dest in SPECIAL_CASES.keys():
-            dest = SPECIAL_CASES[dest]
-        elif dest not in LANGUAGES.keys():
-            raise ValueError('invalid destination language')
+        if dest not in LANGUAGES.keys():
+            if dest in SPECIAL_CASES.keys():
+                dest = SPECIAL_CASES[dest]
+            else:
+                raise ValueError('invalid destination language')
 
         if not PY3 and isinstance(text, str):  # pragma: nocover
             text = text.decode('utf-8')
 
         token = self.token_acquirer.do(text)
-        params = utils.build_params(query=text, src=src, dest=dest, token=token)
+        params = utils.build_params(query=text, src=src, dest=dest,
+                                    token=token)
         r = self.session.get(urls.TRANSLATE, params=params)
 
         data = utils.format_json(r.text)

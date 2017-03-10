@@ -21,11 +21,12 @@ def test_translate_list(translator):
 
 
 def test_detect_language(translator):
-    ko = translator.detect('한국어')
+    ko = translator.detect(u'한국어')
     en = translator.detect('English')
 
     assert ko.lang == 'ko'
     assert en.lang == 'en'
+
 
 def test_detect_list(translator):
     items = [u'한국어', ' English']

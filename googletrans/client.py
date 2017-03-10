@@ -8,7 +8,6 @@ import requests
 
 from googletrans import urls, utils
 from googletrans.compat import PY3
-from googletrans.compat import unicode
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import DEFAULT_USER_AGENT, LANGUAGES, SPECIAL_CASES
 from googletrans.models import Translated, Detected
@@ -27,7 +26,7 @@ class Translator(object):
         self.token_acquirer = TokenAcquirer(session=self.session)
 
         # Use HTTP2 Adapter if hyper is installed
-        try:
+        try:  # pragma: nocover
             from hyper.contrib import HTTP20Adapter
             self.session.mount(urls.BASE, HTTP20Adapter())
         except ImportError:  # pragma: nocover

@@ -2,7 +2,6 @@
 import ast
 import math
 import re
-import sys
 import time
 
 import requests
@@ -42,7 +41,6 @@ class TokenAcquirer(object):
 
     RE_TKK = re.compile(r'TKK=eval\(\'\(\(function\(\)\{(.+?)\}\)\(\)\)\'\);', re.DOTALL)
 
-
     def __init__(self, tkk='0', session=None):
         self.session = session or requests.Session()
         self.tkk = tkk
@@ -57,7 +55,7 @@ class TokenAcquirer(object):
 
         r = self.session.get('https://translate.google.com')
         # this will be the same as python code after stripping out a reserved word 'var'
-        code = unicode(self.RE_TKK.search(r.text)[1]).replace('var ', '')
+        code = unicode(self.RE_TKK.search(r.text).group(1)).replace('var ', '')
         # unescape special ascii characters such like a \x3d(=)
         if PY3:  # pragma: no cover
             code = code.encode().decode('unicode-escape')
@@ -77,7 +75,7 @@ class TokenAcquirer(object):
                             keys[name] = node.value.n
                         # the value can sometimes be negative
                         elif isinstance(node.value, ast.UnaryOp) and \
-                             isinstance(node.value.op, ast.USub):
+                                isinstance(node.value.op, ast.USub):  # pragma: nocover
                             keys[name] = -node.value.operand.n
                 elif isinstance(node, ast.Return):
                     # parameters should be set after this point
@@ -173,7 +171,6 @@ class TokenAcquirer(object):
         a %= 1000000  # int(1E6)
 
         return '{}.{}'.format(a, a ^ b)
-
 
     def do(self, text):
         self._update()

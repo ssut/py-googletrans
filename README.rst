@@ -1,15 +1,15 @@
-Py-GoogleTrans
-==============
+Googletrans
+===========
 
-|GitHub license| |wercker status| |Documentation Status| |PyPI version|
+|GitHub license| |travis status| |Documentation Status| |PyPI version|
 |Coverage Status| |Code Climate|
 
-Py-GoogleTrans is a **free** and **unlimited** python library that
+Googletrans is a **free** and **unlimited** python library that
 implemented Google Translate API. This uses the `Google Translate Ajax
 API <https://translate.google.com>`__ to make calls to such methods as
 detect and translate.
 
-Compatible with Python 2.7+ and 3.4+ (cPython and PyPy. Py 2.6 and 3.3
+Compatible with Python 2.7+ and 3.4+ (CPython and PyPy. Py 2.6 and 3.3
 are not tested yet.)
 
 For details refer to the `API
@@ -32,7 +32,7 @@ more features are coming soon.
 
 -  Proxy support
 -  Internal session management (for better bulk translations)
--  Customizable service URL (translate.google.***com***)
+-  Customizable service URL (translate.google.**com**)
 
 HTTP/2 support
 ~~~~~~~~~~~~~~
@@ -80,7 +80,8 @@ source language.
 
 .. code:: python
 
-    >>> from googletrans import translator
+    >>> from googletrans import Translator
+    >>> translator = Translator()
     >>> translator.translate('안녕하세요.')
     # <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
     >>> translator.translate('안녕하세요.', dest='ja')
@@ -112,7 +113,8 @@ a given sentence.
 
 .. code:: python
 
-    >>> from googletrans import translator
+    >>> from googletrans import Translator
+    >>> translator = Translator()
     >>> translator.detect('이 문장은 한글로 쓰여졌습니다.')
     # <Detected lang=ko confidence=0.27041003>
     >>> translator.detect('この文章は日本語で書かれました。')
@@ -188,7 +190,7 @@ Contributions to this library are always welcome and highly encouraged
 1. Fork this project.
 2. Create a topic branch.
 3. Implement your feature or bug fix.
-4. Run ``python tests.py`` or ``python -m unittest -v``.
+4. Run ``pytest``.
 5. Add a test for yout feature or bug fix.
 6. Run step 4 again. If your changes are not 100% covered, go back to
    step 5.
@@ -200,7 +202,7 @@ Contributions to this library are always welcome and highly encouraged
 License
 -------
 
-Py-GoogleTrans is licensed under the MIT License. The terms are as
+Googletrans is licensed under the MIT License. The terms are as
 follows:
 
 ::
@@ -229,13 +231,13 @@ follows:
 
 .. |GitHub license| image:: https://img.shields.io/github/license/mashape/apistatus.svg
    :target: http://opensource.org/licenses/MIT
-.. |wercker status| image:: https://app.wercker.com/status/b888422b2e335c431f9a10bd8b2768cd/s
-   :target: https://app.wercker.com/project/bykey/b888422b2e335c431f9a10bd8b2768cd
+.. |travis status| image:: https://travis-ci.org/ssut/py-googletrans.svg?branch=master
+   :target: https://travis-ci.org/ssut/py-googletrans
 .. |Documentation Status| image:: https://readthedocs.org/projects/py-googletrans/badge/?version=latest
    :target: https://readthedocs.org/projects/py-googletrans/?badge=latest
-.. |PyPI version| image:: https://badge.fury.io/py/py-googletrans.svg
-   :target: http://badge.fury.io/py/py-googletrans
-.. |Coverage Status| image:: https://coveralls.io/repos/ssut/py-googletrans/badge.svg
-   :target: https://coveralls.io/r/ssut/py-googletrans
+.. |PyPI version| image:: https://badge.fury.io/py/googletrans.svg
+   :target: http://badge.fury.io/py/googletrans
+.. |Coverage Status| image:: https://coveralls.io/repos/github/ssut/py-googletrans/badge.svg
+   :target: https://coveralls.io/github/ssut/py-googletrans
 .. |Code Climate| image:: https://codeclimate.com/github/ssut/py-googletrans/badges/gpa.svg
    :target: https://codeclimate.com/github/ssut/py-googletrans

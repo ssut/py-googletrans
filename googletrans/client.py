@@ -61,7 +61,8 @@ class Translator(object):
         Translate the passed text into destination language.
 
         Basic usage:
-            >>> from googletrans import translator
+            >>> from googletrans import Translator
+            >>> translator = Translator()
             >>> translator.translate('안녕하세요.')
             <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
             >>> translator.translate('안녕하세요.', dest='ja')
@@ -135,7 +136,8 @@ class Translator(object):
         Detect the language of a text.
 
         Basic usage:
-            >>> from googletrans import translator
+            >>> from googletrans import Translator
+            >>> translator = Translator()
             >>> translator.detect('이 문장은 한글로 쓰여졌습니다.')
             <Detected lang=ko confidence=0.27041003>
             >>> translator.detect('この文章は日本語で書かれました。')

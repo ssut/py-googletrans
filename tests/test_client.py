@@ -1,6 +1,21 @@
 # -*- coding: utf-8 -*-
 from pytest import raises
 
+from googletrans import Translator
+
+
+def test_bind_multiple_service_urls():
+    service_urls = [
+        'translate.google.com',
+        'translate.google.co.kr',
+    ]
+
+    translator = Translator(service_urls=service_urls)
+    assert translator.service_urls == service_urls
+
+    assert translator.translate('test', dest='ko')
+    assert translator.detect('Hello')
+
 
 def test_latin_to_english(translator):
     result = translator.translate('veritas lux mea', src='la', dest='en')

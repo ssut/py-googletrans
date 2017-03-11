@@ -5,6 +5,7 @@ A Translation module.
 You can translate text using this module.
 """
 import requests
+import random
 
 from googletrans import urls, utils
 from googletrans.compat import PY3
@@ -18,12 +19,13 @@ EXCLUDES = ('en', 'ca', 'fr')
 
 class Translator(object):
 
-    def __init__(self, user_agent=DEFAULT_USER_AGENT):
+    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT):
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': user_agent,
         })
         self.token_acquirer = TokenAcquirer(session=self.session)
+        self.service_urls = service_urls or ['translate.google.com']
 
         # Use HTTP2 Adapter if hyper is installed
         try:  # pragma: nocover
@@ -31,6 +33,11 @@ class Translator(object):
             self.session.mount(urls.BASE, HTTP20Adapter())
         except ImportError:  # pragma: nocover
             pass
+
+    def _pick_service_url(self):
+        if len(self.service_urls) == 1:
+            return self.service_urls[0]
+        return random.choice(self.service_urls)
 
     def _translate(self, text, dest='en', src='auto'):
         if src != 'auto':
@@ -51,7 +58,8 @@ class Translator(object):
         token = self.token_acquirer.do(text)
         params = utils.build_params(query=text, src=src, dest=dest,
                                     token=token)
-        r = self.session.get(urls.TRANSLATE, params=params)
+        url = urls.TRANSLATE.format(host=self._pick_service_url())
+        r = self.session.get(url, params=params)
 
         data = utils.format_json(r.text)
         return data

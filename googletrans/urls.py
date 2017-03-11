@@ -3,4 +3,4 @@
 Predefined URLs used to make google translate requests.
 """
 BASE = 'https://translate.google.com'
-TRANSLATE = 'https://translate.google.com/translate_a/single'
+TRANSLATE = 'https://{host}/translate_a/single'

@@ -22,6 +22,7 @@ Features
    translate.google.com uses
 -  Auto language detection
 -  Bulk translations
+-  Customizable service URL
 -  Connection pooling (the advantage of using requests.Session)
 -  HTTP/2 support
 
@@ -32,7 +33,6 @@ more features are coming soon.
 
 -  Proxy support
 -  Internal session management (for better bulk translations)
--  Customizable service URL (translate.google.**com**)
 
 HTTP/2 support
 ~~~~~~~~~~~~~~
@@ -88,6 +88,20 @@ source language.
     # <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
     >>> translator.translate('veritas lux mea', src='la')
     # <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
+
+Customize service URL
+~~~~~~~~~~~~~~~~~~~~~
+
+You can use another google translate domain for translation. If multiple
+URLs are provided it then randomly chooses a domain.
+
+.. code:: python
+
+    >>> from googletrans import Translator
+    >>> translator = Translator(service_urls=[
+          'translate.google.com',
+          'translate.google.co.kr',
+        ])
 
 Advanced Usage (Bulk)
 ~~~~~~~~~~~~~~~~~~~~~

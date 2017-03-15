@@ -29,13 +29,12 @@ class TokenAcquirer(object):
     This operation will cause an additional request to get an initial
     token from translate.google.com.
 
-    :Example:
-
-        >>> from gtoken import TokenAcquirer
+    Example usage:
+        >>> from googletrans.gtoken import TokenAcquirer
         >>> acquirer = TokenAcquirer()
         >>> text = 'test'
         >>> tk = acquirer.do(text)
-        >>> print(tk)
+        >>> tk
         950629.577246
     """
 

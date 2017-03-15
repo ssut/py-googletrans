@@ -18,6 +18,17 @@ EXCLUDES = ('en', 'ca', 'fr')
 
 
 class Translator(object):
+    """Google Translate ajax API implementation class
+
+    You have to create an instance of Translator to use this API
+
+    :param service_urls: google translate url list. URLs will be used randomly.
+                         For example ``['translate.google.com', 'translate.google.co.kr']``
+    :type service_urls: a sequence of strings
+
+    :param user_agent: the User-Agent header to send when making requests.
+    :type user_agent: :class:`str`
+    """
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT):
         self.session = requests.Session()
@@ -65,8 +76,23 @@ class Translator(object):
         return data
 
     def translate(self, text, dest='en', src='auto'):
-        """
-        Translate the passed text into destination language.
+        """Translate text from source language to destination language
+
+        :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
+        :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
+
+        :param dest: The language to translate the source text into.
+                     The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`.
+        :param dest: :class:`str`; :class:`unicode`
+
+        :param src: The language of the source text.
+                    The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`.
+                    If a language is not specified,
+                    the system will attempt to identify the source language automatically.
+        :param src: :class:`str`; :class:`unicode`
+
+        :rtype: Translated
+        :rtype: :class:`list` (when a list is passed)
 
         Basic usage:
             >>> from googletrans import Translator
@@ -85,14 +111,6 @@ class Translator(object):
             The quick brown fox  ->  빠른 갈색 여우
             jumps over  ->  이상 점프
             the lazy dog  ->  게으른 개
-
-            :param text: the text you want to translate.
-                you can pass this parameter as a list object, as shown in the advanced usage above.
-            :param dest: the destination language you want to translate. (default: en)
-            :param src: the source language you want to translate. (default: auto)
-
-            :rtype: Translated
-            :rtype: list (when list is passed)
         """
         if isinstance(text, list):
             result = []
@@ -140,8 +158,14 @@ class Translator(object):
         return result
 
     def detect(self, text):
-        """
-        Detect the language of a text.
+        """Detect language of the input text
+
+        :param text: The source text(s) whose language you want to identify.
+                     Batch detection is supported via sequence input.
+        :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
+
+        :rtype: Detected
+        :rtype: :class:`list` (when a list is passed)
 
         Basic usage:
             >>> from googletrans import Translator
@@ -163,11 +187,6 @@ class Translator(object):
             ja 0.92929292
             en 0.96954316
             fr 0.043500196
-
-            :param text: the text you want to detect.
-
-            :rtype: Detected
-            :rtype: list (when list is passed)
         """
         if isinstance(text, list):
             result = []

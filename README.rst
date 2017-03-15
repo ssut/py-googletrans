@@ -46,7 +46,7 @@ for http networking.
 How does this library work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You may wondering why this library works properly, whereas other
+You may wonder why this library works properly, whereas other
 approaches such like goslate won't work since Google has updated its
 translation service recently with a ticket mechanism to prevent a lot of
 crawler programs.

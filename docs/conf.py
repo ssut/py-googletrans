@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# py-googletrans documentation build configuration file, created by
+# Googletrans documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  5 17:51:30 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -13,6 +13,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import datetime
 import sys
 import os
 import shlex
@@ -35,6 +36,7 @@ import googletrans
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
     # 'sphinx.ext.viewcode',
 ]
 
@@ -53,8 +55,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'py-googletrans'
-copyright = '2015, SuHun Han (ssut)'
+project = 'Googletrans'
+copyright =  str(datetime.date.today().year) + ', SuHun Han (ssut)'
 author = 'SuHun Han (ssut)'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -81,7 +83,7 @@ language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', '_themes']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -110,12 +112,14 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+suppress_warnings = ['image.nonlocal_uri']
+
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'alabaster'
+html_theme = 'solar'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -123,7 +127,7 @@ html_theme = 'alabaster'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = ['_themes']
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -144,7 +148,7 @@ html_theme = 'alabaster'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -170,13 +174,13 @@ html_static_path = ['_static']
 #html_domain_indices = True
 
 # If false, no index is generated.
-#html_use_index = True
+html_use_index = False
 
 # If true, the index is split into individual pages for each letter.
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True
@@ -207,7 +211,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'py-googletransdoc'
+htmlhelp_basename = 'Googletransdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -229,7 +233,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'py-googletrans.tex', 'py-googletrans Documentation',
+  (master_doc, 'Googletrans.tex', 'Googletrans Documentation',
    'SuHun Han (ssut)', 'manual'),
 ]
 
@@ -259,12 +263,14 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'py-googletrans', 'py-googletrans Documentation',
+    (master_doc, 'Googletrans', 'Googletrans Documentation',
      [author], 1)
 ]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False
+
+intersphinx_mapping = {'http://docs.python.org/': None}
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -273,8 +279,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'py-googletrans', 'py-googletrans Documentation',
-   author, 'py-googletrans', 'One line description of project.',
+  (master_doc, 'Googletrans', 'Googletrans Documentation',
+   author, 'Googletrans', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -289,3 +295,5 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+autodoc_member_order = 'bysource'

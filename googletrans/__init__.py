@@ -5,3 +5,4 @@ __version__ = '.'.join(str(v) for v in __version_info__)
 
 
 from googletrans.client import Translator
+from googletrans.constants import LANGUAGES

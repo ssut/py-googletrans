@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import googletrans
 import os.path
 from setuptools import setup, find_packages
@@ -7,8 +8,8 @@ from setuptools import setup, find_packages
 def readme():
     path = os.path.join(os.path.dirname(__file__), 'README.rst')
     try:
-        with open(path) as f:
-            return f.read()
+        with open(path, 'rb') as f:
+            return f.read().decode('utf8')
     except IOError:
         pass
 

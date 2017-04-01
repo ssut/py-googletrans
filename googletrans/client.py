@@ -123,7 +123,7 @@ class Translator(object):
         data = self._translate(text, dest, src)
 
         # this code will be updated when the format is changed.
-        translated = data[0][0][0]
+        translated = ''.join([d[0] if d[0] else '' for d in data[0]])
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.

@@ -27,6 +27,19 @@ def test_unicode(translator):
     assert result.text == u'こんにちは。'
 
 
+def test_multiple_sentences(translator):
+    text = u"""Architecturally, the school has a Catholic character.
+Atop the Main Building's gold dome is a golden statue of the Virgin Mary.
+Immediately in front of the Main Building and facing it,
+is a copper statue of Christ with arms upraised with the legend Venite Ad Me Omnes."""
+
+    result = translator.translate(text, src='en', dest='es')
+    assert result.text == u"""Arquitectónicamente, la escuela tiene un carácter católico.
+Encima de la cúpula de oro del edificio principal es una estatua de oro de la Virgen María.
+Inmediatamente frente al edificio principal y frente a él,
+Es una estatua de cobre de Cristo con los brazos levantados con la leyenda Venite Ad Me Omnes."""
+
+
 def test_translate_list(translator):
     args = (['test', 'exam'], 'ko', 'en')
     translations = translator.translate(*args)

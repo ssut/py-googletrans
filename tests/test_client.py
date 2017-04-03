@@ -27,6 +27,13 @@ def test_unicode(translator):
     assert result.text == u'こんにちは。'
 
 
+def test_special_chars(translator):
+    text = u"Copyright © Google"
+
+    result = translator.translate(text, src='en', dest='fr')
+    assert result.text == text
+
+
 def test_multiple_sentences(translator):
     text = u"""Architecturally, the school has a Catholic character.
 Atop the Main Building's gold dome is a golden statue of the Virgin Mary.

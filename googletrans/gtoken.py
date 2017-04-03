@@ -150,6 +150,7 @@ class TokenAcquirer(object):
             # append calculated value if l is less than 2048
             elif l < 2048:
                 e.append(l >> 6 | 192)
+                e.append(l)
             # append calculated value if l matches special condition
             elif (l & 64512) == 55296 and g + 1 < size and \
                     ord(text[g + 1]) & 64512 == 56320:

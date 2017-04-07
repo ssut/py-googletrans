@@ -28,9 +28,9 @@ def test_unicode(translator):
 
 
 def test_special_chars(translator):
-    text = u"Copyright © Google"
+    text = u"©×《》"
 
-    result = translator.translate(text, src='en', dest='fr')
+    result = translator.translate(text, src='en', dest='en')
     assert result.text == text
 
 

@@ -148,21 +148,21 @@ class TokenAcquirer(object):
             if l < 128:
                 e.append(l)
             # append calculated value if l is less than 2048
-            elif l < 2048:
-                e.append(l >> 6 | 192)
-                e.append(l)
-            # append calculated value if l matches special condition
-            elif (l & 64512) == 55296 and g + 1 < size and \
-                    ord(text[g + 1]) & 64512 == 56320:
-                g += 1
-                l = 65536 + ((l & 1023) << 10) + ord(text[g]) & 1023
-                e.append(l >> 18 | 240)
-                e.append(l >> 12 & 63 | 128)
             else:
-                e.append(l >> 12 | 224)
-                e.append(l >> 6 & 63 | 128)
+                if l < 2048:
+                    e.append(l >> 6 | 192)
+                else:
+                    # append calculated value if l matches special condition
+                    if (l & 64512) == 55296 and g + 1 < size and \
+                            ord(text[g + 1]) & 64512 == 56320:
+                        g += 1
+                        l = 65536 + ((l & 1023) << 10) + ord(text[g]) & 1023
+                        e.append(l >> 18 | 240)
+                        e.append(l >> 12 & 63 | 128)
+                    else:
+                        e.append(l >> 12 | 224)
+                        e.append(l >> 6 & 63 | 128)
                 e.append(l & 63 | 128)
-
         a = b
         for i, value in enumerate(e):
             a += value

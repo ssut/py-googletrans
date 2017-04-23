@@ -36,7 +36,7 @@ class Translator(object):
             'User-Agent': user_agent,
         })
         self.service_urls = service_urls or ['translate.google.com']
-        self.token_acquirer = TokenAcquirer(session=self.session, host=service_urls[0])
+        self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0])
 
         # Use HTTP2 Adapter if hyper is installed
         try:  # pragma: nocover

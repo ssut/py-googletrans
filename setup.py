@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import googletrans
 import os.path
+import re
+
 from setuptools import setup, find_packages
 
 
-def readme():
-    path = os.path.join(os.path.dirname(__file__), 'README.rst')
+def get_file(*paths):
+    path = os.path.join(*paths)
     try:
         with open(path, 'rb') as f:
             return f.read().decode('utf8')
@@ -14,12 +15,30 @@ def readme():
         pass
 
 
+def get_version():
+    init_py = get_file(os.path.dirname(__file__), 'googletrans', '__init__.py')
+    pattern = r"{0}\W*=\W*'([^']+)'".format('__version__')
+    version, = re.findall(pattern, init_py)
+    return version
+
+
+def get_description():
+    init_py = get_file(os.path.dirname(__file__), 'googletrans', '__init__.py')
+    pattern = r'"""(.*?)"""'
+    description, = re.findall(pattern, init_py, re.DOTALL)
+    return description
+
+
+def get_readme():
+    return get_file(os.path.dirname(__file__), 'README.rst')
+
+
 def install():
     setup(
         name='googletrans',
-        version=googletrans.__version__,
-        description=googletrans.__doc__,
-        long_description=readme(),
+        version=get_version(),
+        description=get_description(),
+        long_description=get_readme(),
         license='MIT',
         author='SuHun Han',
         author_email='ssut' '@' 'ssut.me',

@@ -27,6 +27,16 @@ def test_unicode(translator):
     assert result.text == u'こんにちは。'
 
 
+def test_language_name(translator):
+    result = translator.translate(u'Hello', src='ENGLISH', dest='iRiSh')
+    assert result.text == u'Dia dhuit'
+
+
+def test_language_rfc1766(translator):
+    result = translator.translate(u'luna', src='it_ch@euro', dest='en')
+    assert result.text == u'moon'
+
+
 def test_special_chars(translator):
     text = u"©×《》"
 

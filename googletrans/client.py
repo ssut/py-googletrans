@@ -10,7 +10,7 @@ import random
 from googletrans import urls, utils
 from googletrans.compat import PY3
 from googletrans.gtoken import TokenAcquirer
-from googletrans.constants import DEFAULT_USER_AGENT, LANGUAGES, SPECIAL_CASES
+from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
 from googletrans.models import Translated, Detected
 
 
@@ -50,19 +50,7 @@ class Translator(object):
             return self.service_urls[0]
         return random.choice(self.service_urls)
 
-    def _translate(self, text, dest='en', src='auto'):
-        if src != 'auto':
-            if src not in LANGUAGES.keys() and src in SPECIAL_CASES.keys():
-                src = SPECIAL_CASES[src]
-            elif src not in LANGUAGES.keys():
-                raise ValueError('invalid source language')
-
-        if dest not in LANGUAGES.keys():
-            if dest in SPECIAL_CASES.keys():
-                dest = SPECIAL_CASES[dest]
-            else:
-                raise ValueError('invalid destination language')
-
+    def _translate(self, text, dest, src):
         if not PY3 and isinstance(text, str):  # pragma: nocover
             text = text.decode('utf-8')
 
@@ -82,11 +70,13 @@ class Translator(object):
         :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
 
         :param dest: The language to translate the source text into.
-                     The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`.
+                     The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
+                     or one of the language names listed in :const:`googletrans.LANGCODES`.
         :param dest: :class:`str`; :class:`unicode`
 
         :param src: The language of the source text.
-                    The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`.
+                    The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
+                    or one of the language names listed in :const:`googletrans.LANGCODES`.
                     If a language is not specified,
                     the system will attempt to identify the source language automatically.
         :param src: :class:`str`; :class:`unicode`
@@ -112,6 +102,25 @@ class Translator(object):
             jumps over  ->  이상 점프
             the lazy dog  ->  게으른 개
         """
+        dest = dest.lower().split('_', 1)[0]
+        src = src.lower().split('_', 1)[0]
+
+        if src != 'auto' and src not in LANGUAGES:
+            if src in SPECIAL_CASES:
+                src = SPECIAL_CASES[src]
+            elif src in LANGCODES:
+                src = LANGCODES[src]
+            else:
+                raise ValueError('invalid source language')
+
+        if dest not in LANGUAGES:
+            if dest in SPECIAL_CASES:
+                dest = SPECIAL_CASES[dest]
+            elif dest in LANGCODES:
+                dest = LANGCODES[dest]
+            else:
+                raise ValueError('invalid destination language')
+
         if isinstance(text, list):
             result = []
             for item in text:

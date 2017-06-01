@@ -60,3 +60,5 @@ LANGUAGES = {
     'cy': 'welsh',
     'yi': 'yiddish',
   }
+
+LANGCODES = dict(map(reversed, LANGUAGES.items()))

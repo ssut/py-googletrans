@@ -4,4 +4,4 @@ __version__ = '2.1.3'
 
 
 from googletrans.client import Translator
-from googletrans.constants import LANGUAGES
+from googletrans.constants import LANGCODES, LANGUAGES

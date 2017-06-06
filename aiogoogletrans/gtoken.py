@@ -4,12 +4,12 @@ import math
 import re
 import time
 
-import requests
+import aiohttp
+import asyncio
 
 
-from googletrans.compat import PY3
-from googletrans.compat import unicode
-from googletrans.utils import rshift
+from aiogoogletrans.constants import DEFAULT_USER_AGENT
+from aiogoogletrans.utils import rshift
 
 
 class TokenAcquirer(object):
@@ -41,12 +41,14 @@ class TokenAcquirer(object):
     RE_TKK = re.compile(r'TKK=eval\(\'\(\(function\(\)\{(.+?)\}\)\(\)\)\'\);',
                         re.DOTALL)
 
-    def __init__(self, tkk='0', session=None, host='translate.google.com'):
-        self.session = session or requests.Session()
+    def __init__(self, tkk='0', host='translate.google.com', user_agent=DEFAULT_USER_AGENT):
+        self.headers = {
+            'User-Agent': user_agent,
+        }
         self.tkk = tkk
         self.host = host if 'http' in host else 'https://' + host
 
-    def _update(self):
+    async def _update(self):
         """update tkk
         """
         # we don't need to update the base TKK value when it is still valid
@@ -54,14 +56,15 @@ class TokenAcquirer(object):
         if self.tkk and int(self.tkk.split('.')[0]) == now:
             return
 
-        r = self.session.get(self.host)
+
+        async with aiohttp.ClientSession(headers=self.headers) as session:
+            async with session.get(self.host) as resp:
+                text = await resp.text()
+
         # this will be the same as python code after stripping out a reserved word 'var'
-        code = unicode(self.RE_TKK.search(r.text).group(1)).replace('var ', '')
+        code = str(self.RE_TKK.search(text).group(1)).replace('var ', '')
         # unescape special ascii characters such like a \x3d(=)
-        if PY3:  # pragma: no cover
-            code = code.encode().decode('unicode-escape')
-        else:  # pragma: no cover
-            code = code.decode('string_escape')
+        code = code.encode().decode('unicode-escape')
 
         if code:
             tree = ast.parse(code)
@@ -176,7 +179,7 @@ class TokenAcquirer(object):
 
         return '{}.{}'.format(a, a ^ b)
 
-    def do(self, text):
-        self._update()
+    async def do(self, text):
+        await self._update()
         tk = self.acquire(text)
         return tk

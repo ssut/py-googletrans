@@ -1,4 +1,4 @@
-from googletrans import utils
+from aiogoogletrans import utils
 from pytest import raises
 
 

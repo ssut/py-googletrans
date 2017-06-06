@@ -1,30 +1,33 @@
 # -*- coding: utf-8 -*-
-from googletrans import gtoken
+from aiogoogletrans import gtoken
 from pytest import fixture
-
+import pytest
 
 @fixture
 def acquirer():
     return gtoken.TokenAcquirer()
 
 
-def test_acquire_token(acquirer):
+@pytest.mark.asyncio
+async def test_acquire_token(acquirer):
     text = 'test'
 
-    result = acquirer.do(text)
+    result = await acquirer.do(text)
 
     assert result
 
 
-def test_acquire_token_ascii_less_than_2048(acquirer):
+@pytest.mark.asyncio
+async def test_acquire_token_ascii_less_than_2048(acquirer):
     text = u'Ѐ'
 
-    result = acquirer.do(text)
+    result = await acquirer.do(text)
 
     assert result
 
 
-def test_acquire_token_ascii_matches_special_condition(acquirer):
+@pytest.mark.asyncio
+async def test_acquire_token_ascii_matches_special_condition(acquirer):
     def unichar(i):
         try:
             return unichr(i)
@@ -32,24 +35,26 @@ def test_acquire_token_ascii_matches_special_condition(acquirer):
             return chr(i)
     text = unichar(55296) + unichar(56320)
 
-    result = acquirer.do(text)
+    result = await acquirer.do(text)
 
     assert result
 
 
-def test_acquire_token_ascii_else(acquirer):
+@pytest.mark.asyncio
+async def test_acquire_token_ascii_else(acquirer):
     text = u'가'
 
-    result = acquirer.do(text)
+    result = await acquirer.do(text)
 
     assert result
 
 
-def test_reuse_valid_token(acquirer):
+@pytest.mark.asyncio
+async def test_reuse_valid_token(acquirer):
     text = 'test'
 
-    first = acquirer.do(text)
-    second = acquirer.do(text)
+    first = await acquirer.do(text)
+    second = await acquirer.do(text)
 
     assert first == second
 

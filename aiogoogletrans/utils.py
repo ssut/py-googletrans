@@ -2,6 +2,7 @@
 from __future__ import print_function
 import re
 import json
+from urllib.parse import urlencode
 
 
 def build_params(query, src, dest, token):
@@ -19,7 +20,7 @@ def build_params(query, src, dest, token):
         'tk': token,
         'q': query,
     }
-    return params
+    return urlencode(params, doseq=True)
 
 
 def format_json(original):

@@ -1,0 +1,6 @@
+aiohttp
+pytest
+pytest-asyncio
+future
+coveralls
+tox

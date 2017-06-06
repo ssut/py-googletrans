@@ -1,10 +1,8 @@
 language: python
 python:
-  - 2.7
   - 3.6
-  - pypy
 install:
-  - pip install tox-travis
-  - pip install pytest-cov coveralls
+  - pip install -r test-requirements.txt -r requirements.txt
+
 script: tox
 after_success: coveralls

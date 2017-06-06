@@ -40,11 +40,11 @@ source language.
     >>> import asyncio
     >>> loop = asyncio.get_event_loop()
     >>> loop.run_until_complete(translator.translate('안녕하세요.'))
-    # <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
+    # <Translated src=ko confidence=1.0 dest=en text=Good evening. pronunciation=Good evening.>
     >>> loop.run_until_complete(translator.translate('안녕하세요.', dest='ja'))
-    # <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
+    # <Translated src=ko confidence=1.0 dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
     >>> loop.run_until_complete(translator.translate('veritas lux mea', src='la'))
-    # <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
+    # <Translated src=la confidence=1.0 dest=en text=The truth is my light pronunciation=The truth is my light>
 
 Customize service URL
 ~~~~~~~~~~~~~~~~~~~~~
@@ -76,26 +76,6 @@ for arrays as well.
     # jumps over  ->  이상 점프
     # the lazy dog  ->  게으른 개
 
-Language detection
-~~~~~~~~~~~~~~~~~~
-
-The detect method, as its name implies, identifies the language used in
-a given sentence.
-
-.. code:: python
-
-    >>> from aiogoogletrans import Translator
-    >>> import asyncio
-    >>> loop = asyncio.get_event_loop()
-    >>> translator = Translator()
-    >>> loop.run_until_forever(translator.detect('이 문장은 한글로 쓰여졌습니다.'))
-    # <Detected lang=ko confidence=0.27041003>
-    >>> loop.run_until_forever(translator.detect('この文章は日本語で書かれました。'))
-    # <Detected lang=ja confidence=0.64889508>
-    >>> loop.run_until_forever(translator.detect('This sentence is written in English.'))
-    # <Detected lang=en confidence=0.22348526>
-    >>> loop.run_until_forever(translator.detect('Tiu frazo estas skribita en Esperanto.'))
-    # <Detected lang=eo confidence=0.10538048>
 
 GoogleTrans as a command line application
 -----------------------------------------

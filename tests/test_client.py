@@ -15,7 +15,6 @@ async def test_bind_multiple_service_urls():
     assert translator.service_urls == service_urls
 
     assert await translator.translate('test', dest='ko')
-    assert await translator.detect('Hello')
 
 
 @pytest.mark.asyncio
@@ -76,21 +75,21 @@ async def test_translate_list(translator):
 
 @pytest.mark.asyncio
 async def test_detect_language(translator):
-    ko = await translator.detect(u'한국어')
-    en = await translator.detect('English')
+    ko = await translator.translate(u'한국어')
+    en = await translator.translate('English')
 
-    assert ko.lang == 'ko'
-    assert en.lang == 'en'
+    assert ko.src == 'ko'
+    assert en.src == 'en'
 
 
 @pytest.mark.asyncio
 async def test_detect_list(translator):
     items = [u'한국어', ' English']
 
-    result = await translator.detect(items)
+    result = await translator.translate(items)
 
-    assert result[0].lang == 'ko'
-    assert result[1].lang == 'en'
+    assert result[0].src == 'ko'
+    assert result[1].src == 'en'
 
 
 @pytest.mark.asyncio

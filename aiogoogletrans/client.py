@@ -11,7 +11,7 @@ import asyncio
 from aiogoogletrans import urls, utils
 from aiogoogletrans.gtoken import TokenAcquirer
 from aiogoogletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
-from aiogoogletrans.models import Translated, Detected
+from aiogoogletrans.models import Translated
 
 
 EXCLUDES = ('en', 'ca', 'fr')
@@ -121,17 +121,9 @@ class Translator(object):
 
         origin = text
         data = await self._translate(text, dest, src)
-        print(data)
 
         # this code will be updated when the format is changed.
         translated = ''.join([d[0] if d[0] else '' for d in data[0]])
-
-        # actual source language that will be recognized by Google Translator when the
-        # src passed is equal to auto.
-        try:
-            src = data[-1][0][0]
-        except Exception:  # pragma: nocover
-            pass
 
         pron = origin
         try:
@@ -141,61 +133,17 @@ class Translator(object):
         if dest in EXCLUDES and pron == origin:
             pron = translated
 
-        # put final values into a new Translated object
-        result = Translated(src=src, dest=dest, origin=origin,
-                            text=translated, pronunciation=pron)
 
-        return result
-
-    async def detect(self, text):
-        """Detect language of the input text
-
-        :param text: The source text(s) whose language you want to identify.
-                     Batch detection is supported via sequence input.
-        :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
-
-        :rtype: Detected
-        :rtype: :class:`list` (when a list is passed)
-
-        Basic usage:
-            >>> from aiogoogletrans import Translator
-            >>> translator = Translator()
-            >>> await translator.detect('이 문장은 한글로 쓰여졌습니다.')
-            <Detected lang=ko confidence=0.27041003>
-            >>> await translator.detect('この文章は日本語で書かれました。')
-            <Detected lang=ja confidence=0.64889508>
-            >>> await translator.detect('This sentence is written in English.')
-            <Detected lang=en confidence=0.22348526>
-            >>> await translator.detect('Tiu frazo estas skribita en Esperanto.')
-            <Detected lang=eo confidence=0.10538048>
-
-        Advanced usage:
-            >>> langs = await translator.detect(['한국어', '日本語', 'English', 'le français'])
-            >>> for lang in langs:
-            ...    print(lang.lang, lang.confidence)
-            ko 1
-            ja 0.92929292
-            en 0.96954316
-            fr 0.043500196
-        """
-        if isinstance(text, list):
-            result = []
-            for item in text:
-                lang = await self.detect(item)
-                result.append(lang)
-            return result
-
-        data = await self._translate(text, dest='en', src='auto')
-
-        # actual source language that will be recognized by Google Translator when the
-        # src passed is equal to auto.
-        src = ''
-        confidence = 0.0
+        src_detected, confidence = '', 0.0
         try:
-            src = ''.join(data[8][0])
-            confidence = data[8][-2][0]
-        except Exception:  # pragma: nocover
+            src_detected, confidence = ''.join(data[8][0]), data[8][-2][0]
+        except:
             pass
-        result = Detected(lang=src, confidence=confidence)
+
+        # put final values into a new Translated object
+        result = Translated(
+            src=src_detected, confidence=confidence, dest=dest, origin=origin,
+            text=translated, pronunciation=pron,
+        )
 
         return result

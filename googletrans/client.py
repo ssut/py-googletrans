@@ -137,13 +137,13 @@ class Translator(object):
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.
         try:
-            src = data[-1][0][0]
+            src = data[2]
         except Exception:  # pragma: nocover
             pass
 
         pron = origin
         try:
-            pron = data[0][1][-1]
+            pron = data[0][1][-2]
         except Exception:  # pragma: nocover
             pass
         if not PY3 and isinstance(pron, unicode) and isinstance(origin, str):  # pragma: nocover

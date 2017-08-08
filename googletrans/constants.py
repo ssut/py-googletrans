@@ -78,7 +78,7 @@ LANGUAGES = {
     'fa': 'persian',
     'pl': 'polish',
     'pt': 'portuguese',
-    'ma': 'punjabi',
+    'pa': 'punjabi',
     'ro': 'romanian',
     'ru': 'russian',
     'sm': 'samoan',

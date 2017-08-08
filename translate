@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import sys
-from googletrans import translator
+from googletrans import Translator
 
 def main():
     parser = argparse.ArgumentParser(
@@ -15,6 +15,7 @@ def main():
     parser.add_argument('-c', '--detect', action='store_true', default=False,
         help='')
     args = parser.parse_args()
+    translator = Translator()
 
     if args.detect:
         result = translator.detect(args.text)
@@ -31,7 +32,7 @@ def main():
     ->
 [{dest}] {text}
 [pron.] {pronunciation}
-    """.strip().format(src=result.src, dest=result.dest, original=result.origin, 
+    """.strip().format(src=result.src, dest=result.dest, original=result.origin,
                        text=result.text, pronunciation=result.pronunciation)
     print(result)
 

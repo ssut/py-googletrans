@@ -17,6 +17,16 @@ def test_bind_multiple_service_urls():
     assert translator.detect('Hello')
 
 
+def test_source_language(translator):
+    result = translator.translate('안녕하세요.')
+    assert result.src == 'ko'
+
+
+def test_pronunciation(translator):
+    result = translator.translate('안녕하세요.', dest='ja')
+    assert result.pronunciation == 'Kon\'nichiwa.'
+
+
 def test_latin_to_english(translator):
     result = translator.translate('veritas lux mea', src='la', dest='en')
     assert result.text == 'The truth is my light'

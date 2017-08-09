@@ -42,6 +42,11 @@ def test_language_name(translator):
     assert result.text == u'Dia dhuit'
 
 
+def test_language_name_with_space(translator):
+    result = translator.translate(u'Hello', src='en', dest='chinese (simplified)')
+    assert result.dest == 'zh-cn'
+
+
 def test_language_rfc1766(translator):
     result = translator.translate(u'luna', src='it_ch@euro', dest='en')
     assert result.text == u'moon'

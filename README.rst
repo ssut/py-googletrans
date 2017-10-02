@@ -9,8 +9,8 @@ implemented Google Translate API. This uses the `Google Translate Ajax
 API <https://translate.google.com>`__ to make calls to such methods as
 detect and translate.
 
-Compatible with Python 2.7+ and 3.4+ (CPython and PyPy. Py 2.6 and 3.3
-are not tested yet.)
+Compatible with Python 2.7+ and 3.4+. (Note: Python 2 support will be dropped in the
+next major release.)
 
 For details refer to the `API
 Documentation <https://py-googletrans.readthedocs.org/en/latest/googletrans.html>`__.
@@ -173,13 +173,16 @@ GoogleTrans as a command line application
 Note on library usage
 ---------------------
 
--  The maximum character limit on a single text is 15k.
+DISCLAIMER: this is an unofficial library using the web API of translate.google.com
+and also is not associated with Google.
+
+-  **The maximum character limit on a single text is 15k.**
 
 -  Due to limitations of the web version of google translate, this API
-   does not guarantee that the library would work properly at all times.
-   (so please use this library if you don't care about stability.)
+   does not guarantee that the library would work properly at all times
+   (so please use this library if you don't care about stability).
 
--  If you want to use a stable API, I highly recommend you to use
+-  **Important:** If you want to use a stable API, I highly recommend you to use
    `Google's official translate
    API <https://cloud.google.com/translate/docs>`__.
 

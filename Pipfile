@@ -1,0 +1,24 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "==2.13.0"
+
+
+
+
+
+
+
+[dev-packages]
+
+future = "*"
+coveralls = "*"
+"pytest-watch" = "*"
+"pytest-testmon" = "*"
+
+
+[requires]
+python_version = "3.6"

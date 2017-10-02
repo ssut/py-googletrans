@@ -22,11 +22,14 @@ def build_params(query, src, dest, token):
     return params
 
 
-def format_json(original):
+def legacy_format_json(original):
     # save state
     states = []
     text = original
+    
+    # save position for double-quoted texts
     for i, pos in enumerate(re.finditer('"', text)):
+        # pos.start() is a double-quote
         p = pos.start() + 1
         if i % 2 == 0:
             nxt = text.find('"', p)
@@ -49,6 +52,14 @@ def format_json(original):
             text = text[:p] + states[j][1] + text[nxt:]
 
     converted = json.loads(text)
+    return converted
+
+
+def format_json(original):
+    try:
+        converted = json.loads(original)
+    except ValueError:
+        converted = legacy_format_json(original)
     return converted
 
 

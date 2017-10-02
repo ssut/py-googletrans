@@ -162,7 +162,7 @@ class TokenAcquirer(object):
                         e.append(l >> 12 & 63 | 128)
                     else:
                         e.append(l >> 12 | 224)
-                        e.append(l >> 6 & 63 | 128)
+                    e.append(l >> 6 & 63 | 128)
                 e.append(l & 63 | 128)
         a = b
         for i, value in enumerate(e):

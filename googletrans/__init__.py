@@ -1,6 +1,6 @@
 """Free Google Translate API for Python. Translates totally free of charge."""
 __all__ = 'Translator',
-__version__ = '2.1.4'
+__version__ = '2.2.0'
 
 
 from googletrans.client import Translator

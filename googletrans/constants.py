@@ -108,7 +108,9 @@ LANGUAGES = {
     'xh': 'xhosa',
     'yi': 'yiddish',
     'yo': 'yoruba',
-    'zu': 'zulu'
+    'zu': 'zulu',
+    'fil': 'Filipino',
+    'he': 'Hebrew'
 }
 
 LANGCODES = dict(map(reversed, LANGUAGES.items()))

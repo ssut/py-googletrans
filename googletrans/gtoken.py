@@ -41,10 +41,11 @@ class TokenAcquirer(object):
     RE_TKK = re.compile(r'TKK=eval\(\'\(\(function\(\)\{(.+?)\}\)\(\)\)\'\);',
                         re.DOTALL)
 
-    def __init__(self, tkk='0', session=None, host='translate.google.com'):
+    def __init__(self, tkk='0', session=None, host='translate.google.com', proxies=None):
         self.session = session or requests.Session()
         self.tkk = tkk
         self.host = host if 'http' in host else 'https://' + host
+        self._proxies = proxies
 
     def _update(self):
         """update tkk
@@ -54,7 +55,10 @@ class TokenAcquirer(object):
         if self.tkk and int(self.tkk.split('.')[0]) == now:
             return
 
-        r = self.session.get(self.host)
+        if self._proxies:
+            r = self.session.get(self.host, proxies=self._proxies)
+        else:
+            r = self.session.get(self.host)
         # this will be the same as python code after stripping out a reserved word 'var'
         code = unicode(self.RE_TKK.search(r.text).group(1)).replace('var ', '')
         # unescape special ascii characters such like a \x3d(=)

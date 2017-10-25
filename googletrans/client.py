@@ -30,13 +30,14 @@ class Translator(object):
     :type user_agent: :class:`str`
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT):
+    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT, proxies=None):
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': user_agent,
         })
         self.service_urls = service_urls or ['translate.google.com']
-        self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0])
+        self._proxies = proxies
+        self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0], proxies=proxies)
 
         # Use HTTP2 Adapter if hyper is installed
         try:  # pragma: nocover
@@ -58,7 +59,10 @@ class Translator(object):
         params = utils.build_params(query=text, src=src, dest=dest,
                                     token=token)
         url = urls.TRANSLATE.format(host=self._pick_service_url())
-        r = self.session.get(url, params=params)
+        if self._proxies:
+            r = self.session.get(url, params=params, proxies=self._proxies)
+        else:
+            r = self.session.get(url, params=params)
 
         data = utils.format_json(r.text)
         return data

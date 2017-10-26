@@ -28,10 +28,16 @@ class Translator(object):
 
     :param user_agent: the User-Agent header to send when making requests.
     :type user_agent: :class:`str`
+
+    :param proxies: proxies configuration. 
+                    Dictionary mapping protocol or protocol and host to the URL of the proxy 
+                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT):
+    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT, proxies=None):
         self.session = requests.Session()
+        if proxies is not None:
+            self.session.proxies = proxies
         self.session.headers.update({
             'User-Agent': user_agent,
         })

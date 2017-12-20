@@ -72,7 +72,8 @@ class Translator(object):
         else:
             if self.raise_exception:
                 raise Exception('Unexpected status code "{}" from {}'.format(r.status_code, self.service_urls))
-            return DUMMY_DATA[0][0][0] = text
+            DUMMY_DATA[0][0][0] = text
+            return DUMMY_DATA
 
 
     def translate(self, text, dest='en', src='auto'):

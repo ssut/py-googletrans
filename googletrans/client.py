@@ -10,7 +10,8 @@ import random
 from googletrans import urls, utils
 from googletrans.compat import PY3
 from googletrans.gtoken import TokenAcquirer
-from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
+from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES, \
+    DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
 from googletrans.models import Translated, Detected
 
 
@@ -29,20 +30,19 @@ class Translator(object):
     :param user_agent: the User-Agent header to send when making requests.
     :type user_agent: :class:`str`
 
-    :param proxies: proxies configuration. 
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy 
-                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
+    :param raise_exception: if `True` then raise exception if smth will go wrong
+    :type raise_exception: boolean
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT, proxies=None):
+    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
+            raise_exception=DEFAULT_RAISE_EXCEPTION):
         self.session = requests.Session()
-        if proxies is not None:
-            self.session.proxies = proxies
         self.session.headers.update({
             'User-Agent': user_agent,
         })
         self.service_urls = service_urls or ['translate.google.com']
         self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0])
+        self.raise_exception = raise_exception
 
         # Use HTTP2 Adapter if hyper is installed
         try:  # pragma: nocover
@@ -66,8 +66,14 @@ class Translator(object):
         url = urls.TRANSLATE.format(host=self._pick_service_url())
         r = self.session.get(url, params=params)
 
-        data = utils.format_json(r.text)
-        return data
+        if r.status_code == 200:
+            data = utils.format_json(r.text)
+            return data
+        else:
+            if self.raise_exception:
+                raise Exception('Unexpected status code "{}" from {}'.format(r.status_code, self.service_urls))
+            return DUMMY_DATA[0][0][0] = text
+
 
     def translate(self, text, dest='en', src='auto'):
         """Translate text from source language to destination language

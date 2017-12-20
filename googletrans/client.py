@@ -86,7 +86,8 @@ class Translator:
         else:
             if self.raise_exception:
                 raise Exception('Unexpected status code "{}" from {}'.format(r.status_code, self.service_urls))
-            return DUMMY_DATA[0][0][0]
+            DUMMY_DATA[0][0][0] = text
+            return DUMMY_DATA
 
     def _parse_extra_data(self, data):
         response_parts_name_mapping = {

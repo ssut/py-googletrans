@@ -8,6 +8,7 @@ import requests
 import random
 
 from googletrans import urls, utils
+from googletrans.adapters import TimeoutAdapter
 from googletrans.compat import PY3
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
@@ -32,15 +33,26 @@ class Translator(object):
     :param proxies: proxies configuration. 
                     Dictionary mapping protocol or protocol and host to the URL of the proxy 
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
+    :type proxies: dictionary
+
+    :param timeout: Definition of timeout for Requests library.
+                    Will be used by every request.
+    :type timeout: number or a double of numbers
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT, proxies=None):
+    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
+                 proxies=None, timeout=None):
+
         self.session = requests.Session()
         if proxies is not None:
             self.session.proxies = proxies
         self.session.headers.update({
             'User-Agent': user_agent,
         })
+        if timeout is not None:
+            self.session.mount('https://', TimeoutAdapter(timeout))
+            self.session.mount('http://', TimeoutAdapter(timeout))
+
         self.service_urls = service_urls or ['translate.google.com']
         self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0])
 

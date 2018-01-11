@@ -35,7 +35,7 @@ class Translator(object):
     """
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
-            raise_exception=DEFAULT_RAISE_EXCEPTION):
+            raise_exception=DEFAULT_RAISE_EXCEPTION, proxies=None):
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': user_agent,

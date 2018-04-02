@@ -60,6 +60,7 @@ def format_json(original):
         converted = json.loads(original)
     except ValueError:
         converted = legacy_format_json(original)
+
     return converted
 
 

@@ -13,5 +13,4 @@ class TimeoutAdapter(HTTPAdapter):
 
     def send(self, *args, **kwargs):
         kwargs['timeout'] = self.timeout
-        print(self.timeout)
         return super(TimeoutAdapter, self).send(*args, **kwargs)

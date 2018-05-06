@@ -119,7 +119,7 @@ def test_dest_not_in_supported_languages(translator):
 def test_connection_timeout():
     # Requests library specifies two timeouts: connection and read
 
-    with raises(ConnectionError):
+    with raises((ConnectionError, ReadTimeout)):
         """If a number is passed to timeout parameter, both connection
            and read timeouts will be set to it.
            Firstly, the connection timeout will fail.

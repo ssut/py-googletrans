@@ -13,7 +13,7 @@ Compatible with Python 2.7+ and 3.4+. (Note: Python 2 support will be dropped in
 next major release.)
 
 For details refer to the `API
-Documentation <https://py-googletrans.readthedocs.org/en/latest/googletrans.html>`__.
+Documentation <https://py-googletrans.readthedocs.io/en/latest>`__.
 
 Features
 --------

@@ -245,8 +245,11 @@ class Translator(object):
                 lang = self.detect(item)
                 result.append(lang)
             return result
-
-        data = self._translate(text, dest='en', src='auto')
+        
+        data = []
+        while text:
+            data += self._translate(text[:5000], dest='en', src='auto')
+            text = text[5000:]
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.

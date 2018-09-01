@@ -168,7 +168,7 @@ class TokenAcquirer(object):
                 else:
                     # append calculated value if l matches special condition
                     if (l & 64512) == 55296 and g + 1 < size and \
-                            text[g + 1] & 64512 == 56320:
+                            a[g + 1] & 64512 == 56320:
                         g += 1
                         l = 65536 + ((l & 1023) << 10) + (a[g] & 1023) # This bracket is important
                         e.append(l >> 18 | 240)

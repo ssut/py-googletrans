@@ -71,9 +71,9 @@ is a copper statue of Christ with arms upraised with the legend Venite Ad Me Omn
 
     result = await translator.translate(text, src='en', dest='es')
     assert result.text == u"""Arquitectónicamente, la escuela tiene un carácter católico.
-Encima de la cúpula de oro del edificio principal es una estatua de oro de la Virgen María.
+Encima de la cúpula dorada del edificio principal se encuentra una estatua dorada de la Virgen María.
 Inmediatamente frente al edificio principal y frente a él,
-Es una estatua de cobre de Cristo con los brazos levantados con la leyenda Venite Ad Me Omnes."""
+es una estatua de cobre de Cristo con los brazos levantados con la leyenda Venite Ad Me Omnes."""
 
 
 @pytest.mark.asyncio

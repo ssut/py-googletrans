@@ -24,6 +24,18 @@ async def test_latin_to_english(translator):
 
 
 @pytest.mark.asyncio
+async def test_chinese_traditional_to_english(translator):
+    result = await translator.translate('資料庫', src='zh-tw', dest='en')
+    assert result.text == 'database'
+
+
+@pytest.mark.asyncio
+async def test_chinese_simplified_to_english(translator):
+    result = await translator.translate('电脑', src='zh-cn', dest='en')
+    assert result.text == 'computer'
+
+
+@pytest.mark.asyncio
 async def test_unicode(translator):
     result = await translator.translate(u'안녕하세요.', src='ko', dest='ja')
     print(result)

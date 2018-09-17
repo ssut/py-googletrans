@@ -86,7 +86,7 @@ async def test_translate_list(translator):
     assert translations[1].text == u'시험'
 
 @pytest.mark.asyncio
-async def test_detect_language(translator):
+async def test_translate_detect_language(translator):
     ko = await translator.translate(u'한국어')
     en = await translator.translate('English')
 
@@ -95,13 +95,24 @@ async def test_detect_language(translator):
 
 
 @pytest.mark.asyncio
-async def test_detect_list(translator):
+async def test_translate_detect_list(translator):
     items = [u'한국어', ' English']
 
     result = await translator.translate(items)
 
     assert result[0].src == 'ko'
     assert result[1].src == 'en'
+
+@pytest.mark.asyncio
+async def test_detect(translator):
+    mapping = {
+        'it': 'Ciao, mi chiamo Mario',
+        'en': 'The pen is on the table',
+        'ko': '한국어',
+    }
+    for language, text in mapping.items():
+        T = await translator.detect(text)
+        assert T.lang == language
 
 
 @pytest.mark.asyncio

@@ -11,7 +11,7 @@ import asyncio
 from aiogoogletrans import urls, utils
 from aiogoogletrans.gtoken import TokenAcquirer
 from aiogoogletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
-from aiogoogletrans.models import Translated
+from aiogoogletrans.models import Translated, Detected
 
 
 EXCLUDES = ('en', 'ca', 'fr')
@@ -147,3 +147,7 @@ class Translator(object):
         )
 
         return result
+
+    async def detect(self, text):
+        T = await self.translate(text, dest='en', src='auto')
+        return Detected(T.src, T.confidence)

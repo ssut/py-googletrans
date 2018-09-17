@@ -25,4 +25,18 @@ class Translated(object):
             text=self.text, pronunciation=self.pronunciation,
         )
 
+class Detected(object):
+    """Language detection result object
+    :param lang: detected language
+    :param confidence: the confidence of detection result (0.00 to 1.00)
+    """
+    def __init__(self, lang, confidence):
+        self.lang = lang
+        self.confidence = confidence
 
+    def __str__(self):  # pragma: nocover
+        return self.__unicode__()
+
+    def __unicode__(self):  # pragma: nocover
+        return u'Detected(lang={lang}, confidence={confidence})'.format(
+            lang=self.lang, confidence=self.confidence)

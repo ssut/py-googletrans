@@ -4,8 +4,10 @@
 #
 #    pip-compile --no-index --output-file requirements.txt requirements.in
 #
-aiohttp==2.1.0
-async-timeout==1.2.1      # via aiohttp
-chardet==3.0.3            # via aiohttp
-multidict==2.1.6          # via aiohttp, yarl
-yarl==0.10.2              # via aiohttp
+aiohttp==3.4.4
+async-timeout==3.0.0      # via aiohttp
+attrs==18.2.0             # via aiohttp
+chardet==3.0.4            # via aiohttp
+idna==2.7                 # via yarl
+multidict==4.4.1          # via aiohttp, yarl
+yarl==1.2.6               # via aiohttp

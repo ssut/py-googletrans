@@ -4,22 +4,27 @@
 #
 #    pip-compile --no-index --output-file test-requirements.txt test-requirements.in
 #
-aiohttp==2.1.0
-async-timeout==1.2.1      # via aiohttp
-certifi==2017.4.17        # via requests
-chardet==3.0.3            # via aiohttp, requests
-coverage==4.4.1           # via coveralls
-coveralls==1.1
+aiohttp==3.4.4
+async-timeout==3.0.0      # via aiohttp
+atomicwrites==1.2.1       # via pytest
+attrs==18.2.0             # via aiohttp, pytest
+certifi==2018.8.24        # via requests
+chardet==3.0.4            # via aiohttp, requests
+coverage==4.5.1           # via coveralls
+coveralls==1.5.0
 docopt==0.6.2             # via coveralls
 future==0.16.0
-idna==2.5                 # via requests
-multidict==2.1.6          # via aiohttp, yarl
-pluggy==0.4.0             # via tox
-py==1.4.34                # via pytest, tox
-pytest-asyncio==0.6.0
-pytest==3.1.1
-requests==2.17.3          # via coveralls
-tox==2.7.0
-urllib3==1.21.1           # via requests
-virtualenv==15.1.0        # via tox
-yarl==0.10.2              # via aiohttp
+idna==2.7                 # via requests, yarl
+more-itertools==4.3.0     # via pytest
+multidict==4.4.1          # via aiohttp, yarl
+pluggy==0.7.1             # via pytest, tox
+py==1.6.0                 # via pytest, tox
+pytest-asyncio==0.9.0
+pytest==3.8.0
+requests==2.19.1          # via coveralls
+six==1.11.0               # via more-itertools, pytest, tox
+toml==0.9.6               # via tox
+tox==3.3.0
+urllib3==1.23             # via requests
+virtualenv==16.0.0        # via tox
+yarl==1.2.6               # via aiohttp

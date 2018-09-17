@@ -48,7 +48,7 @@ class Translator(object):
                                     token=token)
         url = urls.TRANSLATE.format(host=self._pick_service_url())
 
-        with aiohttp.ClientSession(headers=self.headers) as session:
+        async with aiohttp.ClientSession(headers=self.headers) as session:
             async with session.get(url + '?' + params) as resp:
                 text = await resp.text()
 

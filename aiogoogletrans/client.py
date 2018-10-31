@@ -30,13 +30,14 @@ class Translator(object):
     :type user_agent: :class:`str`
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT, proxy=None):
+    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT, proxy=None, timeout=300):
         self.headers = {
             'User-Agent': user_agent,
         }
         self.service_urls = service_urls or ['translate.google.com']
         self.token_acquirer = TokenAcquirer(host=self.service_urls[0])
         self.proxy = proxy
+        self.timeout = timeout
 
     def _pick_service_url(self):
         if len(self.service_urls) == 1:
@@ -50,7 +51,7 @@ class Translator(object):
         url = urls.TRANSLATE.format(host=self._pick_service_url())
 
         async with aiohttp.ClientSession(headers=self.headers) as session:
-            async with session.get(url + '?' + params, proxy=self.proxy) as resp:
+            async with session.get(url + '?' + params, proxy=self.proxy, timeout=self.timeout) as resp:
                 text = await resp.text()
 
         return utils.format_json(text)

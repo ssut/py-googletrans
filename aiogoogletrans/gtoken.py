@@ -38,9 +38,7 @@ class TokenAcquirer(object):
         950629.577246
     """
 
-    RE_TKK = re.compile(r'TKK=eval\(\'\(\(function\(\)\{(.+?)\}\)\(\)\)\'\);',
-                        re.DOTALL)
-    RE_RAWTKK = re.compile(r'TKK=\'([^\']*)\';', re.DOTALL)
+    RE_TKK = re.compile(r'TKK=\'([^\']*)\';', re.DOTALL)
 
     def __init__(self, tkk='0', host='translate.google.com', user_agent=DEFAULT_USER_AGENT):
         self.headers = {
@@ -53,18 +51,13 @@ class TokenAcquirer(object):
         """update tkk
         """
         # we don't need to update the base TKK value when it is still valid
-        now = math.floor(int(time.time() * 1000) / 3600000.0)
-        if self.tkk and int(self.tkk.split('.')[0]) == now:
-            return
-
-
         async with aiohttp.ClientSession(headers=self.headers) as session:
             async with session.get(self.host) as resp:
                 text = await resp.text()
 
-        raw_tkk = self.RE_RAWTKK.search(text)
-        if raw_tkk:
-            self.tkk = raw_tkk.group(1)
+        self.tkk = self.RE_TKK.findall(text)[0]
+        now = math.floor(int(time.time() * 1000) / 3600000.0)
+        if self.tkk and int(self.tkk.split('.')[0]) == now:
             return
 
         # this will be the same as python code after stripping out a reserved word 'var'
@@ -171,7 +164,7 @@ class TokenAcquirer(object):
                         e.append(l >> 12 & 63 | 128)
                     else:
                         e.append(l >> 12 | 224)
-                        e.append(l >> 6 & 63 | 128)
+                    e.append(l >> 6 & 63 | 128)
                 e.append(l & 63 | 128)
         a = b
         for i, value in enumerate(e):

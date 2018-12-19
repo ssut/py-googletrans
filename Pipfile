@@ -14,11 +14,10 @@ requests = "==2.13.0"
 
 [dev-packages]
 
-future = "*"
 coveralls = "*"
 "pytest-watch" = "*"
 "pytest-testmon" = "*"
 
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"

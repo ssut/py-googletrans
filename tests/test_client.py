@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 from httpcore import TimeoutException
 from httpcore._exceptions import ConnectError
-from httpx import Timeout
+from httpx import Timeout, Client
+from unittest.mock import patch
 from pytest import raises
 
 from googletrans import Translator
@@ -133,4 +133,16 @@ def test_timeout():
     with raises((TimeoutException, ConnectError)):
         translator = Translator(timeout=Timeout(0.0001))
         translator.translate('안녕하세요.')
+
+
+class MockResponse:
+    def __init__(self, status_code):
+        self.status_code = status_code
+        self.text = 'tkk:\'translation\''
+
+
+@patch.object(Client, 'get', return_value=MockResponse('403'))
+def test_403_error(session_mock):
+    translator = Translator()
+    assert translator.translate('test', dest='ko')
 

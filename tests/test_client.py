@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
+import sys
+if sys.version_info >= (3, 3):
+    from unittest.mock import patch
+else:
+    from mock import patch
 from pytest import raises
+
 from requests.exceptions import ConnectionError
 from requests.exceptions import ReadTimeout
+from requests import Session
 
 from googletrans import Translator
 
@@ -133,3 +140,15 @@ def test_read_timeout():
     with raises(ReadTimeout):
         translator = Translator(timeout=(10, 0.00001))
         translator.translate('안녕하세요.')
+
+
+class MockResponse:
+    def __init__(self, status_code):
+        self.status_code = status_code
+        self.text = 'tkk:\'translation\''
+
+
+@patch.object(Session, 'get', return_value=MockResponse('403'))
+def test_403_error(session_mock):
+    translator = Translator()
+    assert translator.translate('test', dest='ko')

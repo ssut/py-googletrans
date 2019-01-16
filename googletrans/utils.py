@@ -6,7 +6,7 @@ import json
 
 def build_params(query, src, dest, token):
     params = {
-        'client': 't',
+        'client': 'webapp',
         'sl': src,
         'tl': dest,
         'hl': dest,

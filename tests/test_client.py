@@ -87,11 +87,11 @@ def test_detect_list(translator):
 
 
 def test_src_in_special_cases(translator):
-    args = ('Tere', 'en', 'ee')
+    args = ('Kala', 'en', 'ee')
 
     result = translator.translate(*args)
 
-    assert result.text == 'Hello'
+    assert result.text == 'Fish'
 
 
 def test_src_not_in_supported_languages(translator):

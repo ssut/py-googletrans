@@ -38,20 +38,26 @@ class Translator(object):
     :param timeout: Definition of timeout for Requests library.
                     Will be used by every request.
     :type timeout: number or a double of numbers
+
+    :param verify: Cerfiticate path for SSL-enabled proxies.
+    :type verify: :class:`str`
     """
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
-                 proxies=None, timeout=None):
+                 proxies=None, timeout=None, verify=None):
 
         self.session = requests.Session()
-        if proxies is not None:
+        if proxies:
             self.session.proxies = proxies
         self.session.headers.update({
             'User-Agent': user_agent,
         })
-        if timeout is not None:
+        if timeout:
             self.session.mount('https://', TimeoutAdapter(timeout))
             self.session.mount('http://', TimeoutAdapter(timeout))
+
+        if verify:
+            self.session.verify = verify
 
         self.service_urls = service_urls or ['translate.google.com']
         self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0])

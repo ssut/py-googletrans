@@ -1,3 +1,4 @@
-requests==2.13.0
-future==0.14.3
 coveralls==1.1
+future==0.14.3
+requests==2.13.0
+pytest==4.4.0

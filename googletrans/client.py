@@ -5,6 +5,7 @@ A Translation module.
 You can translate text using this module.
 """
 import requests
+from requests.exceptions import HTTPError
 import random
 
 from googletrans import urls, utils
@@ -77,6 +78,8 @@ class Translator(object):
                                     token=token)
         url = urls.TRANSLATE.format(host=self._pick_service_url())
         r = self.session.get(url, params=params)
+        # Raise an error containing the full response iff the status code is not successful
+        r.raise_for_status()
 
         data = utils.format_json(r.text)
         return data
@@ -141,6 +144,8 @@ class Translator(object):
             The quick brown fox  ->  빠른 갈색 여우
             jumps over  ->  이상 점프
             the lazy dog  ->  게으른 개
+            
+        Raises requests.exceptions.HTTPError
         """
         dest = dest.lower().split('_', 1)[0]
         src = src.lower().split('_', 1)[0]
@@ -164,8 +169,11 @@ class Translator(object):
         if isinstance(text, list):
             result = []
             for item in text:
-                translated = self.translate(item, dest=dest, src=src)
-                result.append(translated)
+                try:
+                    translated = self.translate(item, dest=dest, src=src)
+                    result.append(translated)
+                except HTTPError as e:
+                    result.append("HTTPError"+e.response.status_code)   # For ease of diagnosis
             return result
 
         origin = text
@@ -242,8 +250,11 @@ class Translator(object):
         if isinstance(text, list):
             result = []
             for item in text:
-                lang = self.detect(item)
-                result.append(lang)
+                try:
+                    lang = self.detect(item)
+                    result.append(lang)
+                except HTTPError as e:
+                    result.append("HTTPError"+e.request.status_code)  # For ease of diagnosis
             return result
 
         data = self._translate(text, dest='en', src='auto')

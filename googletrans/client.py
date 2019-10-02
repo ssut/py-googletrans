@@ -68,13 +68,14 @@ class Translator(object):
             return self.service_urls[0]
         return random.choice(self.service_urls)
 
-    def _translate(self, text, dest, src):
+    def _translate(self, text, dest, src, override):
         if not PY3 and isinstance(text, str):  # pragma: nocover
             text = text.decode('utf-8')
 
         token = self.token_acquirer.do(text)
         params = utils.build_params(query=text, src=src, dest=dest,
-                                    token=token)
+                                    token=token, override=override)
+
         url = urls.TRANSLATE.format(host=self._pick_service_url())
         r = self.session.get(url, params=params)
 
@@ -103,7 +104,7 @@ class Translator(object):
 
         return extra
 
-    def translate(self, text, dest='en', src='auto'):
+    def translate(self, text, dest='en', src='auto', **kwargs):
         """Translate text from source language to destination language
 
         :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
@@ -169,7 +170,7 @@ class Translator(object):
             return result
 
         origin = text
-        data = self._translate(text, dest, src)
+        data = self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
         translated = ''.join([d[0] if d[0] else '' for d in data[0]])
@@ -208,7 +209,7 @@ class Translator(object):
 
         return result
 
-    def detect(self, text):
+    def detect(self, text, **kwargs):
         """Detect language of the input text
 
         :param text: The source text(s) whose language you want to identify.
@@ -246,7 +247,7 @@ class Translator(object):
                 result.append(lang)
             return result
 
-        data = self._translate(text, dest='en', src='auto')
+        data = self._translate(text, 'en', 'auto', kwargs)
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.

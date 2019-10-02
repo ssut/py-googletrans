@@ -165,7 +165,7 @@ class Translator(object):
         if isinstance(text, list):
             result = []
             for item in text:
-                translated = self.translate(item, dest=dest, src=src)
+                translated = self.translate(item, dest=dest, src=src, **kwargs)
                 result.append(translated)
             return result
 

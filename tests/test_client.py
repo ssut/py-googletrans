@@ -69,6 +69,13 @@ def test_translate_list(translator):
     assert translations[1].text == u'시험'
 
 
+def test_translate_merge_list(translator):
+    args = (['test', 'exam'], 'ko', 'en', True)
+    translations = translator.translate(*args)
+    assert translations[0].text == u'테스트'
+    assert translations[1].text == u'시험'
+
+
 def test_detect_language(translator):
     ko = translator.detect(u'한국어')
     en = translator.detect('English')

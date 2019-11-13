@@ -103,7 +103,7 @@ class Translator(object):
 
         return extra
 
-    def translate(self, text, dest='en', src='auto'):
+    def translate(self, text, dest='en', src='auto', batch=False, delimiter=u'\n¼\n'):
         """Translate text from source language to destination language
 
         :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
@@ -120,6 +120,8 @@ class Translator(object):
                     If a language is not specified,
                     the system will attempt to identify the source language automatically.
         :param src: :class:`str`; :class:`unicode`
+        :param batch: :class:`bool`; merge batch request or not
+        :param delimiter: :class:`str`; delimiter string of text
 
         :rtype: Translated
         :rtype: :class:`list` (when a list is passed)
@@ -129,13 +131,13 @@ class Translator(object):
             >>> translator = Translator()
             >>> translator.translate('안녕하세요.')
             <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
-            >>> translator.translate('안녕하세요.', dest='ja')
+            >>> translator.translate('안녕하세요.',dest='ja')
             <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
-            >>> translator.translate('veritas lux mea', src='la')
+            >>> translator.translate('veritas lux mea',src='la')
             <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
 
         Advanced usage:
-            >>> translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
+            >>> translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'],dest='ko')
             >>> for translation in translations:
             ...    print(translation.origin, ' -> ', translation.text)
             The quick brown fox  ->  빠른 갈색 여우
@@ -163,10 +165,19 @@ class Translator(object):
 
         if isinstance(text, list):
             result = []
-            for item in text:
-                translated = self.translate(item, dest=dest, src=src)
-                result.append(translated)
-            return result
+            if not batch:
+                for item in text:
+                    translated = self.translate(item, dest=dest, src=src)
+                    result.append(translated)
+                return result
+            else:
+                translated = self.translate(delimiter.join(text), dest=dest, src=src)
+                if delimiter not in translated.text:
+                    raise ValueError("invalid delimiter")
+                prons = [translated.pronunciation.split(delimiter)] if translated.pronunciation is not None else [None for i in range(len(text))]
+                return [Translated(src=src, dest=dest, origin=text[i], text=trans,
+                                   pronunciation=prons[i], extra_data=translated.extra_data)
+                        for i, trans in enumerate(translated.text.split(delimiter))]
 
         origin = text
         data = self._translate(text, dest, src)

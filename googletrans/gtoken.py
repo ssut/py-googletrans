@@ -161,7 +161,7 @@ class TokenAcquirer(object):
         # assume e means char code array
         e = []
         g = 0
-        size = len(text)
+        size = len(a)
         while g < size:
             l = a[g]
             # just append if l is less than 128(ascii: DEL)

@@ -4,7 +4,7 @@ import re
 import json
 
 
-def build_params(query, src, dest, token):
+def build_params(query, src, dest, token, override):
     params = {
         'client': 'webapp',
         'sl': src,
@@ -19,6 +19,11 @@ def build_params(query, src, dest, token):
         'tk': token,
         'q': query,
     }
+
+    if override is not None:
+        for key, value in get_items(override):
+            params[key] = value
+
     return params
 
 
@@ -53,6 +58,11 @@ def legacy_format_json(original):
 
     converted = json.loads(text)
     return converted
+
+
+def get_items(dict_object):
+    for key in dict_object:
+        yield key, dict_object[key]
 
 
 def format_json(original):

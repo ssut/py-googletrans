@@ -74,6 +74,7 @@ LANGUAGES = {
     'my': 'myanmar (burmese)',
     'ne': 'nepali',
     'no': 'norwegian',
+    'or': 'odia',
     'ps': 'pashto',
     'fa': 'persian',
     'pl': 'polish',

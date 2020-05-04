@@ -13,7 +13,7 @@ def build_params(query, src, dest, token, override):
         'dt': ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
         'ie': 'UTF-8',
         'oe': 'UTF-8',
-        'otf': 1,
+        'otf': '3',
         'ssel': 0,
         'tsel': 0,
         'tk': token,

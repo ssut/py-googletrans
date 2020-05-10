@@ -11,7 +11,7 @@ from googletrans import urls, utils
 from googletrans.adapters import TimeoutAdapter
 from googletrans.compat import PY3
 from googletrans.gtoken import TokenAcquirer
-from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
+from googletrans.constants import DEFAULT_USER_AGENT, DEFAULT_SERVICE_URLS, LANGCODES, LANGUAGES, SPECIAL_CASES
 from googletrans.models import Translated, Detected
 
 
@@ -38,11 +38,15 @@ class Translator(object):
     :param timeout: Definition of timeout for Requests library.
                     Will be used by every request.
     :type timeout: number or a double of numbers
+
+    :param available_service_list: available google translate url list
     """
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
-                 proxies=None, timeout=None):
+                 proxies=None, timeout=None, available_service_list=None):
 
+        self.available_service_list = DEFAULT_SERVICE_URLS
+            
         self.session = requests.Session()
         if proxies is not None:
             self.session.proxies = proxies

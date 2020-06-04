@@ -17,7 +17,7 @@ from googletrans.models import Translated, Detected
 EXCLUDES = ('en', 'ca', 'fr')
 
 
-class Translator(object):
+class Translator:
     """Google Translate ajax API implementation class
 
     You have to create an instance of Translator to use this API

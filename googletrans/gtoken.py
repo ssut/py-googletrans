@@ -9,7 +9,7 @@ import requests
 from googletrans.utils import rshift
 
 
-class TokenAcquirer(object):
+class TokenAcquirer:
     """Google Translate API token generator
 
     translate.google.com uses a token to authorize the requests. If you are
@@ -144,9 +144,9 @@ class TokenAcquirer(object):
             else:
                 # Python doesn't natively use Unicode surrogates, so account for those
                 a += [
-                    math.floor((val - 0x10000)/0x400 + 0xD800),
-                    math.floor((val - 0x10000)%0x400 + 0xDC00)
-                    ]
+                    math.floor((val - 0x10000) / 0x400 + 0xD800),
+                    math.floor((val - 0x10000) % 0x400 + 0xDC00)
+                ]
 
         b = self.tkk if self.tkk != '0' else ''
         d = b.split('.')
@@ -170,7 +170,7 @@ class TokenAcquirer(object):
                     if (l & 64512) == 55296 and g + 1 < size and \
                             a[g + 1] & 64512 == 56320:
                         g += 1
-                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023) # This bracket is important
+                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023)  # This bracket is important
                         e.append(l >> 18 | 240)
                         e.append(l >> 12 & 63 | 128)
                     else:

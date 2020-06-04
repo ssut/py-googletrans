@@ -9,7 +9,6 @@ import random
 
 from googletrans import urls, utils
 from googletrans.adapters import TimeoutAdapter
-from googletrans.compat import PY3
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
 from googletrans.models import Translated, Detected
@@ -69,9 +68,6 @@ class Translator(object):
         return random.choice(self.service_urls)
 
     def _translate(self, text, dest, src, override):
-        if not PY3 and isinstance(text, str):  # pragma: nocover
-            text = text.decode('utf-8')
-
         token = self.token_acquirer.do(text)
         params = utils.build_params(query=text, src=src, dest=dest,
                                     token=token, override=override)
@@ -189,19 +185,9 @@ class Translator(object):
             pron = data[0][1][-2]
         except Exception:  # pragma: nocover
             pass
-        if not PY3 and isinstance(pron, unicode) and isinstance(origin, str):  # pragma: nocover
-            origin = origin.decode('utf-8')
+
         if dest in EXCLUDES and pron == origin:
             pron = translated
-
-        # for python 2.x compatbillity
-        if not PY3:  # pragma: nocover
-            if isinstance(src, str):
-                src = src.decode('utf-8')
-            if isinstance(dest, str):
-                dest = dest.decode('utf-8')
-            if isinstance(translated, str):
-                translated = translated.decode('utf-8')
 
         # put final values into a new Translated object
         result = Translated(src=src, dest=dest, origin=origin,

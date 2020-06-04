@@ -6,9 +6,6 @@ import time
 
 import requests
 
-
-from googletrans.compat import PY3
-from googletrans.compat import unicode
 from googletrans.utils import rshift
 
 
@@ -62,12 +59,9 @@ class TokenAcquirer(object):
             return
 
         # this will be the same as python code after stripping out a reserved word 'var'
-        code = unicode(self.RE_TKK.search(r.text).group(1)).replace('var ', '')
+        code = self.RE_TKK.search(r.text).group(1).replace('var ', '')
         # unescape special ascii characters such like a \x3d(=)
-        if PY3:  # pragma: no cover
-            code = code.encode().decode('unicode-escape')
-        else:  # pragma: no cover
-            code = code.decode('string_escape')
+        code = code.encode().decode('unicode-escape')
 
         if code:
             tree = ast.parse(code)
@@ -182,7 +176,7 @@ class TokenAcquirer(object):
                     else:
                         e.append(l >> 12 | 224)
                     e.append(l >> 6 & 63 | 128)
-                e.append(l & 63 | 128)   
+                e.append(l & 63 | 128)
             g += 1
         a = b
         for i, value in enumerate(e):

@@ -30,8 +30,8 @@ class Translator(object):
     :param user_agent: the User-Agent header to send when making requests.
     :type user_agent: :class:`str`
 
-    :param proxies: proxies configuration. 
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy 
+    :param proxies: proxies configuration.
+                    Dictionary mapping protocol or protocol and host to the URL of the proxy
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     :type proxies: dictionary
 

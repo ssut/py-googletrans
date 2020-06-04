@@ -4,9 +4,9 @@ from googletrans import Translator
 
 def translate_doc(filename, destination='zh-CN', mix=True):
     """
-    translate a word document type of file and save the result as document and keep the exactly same file format. 
-        :param filename: word doc file 
-        :param destination='zh-CN': 
+    translate a word document type of file and save the result as document and keep the exactly same file format.
+        :param filename: word doc file
+        :param destination='zh-CN':
         :param mix=True: if True, will have original language and target language into the same doc. paragraphs by paragraphs.
     """
     def tx(t): return Translator().translate(t, dest=destination).text

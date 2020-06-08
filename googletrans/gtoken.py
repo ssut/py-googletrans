@@ -6,13 +6,10 @@ import time
 
 import requests
 
-
-from googletrans.compat import PY3
-from googletrans.compat import unicode
 from googletrans.utils import rshift
 
 
-class TokenAcquirer(object):
+class TokenAcquirer:
     """Google Translate API token generator
 
     translate.google.com uses a token to authorize the requests. If you are
@@ -62,12 +59,9 @@ class TokenAcquirer(object):
             return
 
         # this will be the same as python code after stripping out a reserved word 'var'
-        code = unicode(self.RE_TKK.search(r.text).group(1)).replace('var ', '')
+        code = self.RE_TKK.search(r.text).group(1).replace('var ', '')
         # unescape special ascii characters such like a \x3d(=)
-        if PY3:  # pragma: no cover
-            code = code.encode().decode('unicode-escape')
-        else:  # pragma: no cover
-            code = code.decode('string_escape')
+        code = code.encode().decode('unicode-escape')
 
         if code:
             tree = ast.parse(code)
@@ -150,9 +144,9 @@ class TokenAcquirer(object):
             else:
                 # Python doesn't natively use Unicode surrogates, so account for those
                 a += [
-                    math.floor((val - 0x10000)/0x400 + 0xD800),
-                    math.floor((val - 0x10000)%0x400 + 0xDC00)
-                    ]
+                    math.floor((val - 0x10000) / 0x400 + 0xD800),
+                    math.floor((val - 0x10000) % 0x400 + 0xDC00)
+                ]
 
         b = self.tkk if self.tkk != '0' else ''
         d = b.split('.')
@@ -176,13 +170,13 @@ class TokenAcquirer(object):
                     if (l & 64512) == 55296 and g + 1 < size and \
                             a[g + 1] & 64512 == 56320:
                         g += 1
-                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023) # This bracket is important
+                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023)  # This bracket is important
                         e.append(l >> 18 | 240)
                         e.append(l >> 12 & 63 | 128)
                     else:
                         e.append(l >> 12 | 224)
                     e.append(l >> 6 & 63 | 128)
-                e.append(l & 63 | 128)   
+                e.append(l & 63 | 128)
             g += 1
         a = b
         for i, value in enumerate(e):

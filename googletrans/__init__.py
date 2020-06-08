@@ -4,4 +4,4 @@ __version__ = '2.4.1'
 
 
 from googletrans.client import Translator
-from googletrans.constants import LANGCODES, LANGUAGES
+from googletrans.constants import LANGCODES, LANGUAGES  # noqa

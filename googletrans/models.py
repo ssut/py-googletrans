@@ -1,4 +1,4 @@
-class Translated(object):
+class Translated:
     """Translate result object
 
     :param src: source langauge (default: auto)
@@ -19,13 +19,17 @@ class Translated(object):
         return self.__unicode__()
 
     def __unicode__(self):  # pragma: nocover
-        return u'Translated(src={src}, dest={dest}, text={text}, pronunciation={pronunciation}, ' \
-               u'extra_data={extra_data})'.format(
-            src=self.src, dest=self.dest, text=self.text, pronunciation=self.pronunciation,
-            extra_data='"' + repr(self.extra_data)[:10] + '..."')
+        return (
+            u'Translated(src={src}, dest={dest}, text={text}, pronunciation={pronunciation}, '
+            u'extra_data={extra_data})'.format(
+                src=self.src, dest=self.dest, text=self.text,
+                pronunciation=self.pronunciation,
+                extra_data='"' + repr(self.extra_data)[:10] + '..."'
+            )
+        )
 
 
-class Detected(object):
+class Detected:
     """Language detection result object
 
     :param lang: detected language

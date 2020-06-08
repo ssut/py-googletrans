@@ -42,6 +42,7 @@ LANGUAGES = {
     'ha': 'hausa',
     'haw': 'hawaiian',
     'iw': 'hebrew',
+    'he': 'hebrew',
     'hi': 'hindi',
     'hmn': 'hmong',
     'hu': 'hungarian',
@@ -109,8 +110,6 @@ LANGUAGES = {
     'yi': 'yiddish',
     'yo': 'yoruba',
     'zu': 'zulu',
-    'fil': 'Filipino',
-    'he': 'Hebrew'
 }
 
 LANGCODES = dict(map(reversed, LANGUAGES.items()))

@@ -70,6 +70,10 @@ modules: requests and future.
 .. code:: bash
 
     $ pip install googletrans
+    
+    or to install package with the latest updates:
+
+    $ pip install git+https://github.com/ssut/py-googletrans.git
 
 Basic Usage
 -----------

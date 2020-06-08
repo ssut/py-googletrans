@@ -103,6 +103,7 @@ LANGUAGES = {
     'tr': 'turkish',
     'uk': 'ukrainian',
     'ur': 'urdu',
+    'ug': 'uyghur',
     'uz': 'uzbek',
     'vi': 'vietnamese',
     'cy': 'welsh',

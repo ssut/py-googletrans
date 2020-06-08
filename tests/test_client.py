@@ -39,6 +39,11 @@ def test_unicode(translator):
     assert result.text == u'こんにちは。'
 
 
+def test_emoji(translator):
+    result = translator.translate('😀')
+    assert result.text == u'😀'
+
+
 def test_language_name(translator):
     result = translator.translate(u'Hello', src='ENGLISH', dest='iRiSh')
     assert result.text == u'Dia dhuit'

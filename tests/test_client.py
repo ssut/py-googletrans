@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from httpcore import TimeoutException
-from pytest import raises
-from googletrans import Translator
-
+from httpcore._exceptions import ConnectError
 from httpx import Timeout
+from pytest import raises
+
+from googletrans import Translator
 
 
 def test_bind_multiple_service_urls():
@@ -128,7 +129,8 @@ def test_dest_not_in_supported_languages(translator):
 
 
 def test_timeout():
-    with raises((TimeoutException)):
+    # httpx will raise ConnectError in some conditions
+    with raises((TimeoutException, ConnectError)):
         translator = Translator(timeout=Timeout(0.0001))
         translator.translate('안녕하세요.')
 

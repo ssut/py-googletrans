@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from pytest import raises
-from requests.exceptions import ConnectionError
-from requests.exceptions import ReadTimeout
-
 from googletrans import Translator
+
+from httpx import Timeout, ReadTimeout, ConnectTimeout
 
 
 def test_bind_multiple_service_urls():
@@ -130,17 +129,17 @@ def test_dest_not_in_supported_languages(translator):
 def test_connection_timeout():
     # Requests library specifies two timeouts: connection and read
 
-    with raises((ConnectionError, ReadTimeout)):
+    with raises((ConnectTimeout, ReadTimeout)):
         """If a number is passed to timeout parameter, both connection
            and read timeouts will be set to it.
            Firstly, the connection timeout will fail.
         """
-        translator = Translator(timeout=0.00001)
+        translator = Translator(timeout=Timeout(connect_timeout=0.00001))
         translator.translate('안녕하세요.')
 
 
 def test_read_timeout():
 
     with raises(ReadTimeout):
-        translator = Translator(timeout=(10, 0.00001))
+        translator = Translator(timeout=Timeout(read_timeout=0.00001))
         translator.translate('안녕하세요.')

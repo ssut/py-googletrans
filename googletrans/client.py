@@ -4,15 +4,17 @@ A Translation module.
 
 You can translate text using this module.
 """
-import requests
 import random
+import typing
+
+import httpcore
+import httpx
+from httpx import Timeout
 
 from googletrans import urls, utils
-from googletrans.adapters import TimeoutAdapter
-from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES
+from googletrans.gtoken import TokenAcquirer
 from googletrans.models import Translated, Detected
-
 
 EXCLUDES = ('en', 'ca', 'fr')
 
@@ -40,27 +42,19 @@ class Translator:
     """
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
-                 proxies=None, timeout=None):
+                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None, timeout: Timeout = None):
 
-        self.session = requests.Session()
+        self.client = httpx.Client()
         if proxies is not None:
-            self.session.proxies = proxies
-        self.session.headers.update({
+            self.client.proxies = proxies
+        self.client.headers.update({
             'User-Agent': user_agent,
         })
         if timeout is not None:
-            self.session.mount('https://', TimeoutAdapter(timeout))
-            self.session.mount('http://', TimeoutAdapter(timeout))
+            self.client.timeout = timeout
 
         self.service_urls = service_urls or ['translate.google.com']
-        self.token_acquirer = TokenAcquirer(session=self.session, host=self.service_urls[0])
-
-        # Use HTTP2 Adapter if hyper is installed
-        try:  # pragma: nocover
-            from hyper.contrib import HTTP20Adapter
-            self.session.mount(urls.BASE, HTTP20Adapter())
-        except ImportError:  # pragma: nocover
-            pass
+        self.token_acquirer = TokenAcquirer(client=self.client, host=self.service_urls[0])
 
     def _pick_service_url(self):
         if len(self.service_urls) == 1:
@@ -73,7 +67,7 @@ class Translator:
                                     token=token, override=override)
 
         url = urls.TRANSLATE.format(host=self._pick_service_url())
-        r = self.session.get(url, params=params)
+        r = self.client.get(url, params=params)
 
         data = utils.format_json(r.text)
         return data
@@ -189,7 +183,7 @@ class Translator:
         if pron is None:
             try:
                 pron = data[0][1][2]
-            except: # pragma: nocover
+            except:  # pragma: nocover
                 pass
 
         if dest in EXCLUDES and pron == origin:

@@ -4,7 +4,7 @@ import math
 import re
 import time
 
-import requests
+import httpx
 
 from googletrans.utils import rshift
 
@@ -38,8 +38,8 @@ class TokenAcquirer:
     RE_TKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
     RE_RAWTKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
 
-    def __init__(self, tkk='0', session=None, host='translate.google.com'):
-        self.session = session or requests.Session()
+    def __init__(self, tkk='0', client: httpx.Client = None, host='translate.google.com'):
+        self.client = client or httpx.Client()
         self.tkk = tkk
         self.host = host if 'http' in host else 'https://' + host
 
@@ -51,7 +51,7 @@ class TokenAcquirer:
         if self.tkk and int(self.tkk.split('.')[0]) == now:
             return
 
-        r = self.session.get(self.host)
+        r = self.client.get(self.host)
 
         raw_tkk = self.RE_TKK.search(r.text)
         if raw_tkk:

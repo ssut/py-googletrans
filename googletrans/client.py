@@ -36,8 +36,8 @@ class Translator:
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     :type proxies: dictionary
 
-    :param timeout: Definition of timeout for Requests library.
-                    Will be used by every request.
+    :param timeout: Definition of timeout for httpx library.
+                    Will be used for every request.
     :type timeout: number or a double of numbers
     """
 

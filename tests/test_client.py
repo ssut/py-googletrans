@@ -29,6 +29,12 @@ def test_pronunciation(translator):
     assert result.pronunciation == 'Kon\'nichiwa.'
 
 
+def test_pronunciation_issue_175(translator):
+    result = translator.translate('Hello', src='en', dest='ru')
+
+    assert result.pronunciation is not None
+
+
 def test_latin_to_english(translator):
     result = translator.translate('veritas lux mea', src='la', dest='en')
     assert result.text == 'The truth is my light'

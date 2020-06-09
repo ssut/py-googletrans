@@ -186,6 +186,12 @@ class Translator:
         except Exception:  # pragma: nocover
             pass
 
+        if pron is None:
+            try:
+                pron = data[0][1][2]
+            except: # pragma: nocover
+                pass
+
         if dest in EXCLUDES and pron == origin:
             pron = translated
 

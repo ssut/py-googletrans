@@ -4,20 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-requests = "==2.13.0"
-
-
-
-
-
-
+httpx = "0.13.3"
 
 [dev-packages]
-
 coveralls = "*"
 "pytest-watch" = "*"
 "pytest-testmon" = "*"
-
-
-[requires]
-python_version = "3.7"

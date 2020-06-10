@@ -1,6 +1,6 @@
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
 
-DEFAULT_SERVICE_URLS = ['translate.google.ac','translate.google.ad','translate.google.ae',
+DEFAULT_SERVICE_URLS = ('translate.google.ac','translate.google.ad','translate.google.ae',
                         'translate.google.al','translate.google.am','translate.google.as',
                         'translate.google.at','translate.google.az','translate.google.ba',
                         'translate.google.be','translate.google.bf','translate.google.bg',
@@ -66,7 +66,7 @@ DEFAULT_SERVICE_URLS = ['translate.google.ac','translate.google.ad','translate.g
                         'translate.google.st','translate.google.td','translate.google.tg',
                         'translate.google.tk','translate.google.tl','translate.google.tm',
                         'translate.google.tn','translate.google.to','translate.google.tt',
-                        'translate.google.us','translate.google.vg','translate.google.vu','translate.google.ws']
+                        'translate.google.us','translate.google.vg','translate.google.vu','translate.google.ws')
 SPECIAL_CASES = {
     'ee': 'et',
 }

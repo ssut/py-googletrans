@@ -45,7 +45,7 @@ class Translator:
                  proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None, timeout: Timeout = None):
 
         self.client = httpx.Client()
-        if proxies is not None:
+        if proxies is not None:  # pragma: nocover
             self.client.proxies = proxies
         self.client.headers.update({
             'User-Agent': user_agent,

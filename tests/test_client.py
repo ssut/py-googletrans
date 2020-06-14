@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
+from httpcore import TimeoutException
+from httpcore._exceptions import ConnectError
+from httpx import Timeout, Client
+from unittest.mock import patch
 from pytest import raises
-from requests.exceptions import ConnectionError
-from requests.exceptions import ReadTimeout
 
 from googletrans import Translator
 
@@ -127,20 +128,21 @@ def test_dest_not_in_supported_languages(translator):
         translator.translate(*args)
 
 
-def test_connection_timeout():
-    # Requests library specifies two timeouts: connection and read
-
-    with raises((ConnectionError, ReadTimeout)):
-        """If a number is passed to timeout parameter, both connection
-           and read timeouts will be set to it.
-           Firstly, the connection timeout will fail.
-        """
-        translator = Translator(timeout=0.00001)
+def test_timeout():
+    # httpx will raise ConnectError in some conditions
+    with raises((TimeoutException, ConnectError)):
+        translator = Translator(timeout=Timeout(0.0001))
         translator.translate('안녕하세요.')
 
 
-def test_read_timeout():
+class MockResponse:
+    def __init__(self, status_code):
+        self.status_code = status_code
+        self.text = 'tkk:\'translation\''
 
-    with raises(ReadTimeout):
-        translator = Translator(timeout=(10, 0.00001))
-        translator.translate('안녕하세요.')
+
+@patch.object(Client, 'get', return_value=MockResponse('403'))
+def test_403_error(session_mock):
+    translator = Translator()
+    assert translator.translate('test', dest='ko')
+

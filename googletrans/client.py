@@ -13,8 +13,10 @@ from httpx import Timeout
 
 from googletrans import urls, utils
 from googletrans.gtoken import TokenAcquirer
-from googletrans.constants import DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES, \
+from googletrans.constants import (
+    DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES,
     DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
+)
 from googletrans.models import Translated, Detected
 
 EXCLUDES = ('en', 'ca', 'fr')
@@ -41,8 +43,8 @@ class Translator:
                     Will be used for every request.
     :type timeout: number or a double of numbers
 ||||||| constructed merge base
-    :param proxies: proxies configuration. 
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy 
+    :param proxies: proxies configuration.
+                    Dictionary mapping protocol or protocol and host to the URL of the proxy
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     :param raise_exception: if `True` then raise exception if smth will go wrong
     :type raise_exception: boolean

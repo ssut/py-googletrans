@@ -182,7 +182,11 @@ class Translator:
         data = self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
-        translated = ''.join([d[0] if d[0] else '' for d in data[0]])
+        if data[0] is not None:
+            translated = ''.join([d[0] if d[0] else '' for d in data[0]])
+        else:
+            translated = ''
+            print("Encountered NoneType.")
 
         extra_data = self._parse_extra_data(data)
 

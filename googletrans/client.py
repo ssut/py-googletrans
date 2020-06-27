@@ -7,6 +7,7 @@ You can translate text using this module.
 import random
 import typing
 
+import sys
 import httpcore
 import httpx
 from httpx import Timeout
@@ -113,6 +114,42 @@ class Translator:
 
         return extra
 
+    def file_translate(self, filename, out_option="print", dest='en', src="auto", out_file="translated.txt", **kwargs):
+        """Translate text from file.
+
+        :param filename: Name of the file that you want to translate from
+        :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
+
+        :param dest: The language to translate the source text into.
+                     The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
+                     or one of the language names listed in :const:`googletrans.LANGCODES`.
+        :param dest: :class:`str`; :class:`unicode`
+
+        :param src: The language of the source text.
+                    The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
+                    or one of the language names listed in :const:`googletrans.LANGCODES`.
+                    If a language is not specified,
+                    the system will attempt to identify the source language automatically.
+        :param src: :class:`str`; :class:`unicode`
+        :param out_option: 'p' or "print" to print to terminal, 'w' or "write" to write a file
+        :param out_option: :class:`str`; :class:`unicode`
+        :param out_file: The name of the file you want to output to if chosen
+        :param out_file: :class:`str`; :class:`unicode`
+
+        usage: translator.file_translate("test.txt","w/p")
+        """
+        tmp = ""
+        with open(filename, "r") as text:
+            for i in text:
+                tmp += i
+        out = self.translate(str(tmp))
+        if out_option.lower().startswith("p"):
+            print(out.text)
+        elif out_option.lower().startswith("w"):
+            with open(out_file, "w") as t:
+                t.write(f"Source: {filename}, Origin: {out.src}, Out: {out.dest}\n\n Content:{out.text}\n\n\n Prounciation: {out.pronunciation}")
+        else: sys.exit(1, f"Option {out_option} not understood")
+
     def translate(self, text, dest='en', src='auto', **kwargs):
         """Translate text from source language to destination language
 
@@ -214,6 +251,21 @@ class Translator:
 
         return result
 
+    def file_detect(self, filename, **kwargs):
+        """
+        Detect Language from a file
+        :param filename: The name of the file of which you want to find the langauge of. 
+
+        Usage: translator.file_detect("test.txt")
+        """
+        tmp = ""
+        with open(filename, "r") as text:
+            for i in text:
+                tmp += i
+        detected = self.detect(tmp)
+        print(detected)
+        return detected
+
     def detect(self, text, **kwargs):
         """Detect language of the input text
 
@@ -266,3 +318,4 @@ class Translator:
         result = Detected(lang=src, confidence=confidence)
 
         return result
+

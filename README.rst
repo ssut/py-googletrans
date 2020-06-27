@@ -82,6 +82,16 @@ source language.
     >>> translator.translate('veritas lux mea', src='la')
     # <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
 
+You can also use it to translate or detect the language of a file.
+Given we have a file called test.txt which has "hola" in it:
+.. code:: python 
+   >>> from googletrans import Translator
+   >>>translator = Translator()
+   >>>translator.file_detect("test.txt")
+   # Detected(lang=es, confidence=1.0)
+   >>>translator.file_detect("test.txt", "p") #you can pass in "p" tp print, or "w" to write to a file
+   # Hello \n Translated(src=es, dest=en, text=Hello, pronunciation=Hello, extra_data="{'translat...")
+
 Customize service URL
 ~~~~~~~~~~~~~~~~~~~~~
 

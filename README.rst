@@ -86,7 +86,7 @@ Customize service URL
 ~~~~~~~~~~~~~~~~~~~~~
 
 You can use another google translate domain for translation. If multiple
-URLs are provided it then randomly chooses a domain.
+URLs are provided, it then randomly chooses a domain.
 
 .. code:: python
 
@@ -100,7 +100,7 @@ Advanced Usage (Bulk)
 ~~~~~~~~~~~~~~~~~~~~~
 
 Array can be used to translate a batch of strings in a single method
-call and a single HTTP session. The exact same method shown above work
+call and a single HTTP session. The exact same method shown above works
 for arrays as well.
 
 .. code:: python

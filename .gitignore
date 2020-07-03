@@ -8,6 +8,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
+.venv/
 build/
 develop-eggs/
 dist/
@@ -59,3 +60,7 @@ target/
 
 .DS_Store
 .python-version
+
+# IDE
+.idea
+.vscode

@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
+from httpcore import TimeoutException
+from httpcore._exceptions import ConnectError
+from httpx import Timeout, Client
+from unittest.mock import patch
 from pytest import raises
-from requests.exceptions import ConnectionError
-from requests.exceptions import ReadTimeout
 
 from googletrans import Translator
 
@@ -29,6 +30,12 @@ def test_pronunciation(translator):
     assert result.pronunciation == 'Kon\'nichiwa.'
 
 
+def test_pronunciation_issue_175(translator):
+    result = translator.translate('Hello', src='en', dest='ru')
+
+    assert result.pronunciation is not None
+
+
 def test_latin_to_english(translator):
     result = translator.translate('veritas lux mea', src='la', dest='en')
     assert result.text == 'The truth is my light'
@@ -37,6 +44,11 @@ def test_latin_to_english(translator):
 def test_unicode(translator):
     result = translator.translate(u'안녕하세요.', src='ko', dest='ja')
     assert result.text == u'こんにちは。'
+
+
+def test_emoji(translator):
+    result = translator.translate('😀')
+    assert result.text == u'😀'
 
 
 def test_language_name(translator):
@@ -91,7 +103,7 @@ def test_src_in_special_cases(translator):
 
     result = translator.translate(*args)
 
-    assert result.text == 'Hello'
+    assert result.text in ('Hello', 'Hi,')
 
 
 def test_src_not_in_supported_languages(translator):
@@ -116,20 +128,21 @@ def test_dest_not_in_supported_languages(translator):
         translator.translate(*args)
 
 
-def test_connection_timeout():
-    # Requests library specifies two timeouts: connection and read
-
-    with raises((ConnectionError, ReadTimeout)):
-        """If a number is passed to timeout parameter, both connection
-           and read timeouts will be set to it.
-           Firstly, the connection timeout will fail.
-        """
-        translator = Translator(timeout=0.00001)
+def test_timeout():
+    # httpx will raise ConnectError in some conditions
+    with raises((TimeoutException, ConnectError)):
+        translator = Translator(timeout=Timeout(0.0001))
         translator.translate('안녕하세요.')
 
 
-def test_read_timeout():
+class MockResponse:
+    def __init__(self, status_code):
+        self.status_code = status_code
+        self.text = 'tkk:\'translation\''
 
-    with raises(ReadTimeout):
-        translator = Translator(timeout=(10, 0.00001))
-        translator.translate('안녕하세요.')
+
+@patch.object(Client, 'get', return_value=MockResponse('403'))
+def test_403_error(session_mock):
+    translator = Translator()
+    assert translator.translate('test', dest='ko')
+

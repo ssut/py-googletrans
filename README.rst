@@ -9,8 +9,7 @@ implemented Google Translate API. This uses the `Google Translate Ajax
 API <https://translate.google.com>`__ to make calls to such methods as
 detect and translate.
 
-Compatible with Python 2.7+ and 3.4+. (Note: Python 2 support will be dropped in the
-next major release.)
+Compatible with Python 3.6+.
 
 For details refer to the `API
 Documentation <https://py-googletrans.readthedocs.io/en/latest>`__.
@@ -23,7 +22,6 @@ Features
 -  Auto language detection
 -  Bulk translations
 -  Customizable service URL
--  Connection pooling (the advantage of using requests.Session)
 -  HTTP/2 support
 
 TODO
@@ -37,11 +35,7 @@ more features are coming soon.
 HTTP/2 support
 ~~~~~~~~~~~~~~
 
-This is a great deal for everyone! (up to 2x times faster in my test) If
-you want to get googletrans faster you should install
-`hyper <https://github.com/Lukasa/hyper>`__ package. Googletrans will
-automatically detect if hyper is installed and if so, it will be used
-for http networking.
+This library uses httpx for HTTP requests so HTTP/2 is supported by default.
 
 How does this library work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,8 +59,7 @@ Installation
 
 To install, either use things like pip with the package "googletrans"
 or download the package and put the "googletrans" directory into your
-python path. Anyway, it is noteworthy that, this just requires two
-modules: requests and future.
+python path.
 
 .. code:: bash
 
@@ -208,7 +201,7 @@ Contributions to this library are always welcome and highly encouraged
 2. Create a topic branch.
 3. Implement your feature or bug fix.
 4. Run ``pytest``.
-5. Add a test for yout feature or bug fix.
+5. Add a test for your feature or bug fix.
 6. Run step 4 again. If your changes are not 100% covered, go back to
    step 5.
 7. Commit and push your changes.

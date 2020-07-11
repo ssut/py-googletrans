@@ -43,12 +43,11 @@ Note there is no labels for closed issues but still remember to have a look!
 
 ### Step 2: Formating Your Comment
 
-Inspired by [ionic-framework](https://github.com/ionic-team/ionic-framework/blob/master/.github/ISSUE_TEMPLATE.md).  
 Please see the [Issue Template](ISSUE_TEMPLATE.md).
 
 ## Pull Request Submitting
 
-Inspired by [angular-translate](https://github.com/angular-translate/angular-translate/blob/master/CONTRIBUTING.md).  
+> Inspired by [angular-translate](https://github.com/angular-translate/angular-translate/blob/master/CONTRIBUTING.md).  
 - Check out a new branch based on <code>master</code> and name it to what you intend to do:
   - Example:
     ````

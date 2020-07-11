@@ -195,7 +195,7 @@ Contributing
 -------------------------
 
 Contributions are more than welcomed. See  
-[CONTRIBUTING.md](CONTRIBUTING.md)
+`CONTRIBUTING.md <CONTRIBUTING.md>`__
 
 -----------------------------------------
 

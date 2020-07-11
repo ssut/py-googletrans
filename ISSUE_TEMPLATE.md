@@ -7,13 +7,13 @@
 <!-- ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION. -->
 
 **Googletrans version:**
-[x] **3.x**
-[ ] **2.x**
+- [ ] **3.x**
+- [ ] **2.x**
 
 **I'm submitting a ...** 
 <!--  (check one with "x") -->
-[ ] bug report
-[ ] feature request
+- [ ] bug report
+- [ ] feature request
 
 <!-- Please try not to submit support requests of personal needs. We want to keep the library in a simple way. -->
 

@@ -191,14 +191,13 @@ This library follows `Semantic Versioning <http://semver.org/>`__ from
 v2.0.0. Any release versioned 0.x.y is subject to backwards incompatible
 changes at any time.
 
--------------------------
 Contributing
 -------------------------
 
 Contributions are more than welcomed. See  
-[CONTRIBUTING.md](CONTRIBUTING.md)
+`CONTRIBUTING.md <CONTRIBUTING.md>`__
 
------------------------------------------
+--------------
 
 License
 -------

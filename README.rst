@@ -191,23 +191,14 @@ This library follows `Semantic Versioning <http://semver.org/>`__ from
 v2.0.0. Any release versioned 0.x.y is subject to backwards incompatible
 changes at any time.
 
-Submitting a Pull Request
+-------------------------
+Contributing
 -------------------------
 
-Contributions to this library are always welcome and highly encouraged
-:)
+Contributions are more than welcomed. See  
+[CONTRIBUTING.md](CONTRIBUTING.md)
 
-1. Fork this project.
-2. Create a topic branch.
-3. Implement your feature or bug fix.
-4. Run ``pytest``.
-5. Add a test for your feature or bug fix.
-6. Run step 4 again. If your changes are not 100% covered, go back to
-   step 5.
-7. Commit and push your changes.
-8. Submit a pull request.
-
---------------
+-----------------------------------------
 
 License
 -------

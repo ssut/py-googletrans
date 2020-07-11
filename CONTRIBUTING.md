@@ -67,7 +67,7 @@ Inspired by [angular-translate](https://github.com/angular-translate/angular-tra
     run the tests ``pytest`` again
 - Commit your changes
   - Please provide a git message that explains what you've done.
-  - Please make sure your commits follow the [conventions](https://www.conventionalcommits.org/en/v1.0.0/)
+  - Please make sure your commits follow the [conventions](https://www.conventionalcommits.org/en/v1.0.0/).
   - Commit to the forked repository.
 - Make a pull request
   - Make sure you send the PR to the <code>master</code> branch.

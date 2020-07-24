@@ -110,6 +110,7 @@ LANGUAGES = {
     'en': 'english',
     'eo': 'esperanto',
     'et': 'estonian',
+    'tl': 'filipino', # or 'tagalog'
     'fi': 'finnish',
     'fr': 'french',
     'fy': 'frisian',
@@ -178,7 +179,6 @@ LANGUAGES = {
     'sw': 'swahili',
     'sv': 'swedish',
     'tg': 'tajik',
-    'tl': 'tagalog',
     'ta': 'tamil',
     'tt': 'tatar',
     'te': 'telugu',

@@ -68,17 +68,19 @@ DEFAULT_SERVICE_URLS = ('translate.google.ac','translate.google.ad','translate.g
                         'translate.google.tn','translate.google.to','translate.google.tt',
                         'translate.google.us','translate.google.vg','translate.google.vu','translate.google.ws')
 
-# Map standard codes to Google codes
+# Map standard or de facto codes to Google codes
 SPECIAL_CASES = {
-    # Where Google uses a nonstandard legacy language code
+    # Where Google used to require a nonstandard legacy language code
     'jv': 'jw',
-    'he': 'iw',
-    'id': 'in'
-    # Macrolanguages where Google uses the code of specific variant
-    'no': 'nb',
-    'tl': 'fil',
-    # Specific variants where Google uses the code of macrolanguage
+    # Where Google previously required a nonstandard legacy language code, so some clients may still be sending it
+    'iw': 'he',
+    'in': 'id'
+    # Specific variants where Google requires the code of the macrolanguage
     'mww': 'hmn',
+    'nb': 'no',
+    # Specific variants where Google previously required the code of the macrolanguage, so some clients may still be sending it
+    'fil': 'tl',
+    # Macrolanguages where Google requires the code of specific variant
 }
 
 LANGUAGES = {
@@ -106,7 +108,6 @@ LANGUAGES = {
     'en': 'english',
     'eo': 'esperanto',
     'et': 'estonian',
-    'tl': 'filipino',
     'fi': 'finnish',
     'fr': 'french',
     'fy': 'frisian',
@@ -118,7 +119,6 @@ LANGUAGES = {
     'ht': 'haitian creole',
     'ha': 'hausa',
     'haw': 'hawaiian',
-    'iw': 'hebrew',
     'he': 'hebrew',
     'hi': 'hindi',
     'hmn': 'hmong',
@@ -176,6 +176,7 @@ LANGUAGES = {
     'sw': 'swahili',
     'sv': 'swedish',
     'tg': 'tajik',
+    'tl': 'tagalog',
     'ta': 'tamil',
     'tt': 'tatar',
     'te': 'telugu',

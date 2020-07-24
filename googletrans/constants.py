@@ -70,11 +70,13 @@ DEFAULT_SERVICE_URLS = ('translate.google.ac','translate.google.ad','translate.g
 
 # Map standard or de facto codes to Google codes
 SPECIAL_CASES = {
-    # Where Google used to require a nonstandard legacy language code
+    # Where Google used to require a legacy language code
     'jv': 'jw',
-    # Where Google previously required a nonstandard legacy language code, so some clients may still be sending it
+    # Where Google previously required a legacy language code, so some clients may still be sending it
     'iw': 'he',
     'in': 'id'
+    # Where Google previously required an incorrect language code, so some clients may still be sending it
+    'ee': 'et',
     # Specific variants where Google requires the code of the macrolanguage
     'mww': 'hmn',
     'nb': 'no',

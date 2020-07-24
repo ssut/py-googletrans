@@ -69,6 +69,12 @@ DEFAULT_SERVICE_URLS = ('translate.google.ac','translate.google.ad','translate.g
                         'translate.google.us','translate.google.vg','translate.google.vu','translate.google.ws')
 SPECIAL_CASES = {
     'ee': 'et',
+    'jv': 'jw',
+    'he': 'iw',
+    'nb': 'no',
+    'fil': 'tl',
+    'hmn': 'mww',
+    'in': 'id'
 }
 
 LANGUAGES = {
@@ -120,6 +126,7 @@ LANGUAGES = {
     'it': 'italian',
     'ja': 'japanese',
     'jw': 'javanese',
+    'rw': 'kinyarwanda',
     'kn': 'kannada',
     'kk': 'kazakh',
     'km': 'khmer',
@@ -166,9 +173,11 @@ LANGUAGES = {
     'sv': 'swedish',
     'tg': 'tajik',
     'ta': 'tamil',
+    'tt': 'tatar',
     'te': 'telugu',
     'th': 'thai',
     'tr': 'turkish',
+    'tk': 'turkmen'
     'uk': 'ukrainian',
     'ur': 'urdu',
     'ug': 'uyghur',

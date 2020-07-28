@@ -85,6 +85,7 @@ def test_detect_language(translator):
     ko = translator.detect(u'한국어')
     en = translator.detect('English')
     rubg = translator.detect('тест')
+    
     assert ko.lang == 'ko'
     assert en.lang == 'en'
     assert rubg.lang == ['ru', 'bg']

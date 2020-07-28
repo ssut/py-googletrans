@@ -259,8 +259,8 @@ class Translator:
         src = ''
         confidence = 0.0
         try:
-            src = ''.join(data[8][0])
-            confidence = data[8][-2][0]
+            src = data[8][0]
+            confidence = data[8][-2]
         except Exception:  # pragma: nocover
             pass
         result = Detected(lang=src, confidence=confidence)

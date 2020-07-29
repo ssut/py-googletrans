@@ -84,18 +84,21 @@ def test_translate_list(translator):
 def test_detect_language(translator):
     ko = translator.detect(u'한국어')
     en = translator.detect('English')
-
+    rubg = translator.detect('тест')
+    
     assert ko.lang == 'ko'
     assert en.lang == 'en'
+    assert rubg.lang == ['ru', 'bg']
 
 
 def test_detect_list(translator):
-    items = [u'한국어', ' English']
+    items = [u'한국어', ' English', 'тест']
 
     result = translator.detect(items)
 
     assert result[0].lang == 'ko'
     assert result[1].lang == 'en'
+    assert result[2].lang == ['ru', 'bg']
 
 
 def test_src_in_special_cases(translator):

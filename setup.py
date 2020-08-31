@@ -67,7 +67,7 @@ def install():
         tests_require=[
             'pytest',
             'coveralls',
-        ],W
+        ],
         scripts=['translate']
     )
 

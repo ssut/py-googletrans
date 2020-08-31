@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-httpx = "==0.13.3"
+httpx = "==0.14.1"
 
 [dev-packages]
 coveralls = "*"

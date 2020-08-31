@@ -58,13 +58,17 @@ def install():
         packages=find_packages(exclude=['docs', 'tests']),
         keywords='google translate translator',
         install_requires=[
-            'httpx==0.13.3',
+            'httpx==0.14.1',
         ],
+        extras_require={
+            "http2": "h2==3.*",
+        },
         python_requires= '>=3.6',
         tests_require=[
             'pytest',
             'coveralls',
         ],
+       
         scripts=['translate']
     )
 

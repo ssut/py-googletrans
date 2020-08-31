@@ -270,4 +270,4 @@ class Translator:
             pass
         result = Detected(lang=src, confidence=confidence)
 
-        return result
+        return "hh"

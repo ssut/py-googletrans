@@ -42,7 +42,6 @@ class Translator:
     :param timeout: Definition of timeout for httpx library.
                     Will be used for every request.
     :type timeout: number or a double of numbers
-||||||| constructed merge base
     :param proxies: proxies configuration.
                     Dictionary mapping protocol or protocol and host to the URL of the proxy
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``

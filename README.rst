@@ -37,6 +37,14 @@ HTTP/2 support
 
 This library uses httpx for HTTP requests so HTTP/2 is supported by default.
 
+You can check if http2 is enabled and working by the `._response.http_version` of `Translated` or `Detected` object:
+
+.. code:: python
+
+   >>> translator.translate('테스트')._response.http_version
+   # 'HTTP/2'
+
+
 How does this library work
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -194,7 +202,7 @@ changes at any time.
 Contributing
 -------------------------
 
-Contributions are more than welcomed. See  
+Contributions are more than welcomed. See
 `CONTRIBUTING.md <CONTRIBUTING.md>`__
 
 -----------------------------------------

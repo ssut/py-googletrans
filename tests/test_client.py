@@ -1,4 +1,5 @@
 from httpcore import TimeoutException
+from httpcore._exceptions import ConnectError
 from httpx import Timeout, Client, ConnectTimeout
 from unittest.mock import patch
 from pytest import raises
@@ -133,7 +134,7 @@ def test_dest_not_in_supported_languages(translator):
 
 def test_timeout():
     # httpx will raise ConnectError in some conditions
-    with raises((TimeoutException, ConnectTimeout)):
+    with raises((TimeoutException, ConnectError, ConnectTimeout)):
         translator = Translator(timeout=Timeout(0.0001))
         translator.translate('안녕하세요.')
 

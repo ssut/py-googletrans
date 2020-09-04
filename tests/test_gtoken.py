@@ -5,7 +5,7 @@ from googletrans import gtoken
 from pytest import fixture
 
 
-@fixture
+@fixture(scope='session')
 def acquirer():
     client = httpx.Client(http2=True)
     return gtoken.TokenAcquirer(client=client)

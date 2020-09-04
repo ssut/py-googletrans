@@ -1,4 +1,12 @@
-class Translated:
+from httpx import Response
+
+
+class Base:
+    def __init__(self, response: Response = None):
+        self._response = response
+
+
+class Translated(Base):
     """Translate result object
 
     :param src: source langauge (default: auto)
@@ -7,7 +15,10 @@ class Translated:
     :param text: translated text
     :param pronunciation: pronunciation
     """
-    def __init__(self, src, dest, origin, text, pronunciation, extra_data=None):
+
+    def __init__(self, src, dest, origin, text, pronunciation, extra_data=None,
+                 **kwargs):
+        super().__init__(**kwargs)
         self.src = src
         self.dest = dest
         self.origin = origin
@@ -29,13 +40,15 @@ class Translated:
         )
 
 
-class Detected:
+class Detected(Base):
     """Language detection result object
 
     :param lang: detected language
     :param confidence: the confidence of detection result (0.00 to 1.00)
     """
-    def __init__(self, lang, confidence):
+
+    def __init__(self, lang, confidence, **kwargs):
+        super().__init__(**kwargs)
         self.lang = lang
         self.confidence = confidence
 

@@ -1,6 +1,5 @@
 from httpcore import TimeoutException
-from httpcore._exceptions import ConnectError
-from httpx import Timeout, Client
+from httpx import Timeout, Client, ConnectTimeout
 from unittest.mock import patch
 from pytest import raises
 
@@ -57,7 +56,8 @@ def test_language_name(translator):
 
 
 def test_language_name_with_space(translator):
-    result = translator.translate(u'Hello', src='en', dest='chinese (simplified)')
+    result = translator.translate(
+        u'Hello', src='en', dest='chinese (simplified)')
     assert result.dest == 'zh-cn'
 
 
@@ -85,7 +85,7 @@ def test_detect_language(translator):
     ko = translator.detect(u'한국어')
     en = translator.detect('English')
     rubg = translator.detect('тест')
-    
+
     assert ko.lang == 'ko'
     assert en.lang == 'en'
     assert rubg.lang == ['ru', 'bg']
@@ -133,7 +133,7 @@ def test_dest_not_in_supported_languages(translator):
 
 def test_timeout():
     # httpx will raise ConnectError in some conditions
-    with raises((TimeoutException, ConnectError)):
+    with raises((TimeoutException, ConnectTimeout)):
         translator = Translator(timeout=Timeout(0.0001))
         translator.translate('안녕하세요.')
 
@@ -148,4 +148,3 @@ class MockResponse:
 def test_403_error(session_mock):
     translator = Translator()
     assert translator.translate('test', dest='ko')
-

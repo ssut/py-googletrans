@@ -10,7 +10,7 @@ httpx = "==0.14.1"
 coveralls = "*"
 "pytest-watch" = "*"
 "pytest-testmon" = "*"
+sphinx = "*"
 
 [requires]
-
 python_version = ">=3.6"

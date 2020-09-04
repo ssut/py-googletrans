@@ -52,8 +52,9 @@ class Translator:
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None, timeout: Timeout = None,
-                 http2 = True):
+                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
+                 timeout: Timeout = None,
+                 http2=True):
 
         self.client = httpx.Client(http2=http2)
         if proxies is not None:  # pragma: nocover
@@ -67,7 +68,8 @@ class Translator:
             self.client.timeout = timeout
 
         self.service_urls = service_urls or ['translate.google.com']
-        self.token_acquirer = TokenAcquirer(client=self.client, host=self.service_urls[0])
+        self.token_acquirer = TokenAcquirer(
+            client=self.client, host=self.service_urls[0])
         self.raise_exception = raise_exception
 
     def _pick_service_url(self):
@@ -85,12 +87,14 @@ class Translator:
 
         if r.status_code == 200:
             data = utils.format_json(r.text)
-            return data
-        else:
-            if self.raise_exception:
-                raise Exception('Unexpected status code "{}" from {}'.format(r.status_code, self.service_urls))
-            DUMMY_DATA[0][0][0] = text
-            return DUMMY_DATA
+            return data, r
+
+        if self.raise_exception:
+            raise Exception('Unexpected status code "{}" from {}'.format(
+                r.status_code, self.service_urls))
+
+        DUMMY_DATA[0][0][0] = text
+        return DUMMY_DATA, r
 
     def _parse_extra_data(self, data):
         response_parts_name_mapping = {
@@ -110,7 +114,8 @@ class Translator:
         extra = {}
 
         for index, category in response_parts_name_mapping.items():
-            extra[category] = data[index] if (index < len(data) and data[index]) else None
+            extra[category] = data[index] if (
+                index < len(data) and data[index]) else None
 
         return extra
 
@@ -180,7 +185,7 @@ class Translator:
             return result
 
         origin = text
-        data = self._translate(text, dest, src, kwargs)
+        data, response = self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
         translated = ''.join([d[0] if d[0] else '' for d in data[0]])
@@ -211,7 +216,9 @@ class Translator:
 
         # put final values into a new Translated object
         result = Translated(src=src, dest=dest, origin=origin,
-                            text=translated, pronunciation=pron, extra_data=extra_data)
+                            text=translated, pronunciation=pron,
+                            extra_data=extra_data,
+                            response=response)
 
         return result
 
@@ -253,7 +260,7 @@ class Translator:
                 result.append(lang)
             return result
 
-        data = self._translate(text, 'en', 'auto', kwargs)
+        data, response = self._translate(text, 'en', 'auto', kwargs)
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.
@@ -268,6 +275,6 @@ class Translator:
                 confidence = data[8][-2][0]
         except Exception:  # pragma: nocover
             pass
-        result = Detected(lang=src, confidence=confidence)
+        result = Detected(lang=src, confidence=confidence, response=response)
 
         return result

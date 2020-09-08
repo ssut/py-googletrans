@@ -105,7 +105,7 @@ class TokenAcquirer:
             self.tkk = result
 
     def _lazy(self, value):
-        """like lazy evalution, this method returns a lambda function that
+        """like lazy evaluation, this method returns a lambda function that
         returns value given.
         We won't be needing this because this seems to have been built for
         code obfuscation.

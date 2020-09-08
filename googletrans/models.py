@@ -9,7 +9,7 @@ class Base:
 class Translated(Base):
     """Translate result object
 
-    :param src: source langauge (default: auto)
+    :param src: source language (default: auto)
     :param dest: destination language (default: en)
     :param origin: original text
     :param text: translated text

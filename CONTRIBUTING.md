@@ -30,7 +30,7 @@ Here we list 12 main types:
 
 * [bug](https://github.com/ssut/py-googletrans/labels/bug)
 * [compromised](https://github.com/ssut/py-googletrans/labels/compromised)
-* [dependices](https://github.com/ssut/py-googletrans/labels/dependices)
+* [dependencies](https://github.com/ssut/py-googletrans/labels/dependencies)
 * [duplicate](https://github.com/ssut/py-googletrans/labels/duplicate)
 * [enhancement](https://github.com/ssut/py-googletrans/labels/enhancement)
 * [help wanted](https://github.com/ssut/py-googletrans/labels/help%20wanted)
@@ -41,7 +41,7 @@ Please see [About labels](https://docs.github.com/en/github/managing-your-work-o
 
 Note there is no labels for closed issues but still remember to have a look!  
 
-### Step 2: Formating Your Comment
+### Step 2: Formatting Your Comment
 
 Please see the [Issue Template](ISSUE_TEMPLATE.md).
 

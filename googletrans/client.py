@@ -187,7 +187,7 @@ class Translator:
         data, response = self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
-        translated = ''.join([d[0] if d[0] else '' for d in data[0]])
+        translated = ''.join([d[0] if d[0] else '' for d in data[0] or []])
 
         extra_data = self._parse_extra_data(data)
 

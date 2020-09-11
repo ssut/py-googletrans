@@ -184,5 +184,15 @@ googletrans.LANGUAGES
 
 .. literalinclude:: ../googletrans/constants.py
    :language: python
-   :lines: 7-
+   :lines: 70-182
    :linenos:
+
+================================
+googletrans.DEFAULT_SERVICE_URLS
+================================
+
+.. hint::
+
+   `DEFAULT_SERVICE_URLS <https://github.com/ssut/py-googletrans/blob/master/googletrans/constants.py#L3:1>`_ is the list of current available Google Translation service urls.
+   
+   For using these service urls, please check `Customize service URL`_.

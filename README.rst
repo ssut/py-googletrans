@@ -23,6 +23,7 @@ Features
 -  Bulk translations
 -  Customizable service URL
 -  HTTP/2 support
+-  verify support to turn off/on strict SSL
 
 TODO
 ~~~~
@@ -103,6 +104,16 @@ URLs are provided, it then randomly chooses a domain.
           'translate.google.com',
           'translate.google.co.kr',
         ])
+
+Turn off Strict ssl
+~~~~~~~~~~~~~~~~~~~~~
+
+use verify either to turn OFF or ON strict SSL. Default will be turned on
+
+.. code:: python
+
+    >>> from googletrans import Translator
+    >>> translator = Translator(verify=False)
 
 Advanced Usage (Bulk)
 ~~~~~~~~~~~~~~~~~~~~~

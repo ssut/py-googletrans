@@ -46,6 +46,8 @@ class Translator:
     :param proxies: proxies configuration.
                     Dictionary mapping protocol or protocol and host to the URL of the proxy
                     For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
+    :param verify: certificate configuration.
+                   or example ``False`` or ``'\tmp/cacert.pem'``
     :param raise_exception: if `True` then raise exception if smth will go wrong
     :type raise_exception: boolean
     """
@@ -54,9 +56,9 @@ class Translator:
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
                  proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
                  timeout: Timeout = None,
-                 http2=True):
+                 http2=True, verify=True):
 
-        self.client = httpx.Client(http2=http2, verify=False)
+        self.client = httpx.Client(http2=http2, verify=verify)
         if proxies is not None:  # pragma: nocover
             self.client.proxies = proxies
 
@@ -69,7 +71,7 @@ class Translator:
 
         self.service_urls = service_urls or ['translate.google.com']
         self.token_acquirer = TokenAcquirer(
-            client=self.client, host=self.service_urls[0])
+            client=self.client, host=self.service_urls[0], verify=verify)
         self.raise_exception = raise_exception
 
     def _pick_service_url(self):

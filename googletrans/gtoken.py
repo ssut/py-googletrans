@@ -38,7 +38,8 @@ class TokenAcquirer:
     RE_TKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
     RE_RAWTKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
 
-    def __init__(self, client: httpx.Client(verify=False), tkk='0', host='translate.google.com'):
+    def __init__(self, client: httpx.Client, tkk='0', host='translate.google.com', verify= True):
+        client.verify = verify;
         self.client = client
         self.tkk = tkk
         self.host = host if 'http' in host else 'https://' + host

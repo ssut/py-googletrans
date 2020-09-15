@@ -5,7 +5,7 @@ import re
 import time
 
 import httpx
-
+import ssl
 from googletrans.utils import rshift
 
 
@@ -23,7 +23,7 @@ class TokenAcquirer:
     token (e.g. 744915.856682) which is used by the API to validate the
     request.
 
-    This operation will cause an additional request to get an initial
+    This operation will cause an additional possible to get an initial
     token from translate.google.com.
 
     Example usage:
@@ -38,7 +38,7 @@ class TokenAcquirer:
     RE_TKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
     RE_RAWTKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
 
-    def __init__(self, client: httpx.Client, tkk='0', host='translate.google.com'):
+    def __init__(self, client: httpx.Client(verify=False), tkk='0', host='translate.google.com'):
         self.client = client
         self.tkk = tkk
         self.host = host if 'http' in host else 'https://' + host

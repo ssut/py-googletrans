@@ -104,6 +104,21 @@ URLs are provided, it then randomly chooses a domain.
           'translate.google.co.kr',
         ])
 
+Customize service URL to point to standard api
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Considering translate.google.<domain> url services use the webapp requiring a token, 
+you can prefer to use the direct api than does not need any token to process.
+It can solve your problems of unstable token providing processes (refer to issue #234)
+
+.. code:: python
+
+    >>> from googletrans import Translator
+    >>> translator = Translator(service_urls=[
+          'translate.googleapis.com'
+        ])
+
+
 Advanced Usage (Bulk)
 ~~~~~~~~~~~~~~~~~~~~~
 

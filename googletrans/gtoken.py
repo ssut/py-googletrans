@@ -57,7 +57,7 @@ class TokenAcquirer:
         if raw_tkk:
             self.tkk = raw_tkk.group(1)
             return
-        
+
         code = self.RE_TKK.search(r.text)
 
         if code is not None:
@@ -65,7 +65,7 @@ class TokenAcquirer:
             code = code.group(1).replace('var ', '')
             # unescape special ascii characters such like a \x3d(=)
             code = code.encode().decode('unicode-escape')
-            
+
         if code:
             tree = ast.parse(code)
             visit_return = False

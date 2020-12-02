@@ -58,10 +58,15 @@ class TokenAcquirer:
             self.tkk = raw_tkk.group(1)
             return
 
-        # this will be the same as python code after stripping out a reserved word 'var'
-        code = self.RE_TKK.search(r.text).group(1).replace('var ', '')
-        # unescape special ascii characters such like a \x3d(=)
-        code = code.encode().decode('unicode-escape')
+        try:
+            # this will be the same as python code after stripping out a reserved word 'var'
+            code = self.RE_TKK.search(r.text).group(1).replace('var ', '')
+            # unescape special ascii characters such like a \x3d(=)
+            code = code.encode().decode('unicode-escape')
+        except AttributeError:
+            raise Exception('Could not find TKK token for this request.\nSee https://github.com/ssut/py-googletrans/issues/234 for more details.')
+        except:
+            raise
 
         if code:
             tree = ast.parse(code)

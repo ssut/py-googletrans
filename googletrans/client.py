@@ -15,6 +15,7 @@ from httpx import Timeout
 from googletrans import urls, utils
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import (
+    DEFAULT_CLIENT_SERVICE_URLS,
     DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES,
     DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
 )
@@ -51,7 +52,7 @@ class Translator:
     :type raise_exception: boolean
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
+    def __init__(self, service_urls=DEFAULT_CLIENT_SERVICE_URLS, user_agent=DEFAULT_USER_AGENT,
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
                  proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
                  timeout: Timeout = None,
@@ -87,7 +88,7 @@ class Translator:
             self.client_type = 'webapp'
             self.token_acquirer = TokenAcquirer(
                 client=self.client, host=self.service_urls[0])
-            
+
         self.raise_exception = raise_exception
 
     def _pick_service_url(self):

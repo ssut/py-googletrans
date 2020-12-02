@@ -19,6 +19,15 @@ def test_bind_multiple_service_urls():
     assert translator.translate('test', dest='ko')
     assert translator.detect('Hello')
 
+def test_api_service_urls():
+    service_urls = ['translate.googleapis.com']
+
+    translator = Translator(service_urls=service_urls)
+    assert translator.service_urls == service_urls
+
+    assert translator.translate('test', dest='ko')
+    assert translator.detect('Hello')
+
 
 def test_source_language(translator):
     result = translator.translate('안녕하세요.')

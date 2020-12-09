@@ -1,4 +1,5 @@
 from httpx import Response
+from typing import List
 
 
 class Base:
@@ -6,6 +7,19 @@ class Base:
         self._response = response
 
 
+class TranslatedPart:
+    def __init__(self, text: str, candidates: List[str]):
+        self.text = text
+        self.candidates = candidates
+
+    def __str__(self):
+        return self.text
+
+    def __dict__(self):
+        return {
+            'text': self.text,
+            'candidates': self.candidates,
+        }
 class Translated(Base):
     """Translate result object
 
@@ -16,14 +30,15 @@ class Translated(Base):
     :param pronunciation: pronunciation
     """
 
-    def __init__(self, src, dest, origin, text, pronunciation, extra_data=None,
-                 **kwargs):
+    def __init__(self, src, dest, origin, text, pronunciation, parts: List[TranslatedPart],
+                extra_data=None, **kwargs):
         super().__init__(**kwargs)
         self.src = src
         self.dest = dest
         self.origin = origin
         self.text = text
         self.pronunciation = pronunciation
+        self.parts = parts
         self.extra_data = extra_data
 
     def __str__(self):  # pragma: nocover
@@ -39,6 +54,16 @@ class Translated(Base):
             )
         )
 
+    def __dict__(self):
+        return {
+            'src': self.src,
+            'dest': self.dest,
+            'origin': self.origin,
+            'text': self.text,
+            'pronunciation': self.pronunciation,
+            'extra_data': self.extra_data,
+            'parts': list(map(lambda part: part.__dict__(), self.parts)),
+        }
 
 class Detected(Base):
     """Language detection result object

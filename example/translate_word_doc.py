@@ -9,7 +9,7 @@ def translate_doc(filename, destination='zh-CN', mix=True):
         :param destination='zh-CN':
         :param mix=True: if True, will have original language and target language into the same doc. paragraphs by paragraphs.
     """
-    def tx(t): return Translator().translate(t, dest=destination).text
+    def tx(t): return Translator().translate_legacy(t, dest=destination).text
     doc = Document(filename)
     for p in doc.paragraphs:
         txd = tx(p.text)

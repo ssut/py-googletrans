@@ -3,7 +3,7 @@ import json
 import re
 
 
-def build_params(client,query, src, dest, token, override):
+def build_params(client, query, src, dest, token, override):
     params = {
         'client': client,
         'sl': src,
@@ -15,9 +15,11 @@ def build_params(client,query, src, dest, token, override):
         'otf': 1,
         'ssel': 0,
         'tsel': 0,
-        'tk': token,
         'q': query,
     }
+
+    if token != '':
+        params['tk'] = token
 
     if override is not None:
         for key, value in get_items(override):

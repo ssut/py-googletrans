@@ -74,7 +74,6 @@ def test_special_chars(translator):
     assert result.text == text
 
 
-
 def test_detect_language(translator):
     ko = translator.detect(u'한국어')
     en = translator.detect('English')

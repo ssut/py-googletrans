@@ -109,7 +109,6 @@ class Translator:
         data = {
             'f.req': self._build_rpc_request(text, dest, src),
         }
-        print(url, data)
         params = {
             'rpcids': RPC_ID,
             'bl': 'boq_translate-webserver_20201207.13_p0',

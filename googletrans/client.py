@@ -328,7 +328,7 @@ class Translator:
             return result
 
         origin = text
-        data, response = self.translate_legacy(text, dest, src)
+        data, response = self._translate_legacy(text, dest, src)
 
         # this code will be updated when the format is changed.
         translated = ''.join([d[0] if d[0] else '' for d in data[0]])

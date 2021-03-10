@@ -7,7 +7,9 @@
 <!-- ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION. -->
 
 **Googletrans version:**
-- [ ] **3.x**
+- [ ] **4.0.0rc1**
+- [ ] **3.1.0a0**
+- [ ] **3.0.0**
 - [ ] **2.x**
 
 **I'm submitting a ...** 

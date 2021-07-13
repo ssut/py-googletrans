@@ -54,55 +54,61 @@ class TokenAcquirer:
         r = self.client.get(self.host)
 
         raw_tkk = self.RE_TKK.search(r.text)
+        
         if raw_tkk:
             self.tkk = raw_tkk.group(1)
             return
 
-        # this will be the same as python code after stripping out a reserved word 'var'
-        code = self.RE_TKK.search(r.text).group(1).replace('var ', '')
-        # unescape special ascii characters such like a \x3d(=)
-        code = code.encode().decode('unicode-escape')
+        tkk = self.RE_TKK.search(r.text)
 
-        if code:
-            tree = ast.parse(code)
-            visit_return = False
-            operator = '+'
-            n, keys = 0, dict(a=0, b=0)
-            for node in ast.walk(tree):
-                if isinstance(node, ast.Assign):
-                    name = node.targets[0].id
-                    if name in keys:
-                        if isinstance(node.value, ast.Num):
-                            keys[name] = node.value.n
-                        # the value can sometimes be negative
-                        elif isinstance(node.value, ast.UnaryOp) and \
-                                isinstance(node.value.op, ast.USub):  # pragma: nocover
-                            keys[name] = -node.value.operand.n
-                elif isinstance(node, ast.Return):
-                    # parameters should be set after this point
-                    visit_return = True
-                elif visit_return and isinstance(node, ast.Num):
-                    n = node.n
-                elif visit_return and n > 0:
-                    # the default operator is '+' but implement some more for
-                    # all possible scenarios
-                    if isinstance(node, ast.Add):  # pragma: nocover
-                        pass
-                    elif isinstance(node, ast.Sub):  # pragma: nocover
-                        operator = '-'
-                    elif isinstance(node, ast.Mult):  # pragma: nocover
-                        operator = '*'
-                    elif isinstance(node, ast.Pow):  # pragma: nocover
-                        operator = '**'
-                    elif isinstance(node, ast.BitXor):  # pragma: nocover
-                        operator = '^'
-            # a safety way to avoid Exceptions
-            clause = compile('{1}{0}{2}'.format(
-                operator, keys['a'], keys['b']), '', 'eval')
-            value = eval(clause, dict(__builtin__={}))
-            result = '{}.{}'.format(n, value)
+        if tkk:
+            # this will be the same as python code after stripping out a reserved word 'var'
+            code = tkk.group(1).replace('var ', '')
+            # unescape special ascii characters such like a \x3d(=)
+            code = code.encode().decode('unicode-escape')
 
-            self.tkk = result
+            if code:
+                tree = ast.parse(code)
+                visit_return = False
+                operator = '+'
+                n, keys = 0, dict(a=0, b=0)
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.Assign):
+                        name = node.targets[0].id
+                        if name in keys:
+                            if isinstance(node.value, ast.Num):
+                                keys[name] = node.value.n
+                            # the value can sometimes be negative
+                            elif isinstance(node.value, ast.UnaryOp) and \
+                                    isinstance(node.value.op, ast.USub):  # pragma: nocover
+                                keys[name] = -node.value.operand.n
+                    elif isinstance(node, ast.Return):
+                        # parameters should be set after this point
+                        visit_return = True
+                    elif visit_return and isinstance(node, ast.Num):
+                        n = node.n
+                    elif visit_return and n > 0:
+                        # the default operator is '+' but implement some more for
+                        # all possible scenarios
+                        if isinstance(node, ast.Add):  # pragma: nocover
+                            pass
+                        elif isinstance(node, ast.Sub):  # pragma: nocover
+                            operator = '-'
+                        elif isinstance(node, ast.Mult):  # pragma: nocover
+                            operator = '*'
+                        elif isinstance(node, ast.Pow):  # pragma: nocover
+                            operator = '**'
+                        elif isinstance(node, ast.BitXor):  # pragma: nocover
+                            operator = '^'
+                # a safety way to avoid Exceptions
+                clause = compile('{1}{0}{2}'.format(
+                    operator, keys['a'], keys['b']), '', 'eval')
+                value = eval(clause, dict(__builtin__={}))
+                result = '{}.{}'.format(n, value)
+
+                self.tkk = result
+        else:
+            self.tkk = '427110.1469889687'
 
     def _lazy(self, value):
         """like lazy evaluation, this method returns a lambda function that

@@ -39,7 +39,7 @@ def legacy_format_json(original):
             nxt = text.find('"', p)
             states.append((p, text[p:nxt]))
 
-    # replace all wiered characters in text
+    # replace all weird characters in text
     while text.find(',,') > -1:
         text = text.replace(',,', ',null,')
     while text.find('[,') > -1:

@@ -135,51 +135,11 @@ class TokenAcquirer:
         return a
 
     def acquire(self, text):
-        a = []
-        # Convert text to ints
-        for i in text:
-            val = ord(i)
-            if val < 0x10000:
-                a += [val]
-            else:
-                # Python doesn't natively use Unicode surrogates, so account for those
-                a += [
-                    math.floor((val - 0x10000) / 0x400 + 0xD800),
-                    math.floor((val - 0x10000) % 0x400 + 0xDC00)
-                ]
-
         b = self.tkk if self.tkk != '0' else ''
         d = b.split('.')
         b = int(d[0]) if len(d) > 1 else 0
-
-        # assume e means char code array
-        e = []
-        g = 0
-        size = len(a)
-        while g < size:
-            l = a[g]
-            # just append if l is less than 128(ascii: DEL)
-            if l < 128:
-                e.append(l)
-            # append calculated value if l is less than 2048
-            else:
-                if l < 2048:
-                    e.append(l >> 6 | 192)
-                else:
-                    # append calculated value if l matches special condition
-                    if (l & 64512) == 55296 and g + 1 < size and \
-                            a[g + 1] & 64512 == 56320:
-                        g += 1
-                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023)  # This bracket is important
-                        e.append(l >> 18 | 240)
-                        e.append(l >> 12 & 63 | 128)
-                    else:
-                        e.append(l >> 12 | 224)
-                    e.append(l >> 6 & 63 | 128)
-                e.append(l & 63 | 128)
-            g += 1
         a = b
-        for i, value in enumerate(e):
+        for i, value in enumerate(text.encode('utf-8')):
             a += value
             a = self._xr(a, '+-a^+6')
         a = self._xr(a, '+-3^+b+-f')

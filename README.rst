@@ -1,8 +1,12 @@
 Googletrans
 ===========
 
-|GitHub license| |travis status| |Documentation Status| |PyPI version|
-|Coverage Status| |Code Climate|
+**Note**: I do this patch for my own project related with this issue https://github.com/ssut/py-googletrans/issues/328
+
+
+
+
+_____________________________________________
 
 Googletrans is a **free** and **unlimited** python library that
 implemented Google Translate API. This uses the `Google Translate Ajax

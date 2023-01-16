@@ -150,6 +150,7 @@ LANGUAGES = {
     'pt': 'portuguese',
     'pa': 'punjabi',
     'ro': 'romanian',
+    'rw': 'kinyarwanda',
     'ru': 'russian',
     'sm': 'samoan',
     'gd': 'scots gaelic',

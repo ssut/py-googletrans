@@ -93,6 +93,7 @@ LANGUAGES = {
     'hr': 'croatian',
     'cs': 'czech',
     'da': 'danish',
+    'dv' : 'dhivehi',
     'nl': 'dutch',
     'en': 'english',
     'eo': 'esperanto',

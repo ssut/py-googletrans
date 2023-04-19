@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: [''3.7', '3.8', '3.9', '3.10', '3.11']
     env:  # Set the environment variable at the job level
       PIPENV_IGNORE_VIRTUALENVS: 1
     steps:
@@ -33,7 +33,7 @@ jobs:
         pipenv install --dev --python $(python --version | awk '{print $2}')
 
     - name: Install package in editable mode
-      run: pip install -e .
+      run: pipenv install -e .
 
     - name: Run pytest
-      run: pytest
+      run: pipenv run pytest

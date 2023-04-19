@@ -5,20 +5,25 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11']
+    env:  # Set the environment variable at the job level
+      PIPENV_IGNORE_VIRTUALENVS: 1
     steps:
     - name: Check out repository
       uses: actions/checkout@v2
 
-    - name: Set up Python
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: "3.10"  # or the desired Python version
+        python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pipenv
-        PIPENV_IGNORE_VIRTUALENVS=1 pipenv install --dev
+        pipenv install --dev
 
     - name: Install package in editable mode
       run: pip install -e .

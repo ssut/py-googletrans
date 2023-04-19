@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 httpx = "==0.14.1"
+pytest = "*"
+coverage = "*"
 
 [dev-packages]
 coveralls = "*"

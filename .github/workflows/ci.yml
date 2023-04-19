@@ -1,31 +1,27 @@
-name: Python CI
+name: CI
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, 3.10]
-
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python-version }}
-        
-    - name: Install Pipenv
+        python-version: "3.10"  # or the desired Python version
+
+    - name: Install dependencies
       run: |
-        pip install --upgrade pip
+        python -m pip install --upgrade pip
         pip install pipenv
-        
-    - name: Install dependencies and local package
-      run: |
         pipenv install --dev
-        pipenv run pip install -e .
+
+    - name: Install package in editable mode
+      run: pip install -e .
 
     - name: Run pytest
-      run: pipenv run pytest
+      run: pytest

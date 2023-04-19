@@ -23,42 +23,27 @@ EXCLUDES = ('en', 'ca', 'fr')
 
 
 class Translator:
-    """Google Translate ajax API implementation class
-
+    """
+    Google Translate ajax API implementation class
     You have to create an instance of Translator to use this API
-
     :param service_urls: google translate url list. URLs will be used randomly.
-                         For example ``['translate.google.com', 'translate.google.co.kr']``
+    For example ``['translate.google.com', 'translate.google.co.kr']``
     :type service_urls: a sequence of strings
-
     :param user_agent: the User-Agent header to send when making requests.
     :type user_agent: :class:`str`
-
-    :param proxies: proxies configuration.
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy
-                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
-    :type proxies: dictionary
-
     :param timeout: Definition of timeout for httpx library.
-                    Will be used for every request.
+    Will be used for every request.
     :type timeout: number or a double of numbers
-    :param proxies: proxies configuration.
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy
-                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     :param raise_exception: if `True` then raise exception if smth will go wrong
     :type raise_exception: boolean
     """
 
     def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
                  timeout: Timeout = None,
                  http2=True):
 
         self.client = httpx.Client(http2=http2)
-        if proxies is not None:  # pragma: nocover
-            self.client.proxies = proxies
-
         self.client.headers.update({
             'User-Agent': user_agent,
         })

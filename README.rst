@@ -1,3 +1,8 @@
+### bllendev notes
+- I am not the original author of this library.
+- this is a fork, fixing some of the errors.
+
+
 Googletrans
 ===========
 

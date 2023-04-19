@@ -23,6 +23,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pipenv
+
+    - name: Upgrade pipenv
+      run: |
+        pip install --upgrade pipenv
+
+    - name: Install package dependencies
+      run: |
         pipenv install --dev --python $(python --version | awk '{print $2}')
 
     - name: Install package in editable mode

@@ -11,13 +11,22 @@ import httpcore
 import httpx
 from httpx import Timeout
 
-from googletrans import urls, utils
+from googletrans import utils
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import (
-    DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES,
-    DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
+    TRANSLATE,
+    TRANSLATE_NEW,
+    BASE,
+    DEFAULT_USER_AGENT,
+    LANGCODES,
+    LANGUAGES,
+    SPECIAL_CASES,
+    DEFAULT_RAISE_EXCEPTION,
+    DUMMY_DATA,
+    RESPONSE_PARTS_NAME_MAP,
 )
 from googletrans.models import Translated, Detected
+
 
 EXCLUDES = ('en', 'ca', 'fr')
 
@@ -44,16 +53,13 @@ class Translator:
                  http2=True):
 
         self.client = httpx.Client(http2=http2)
-        self.client.headers.update({
-            'User-Agent': user_agent,
-        })
+        self.client.headers.update({'User-Agent': user_agent,})
 
         if timeout is not None:
             self.client.timeout = timeout
 
-        self.service_urls = service_urls or ['translate.google.com']
-        self.token_acquirer = TokenAcquirer(
-            client=self.client, host=self.service_urls[0])
+        self.service_urls = service_urls if service_urls else ['translate.google.com']
+        self.token_acquirer = TokenAcquirer(client=self.client, host=self.service_urls[0])
         self.raise_exception = raise_exception
 
     def _pick_service_url(self):
@@ -63,11 +69,12 @@ class Translator:
 
     def _translate(self, text, dest, src, override):
         token = self.token_acquirer.do(text)
-        params = utils.build_params(query=text, src=src, dest=dest,
-                                    token=token, override=override)
+        # params = utils.build_params(query=text, src=src, dest=dest, token=token, override=override)
+        # url = TRANSLATE.format(host=self._pick_service_url())
+        url = TRANSLATE_NEW.format(text=text, src=src, dest=dest)
 
-        url = urls.TRANSLATE.format(host=self._pick_service_url())
-        r = self.client.get(url, params=params)
+        # r = self.client.get(url, params=params)
+        r = self.client.get(url)
 
         if r.status_code == 200:
             data = utils.format_json(r.text)
@@ -81,70 +88,34 @@ class Translator:
         return DUMMY_DATA, r
 
     def _parse_extra_data(self, data):
-        response_parts_name_mapping = {
-            0: 'translation',
-            1: 'all-translations',
-            2: 'original-language',
-            5: 'possible-translations',
-            6: 'confidence',
-            7: 'possible-mistakes',
-            8: 'language',
-            11: 'synonyms',
-            12: 'definitions',
-            13: 'examples',
-            14: 'see-also',
-        }
-
         extra = {}
-
-        for index, category in response_parts_name_mapping.items():
+        for index, category in RESPONSE_PARTS_NAME_MAP.items():
             extra[category] = data[index] if (
                 index < len(data) and data[index]) else None
-
         return extra
 
     def translate(self, text, dest='en', src='auto', **kwargs):
-        """Translate text from source language to destination language
-
+        """
+        Translate text from source language to destination language.
         :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
         :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
-
-        :param dest: The language to translate the source text into.
-                     The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
-                     or one of the language names listed in :const:`googletrans.LANGCODES`.
-        :param dest: :class:`str`; :class:`unicode`
-
+        :param dest:The language to translate the source text into.
+                    The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
+                    or one of the language names listed in :const:`googletrans.LANGCODES`.
+                    :class:`str`; :class:`unicode`
         :param src: The language of the source text.
                     The value should be one of the language codes listed in :const:`googletrans.LANGUAGES`
                     or one of the language names listed in :const:`googletrans.LANGCODES`.
                     If a language is not specified,
                     the system will attempt to identify the source language automatically.
-        :param src: :class:`str`; :class:`unicode`
-
+                    :class:`str`; :class:`unicode`
         :rtype: Translated
         :rtype: :class:`list` (when a list is passed)
-
-        Basic usage:
-            >>> from googletrans import Translator
-            >>> translator = Translator()
-            >>> translator.translate('안녕하세요.')
-            <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
-            >>> translator.translate('안녕하세요.', dest='ja')
-            <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
-            >>> translator.translate('veritas lux mea', src='la')
-            <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
-
-        Advanced usage:
-            >>> translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
-            >>> for translation in translations:
-            ...    print(translation.origin, ' -> ', translation.text)
-            The quick brown fox  ->  빠른 갈색 여우
-            jumps over  ->  이상 점프
-            the lazy dog  ->  게으른 개
         """
         dest = dest.lower().split('_', 1)[0]
         src = src.lower().split('_', 1)[0]
 
+        # only valid languages!
         if src != 'auto' and src not in LANGUAGES:
             if src in SPECIAL_CASES:
                 src = SPECIAL_CASES[src]
@@ -153,6 +124,7 @@ class Translator:
             else:
                 raise ValueError('invalid source language')
 
+        # only valid languages!
         if dest not in LANGUAGES:
             if dest in SPECIAL_CASES:
                 dest = SPECIAL_CASES[dest]
@@ -161,6 +133,7 @@ class Translator:
             else:
                 raise ValueError('invalid destination language')
 
+        # if param is list: assume iterable of texts to translate
         if isinstance(text, list):
             result = []
             for item in text:
@@ -173,7 +146,6 @@ class Translator:
 
         # this code will be updated when the format is changed.
         translated = ''.join([d[0] if d[0] else '' for d in data[0]])
-
         extra_data = self._parse_extra_data(data)
 
         # actual source language that will be recognized by Google Translator when the
@@ -207,35 +179,13 @@ class Translator:
         return result
 
     def detect(self, text, **kwargs):
-        """Detect language of the input text
-
+        """
+        Detect language of the input text
         :param text: The source text(s) whose language you want to identify.
-                     Batch detection is supported via sequence input.
+                    Batch detection is supported via sequence input.
         :type text: UTF-8 :class:`str`; :class:`unicode`; string sequence (list, tuple, iterator, generator)
-
         :rtype: Detected
         :rtype: :class:`list` (when a list is passed)
-
-        Basic usage:
-            >>> from googletrans import Translator
-            >>> translator = Translator()
-            >>> translator.detect('이 문장은 한글로 쓰여졌습니다.')
-            <Detected lang=ko confidence=0.27041003>
-            >>> translator.detect('この文章は日本語で書かれました。')
-            <Detected lang=ja confidence=0.64889508>
-            >>> translator.detect('This sentence is written in English.')
-            <Detected lang=en confidence=0.22348526>
-            >>> translator.detect('Tiu frazo estas skribita en Esperanto.')
-            <Detected lang=eo confidence=0.10538048>
-
-        Advanced usage:
-            >>> langs = translator.detect(['한국어', '日本語', 'English', 'le français'])
-            >>> for lang in langs:
-            ...    print(lang.lang, lang.confidence)
-            ko 1
-            ja 0.92929292
-            en 0.96954316
-            fr 0.043500196
         """
         if isinstance(text, list):
             result = []

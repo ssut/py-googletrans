@@ -1,3 +1,21 @@
+BASE = 'https://translate.google.com'
+TRANSLATE = 'https://{host}/translate_a/single'
+TRANSLATE_NEW = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl={src}&tl={dest}&q={text}"
+
+RESPONSE_PARTS_NAME_MAP = {
+    0: 'translation',
+    1: 'all-translations',
+    2: 'original-language',
+    5: 'possible-translations',
+    6: 'confidence',
+    7: 'possible-mistakes',
+    8: 'language',
+    11: 'synonyms',
+    12: 'definitions',
+    13: 'examples',
+    14: 'see-also',
+}
+
 DEFAULT_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
 
 DEFAULT_SERVICE_URLS = ('translate.google.ac', 'translate.google.ad', 'translate.google.ae',
@@ -67,7 +85,7 @@ DEFAULT_SERVICE_URLS = ('translate.google.ac', 'translate.google.ad', 'translate
                         'translate.google.tn', 'translate.google.to', 'translate.google.tt',
                         'translate.google.us', 'translate.google.vg', 'translate.google.vu', 
                         'translate.google.ws')
-                        
+
 SPECIAL_CASES = {
     'ee': 'et',
 }

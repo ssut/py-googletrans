@@ -44,7 +44,8 @@ class TokenAcquirer:
         self.host = host if 'http' in host else 'https://' + host
 
     def _update(self):
-        """update tkk
+        """
+        update tkk
         """
         # we don't need to update the base TKK value when it is still valid
         now = math.floor(int(time.time() * 1000) / 3600000.0)
@@ -62,8 +63,8 @@ class TokenAcquirer:
         code = None
         try:
             code = self.RE_RAWTKK.search(r.text).group(1)
-        except AttributeError:
-            print(ValueError('TKK is not found'))
+        except Exception as e:
+            print(f"{AttributeError('TKK is not found')} - {e}")
 
         # unescape special ascii characters such like a \x3d(=)
         if code:

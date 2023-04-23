@@ -176,6 +176,14 @@ GoogleTrans as a command line application
 
 --------------
 
+
+Running Tests
+-------------------
+$ pipenv run python -m unittest discover
+-------------------
+
+
+
 Note on library usage
 ---------------------
 

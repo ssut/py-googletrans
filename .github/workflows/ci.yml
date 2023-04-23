@@ -35,5 +35,5 @@ jobs:
     - name: Install package in editable mode
       run: pipenv install -e .
 
-    - name: Run pytest
-      run: pipenv run pytest
+    - name: Run unittest
+      run: pipenv run python -m unittest discover

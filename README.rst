@@ -6,7 +6,7 @@
 Googletrans
 ===========
 
-|GitHub license| |travis status| |Documentation Status| |PyPI version|
+|GitHub license| |Documentation Status| |PyPI version|
 |Coverage Status| |Code Climate|
 
 Googletrans is a **free** and **unlimited** python library that

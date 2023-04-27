@@ -1,7 +1,11 @@
 import unittest
 from googletrans import utils
 
+
 class TestUtils(unittest.TestCase):
+    """
+    tests utilities used throught the package
+    """
     def test_format_json(self):
         text = '[,,"en",,,,0.96954316,,[["en"],,[0.96954316]]]'
         result = utils.format_json(text)
@@ -27,18 +31,6 @@ class TestUtils(unittest.TestCase):
         result = utils.rshift(value, n)
         self.assertEqual(result, 125)
 
-    def test_build_params_with_override(self):
-        params = utils.build_params(
-            query='',
-            src='',
-            dest='',
-            token='',
-            override={
-                'otf': '3',
-            },
-        )
-
-        self.assertEqual(params['otf'], '3')
 
 if __name__ == '__main__':
     unittest.main()

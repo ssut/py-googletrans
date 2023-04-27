@@ -64,7 +64,7 @@ class TokenAcquirer:
         try:
             code = self.RE_RAWTKK.search(r.text).group(1)
         except Exception as e:
-            print(f"{AttributeError('TKK is not found')} - {e}")
+            print(f"{AttributeError('TKK is not found')} - {e} - original text: {r.text}")
 
         # unescape special ascii characters such like a \x3d(=)
         if code:

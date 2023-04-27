@@ -1,6 +1,6 @@
 BASE = 'https://translate.google.com'
 TRANSLATE = 'https://{host}/translate_a/single'
-TRANSLATE_NEW = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl={src}&tl={dest}&q={text}"
+TRANSLATE_NEW = "https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl={src}&tl={dest}&q={text}&tk={tk}"
 
 RESPONSE_PARTS_NAME_MAP = {
     0: 'translation',

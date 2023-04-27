@@ -3,29 +3,6 @@ import json
 import re
 
 
-def build_params(query, src, dest, token, override):
-    params = {
-        'client': 'webapp',
-        'sl': src,
-        'tl': dest,
-        'hl': dest,
-        'dt': ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
-        'ie': 'UTF-8',
-        'oe': 'UTF-8',
-        'otf': 1,
-        'ssel': 0,
-        'tsel': 0,
-        'tk': token,
-        'q': query,
-    }
-
-    if override is not None:
-        for key, value in get_items(override):
-            params[key] = value
-
-    return params
-
-
 def legacy_format_json(original):
     # save state
     states = []

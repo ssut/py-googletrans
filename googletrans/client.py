@@ -62,18 +62,9 @@ class Translator:
         self.token_acquirer = TokenAcquirer(client=self.client, host=self.service_urls[0])
         self.raise_exception = raise_exception
 
-    def _pick_service_url(self):
-        if len(self.service_urls) == 1:
-            return self.service_urls[0]
-        return random.choice(self.service_urls)
-
     def _translate(self, text, dest, src, override):
         token = self.token_acquirer.do(text)
-        # params = utils.build_params(query=text, src=src, dest=dest, token=token, override=override)
-        # url = TRANSLATE.format(host=self._pick_service_url())
-        url = TRANSLATE_NEW.format(text=text, src=src, dest=dest)
-
-        # r = self.client.get(url, params=params)
+        url = TRANSLATE_NEW.format(text=text, src=src, dest=dest, tk=token)
         r = self.client.get(url)
 
         if r.status_code == 200:

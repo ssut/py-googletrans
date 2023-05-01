@@ -187,7 +187,7 @@ and also is not associated with Google.
    `Google's official translate
    API <https://cloud.google.com/translate/docs>`__.
 
--  If you get HTTP 5xx error or errors like #6, it's probably because
+-  If you get HTTP 5xx error or errors like https://github.com/ssut/py-googletrans/issues/6, it's probably because
    Google has banned your client IP address.
 
 --------------

@@ -64,7 +64,7 @@ class TokenAcquirer:
         try:
             code = self.RE_RAWTKK.search(r.text).group(1)
         except Exception as e:
-            if r.text and "<!doctype html>" not in r.text:
+            if r.text and "<!doctype html>" not in r.text.lower():
                 print()
                 print(f"{AttributeError('py-googletrans warning: TKK is not found')} - {e} - original input text: {r.text[:200]}")
                 print()

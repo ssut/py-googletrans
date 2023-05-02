@@ -4,6 +4,7 @@ from httpcore._exceptions import ConnectError
 from httpx import Timeout, Client, ConnectTimeout
 from unittest.mock import patch
 from googletrans import Translator
+import contextlib
 
 
 class MockResponse:
@@ -24,6 +25,17 @@ class TestClient(unittest.TestCase):
         translator = Translator().translate(TEST_QUERY, src='en', dest='es')
         test_translation = translator.text.lower()
         self.assertEqual(test_translation, EXPECTED_TRANSLATION)
+
+    def test_no_doctype_text(self):
+        """
+        tests that the translator can handle text with doctype text
+        ... error text should not be raised
+        """
+        TEST_TEXT = "<!DOCTYPE html><html lang="
+        translator = Translator()
+
+        with contextlib.nullcontext():
+            test_text = translator.translate(TEST_TEXT, dest='es')
 
     def test_bind_multiple_service_urls(self):
         service_urls = [

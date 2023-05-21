@@ -7,7 +7,7 @@ Googletrans
 ===========
 
 |GitHub license| |Documentation Status| |PyPI version|
-|Coverage Status| |Code Climate|
+|Coverage Status|
 
 Googletrans is a **free** and **unlimited** python library that
 implemented Google Translate API. This uses the `Google Translate Ajax

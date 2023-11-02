@@ -73,7 +73,7 @@ class Translator:
             #default way of working: use the defined values from user app
             self.service_urls = service_urls
             self.client_type = 'webapp'
-            self.token_acquirer = TokenAcquirer(
+            self.tok1en_acquirer = TokenAcquirer(
                 client=self.client, host=self.service_urls[0])
 
             #if we have a service url pointing to client api we force the use of it as defaut client

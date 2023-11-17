@@ -54,7 +54,7 @@ class Translator:
 
     def __init__(self, service_urls=DEFAULT_CLIENT_SERVICE_URLS, user_agent=DEFAULT_USER_AGENT,
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
+                 proxies: typing.Dict[str, httpcore.AsyncHTTPProxy] = None,
                  timeout: Timeout = None,
                  http2=True):
 
@@ -73,7 +73,7 @@ class Translator:
             #default way of working: use the defined values from user app
             self.service_urls = service_urls
             self.client_type = 'webapp'
-            self.token_acquirer = TokenAcquirer(
+            self.tok1en_acquirer = TokenAcquirer(
                 client=self.client, host=self.service_urls[0])
 
             #if we have a service url pointing to client api we force the use of it as defaut client

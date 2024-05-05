@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "pygoogletrans"
+version = "0.1.0"
+description = "Unofficial Google Translate Python API (fork of googletrans)"
+license = "MIT"
+authors = ["Siddhesh Agarwal <siddhesh.agarwal@gmail.com>"]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+repository = "https://github.com/Siddhesh-Agarwal/py-googletrans"
+documentation = "https://github.com/Siddhesh-Agarwal/py-googletrans/blob/master/README.md"
+keywords = ["google", "translate", "translator", "googletrans"]
+packages = [
+    { include = "googletrans" },
+]
+package-mode = true
+scripts = { "translate.py" = "translate:main" }
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/Siddhesh-Agarwal/py-googletrans/issues"
+
+[tool.poetry.dependencies]
+python = "<3.13,>=3.9"
+httpx = "^0.27.0"
+ujson = "^5.9.0"
+
+
+[tool.poetry.group.test.dependencies]
+coveralls = "^4.0.0"
+pytest-watch = "^4.2.0"
+pytest-testmon = "^2.1.1"
+sphinx = "^7.3.7"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.2"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

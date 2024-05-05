@@ -3,10 +3,11 @@ import ast
 import math
 import re
 import time
+from typing import List
 
 import httpx
 
-from googletrans.utils import rshift
+from pygoogletrans.utils import rshift
 
 
 class TokenAcquirer:
@@ -35,20 +36,21 @@ class TokenAcquirer:
         950629.577246
     """
 
-    RE_TKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
-    RE_RAWTKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
+    RE_TKK = re.compile(r"tkk:\'(.+?)\'", re.DOTALL)
+    RE_RAWTKK = re.compile(r"tkk:\'(.+?)\'", re.DOTALL)
 
-    def __init__(self, client: httpx.Client, tkk='0', host='translate.google.com'):
+    def __init__(
+        self, client: httpx.Client, tkk: str = "0", host: str = "translate.google.com"
+    ):
         self.client = client
         self.tkk = tkk
-        self.host = host if 'http' in host else 'https://' + host
+        self.host = host if "http" in host else "https://" + host
 
     def _update(self):
-        """update tkk
-        """
+        """update tkk"""
         # we don't need to update the base TKK value when it is still valid
         now = math.floor(int(time.time() * 1000) / 3600000.0)
-        if self.tkk and int(self.tkk.split('.')[0]) == now:
+        if self.tkk and int(self.tkk.split(".")[0]) == now:
             return
 
         r = self.client.get(self.host)
@@ -59,52 +61,55 @@ class TokenAcquirer:
             return
 
         # this will be the same as python code after stripping out a reserved word 'var'
-        code = self.RE_TKK.search(r.text).group(1).replace('var ', '')
-        # unescape special ascii characters such like a \x3d(=)
-        code = code.encode().decode('unicode-escape')
+        code_ = self.RE_TKK.search(r.text)
+        if code_ is None:
+            code_ = self.RE_RAWTKK.search(r.text)
+            if code_ is None:
+                return
+        code = code_.group(1).replace("var ", "").encode().decode("unicode-escape")
 
         if code:
             tree = ast.parse(code)
             visit_return = False
-            operator = '+'
+            operator = "+"
             n, keys = 0, dict(a=0, b=0)
             for node in ast.walk(tree):
                 if isinstance(node, ast.Assign):
                     name = node.targets[0].id
                     if name in keys:
-                        if isinstance(node.value, ast.Num):
+                        if isinstance(node.value, ast.Constant):
                             keys[name] = node.value.n
                         # the value can sometimes be negative
-                        elif isinstance(node.value, ast.UnaryOp) and \
-                                isinstance(node.value.op, ast.USub):  # pragma: nocover
+                        elif isinstance(node.value, ast.UnaryOp) and isinstance(
+                            node.value.op, ast.USub
+                        ):
                             keys[name] = -node.value.operand.n
                 elif isinstance(node, ast.Return):
                     # parameters should be set after this point
                     visit_return = True
-                elif visit_return and isinstance(node, ast.Num):
+                elif visit_return and isinstance(node, ast.Constant):
                     n = node.n
-                elif visit_return and n > 0:
+                elif visit_return and not isinstance(n, complex) and n > 0:
                     # the default operator is '+' but implement some more for
                     # all possible scenarios
-                    if isinstance(node, ast.Add):  # pragma: nocover
+                    if isinstance(node, ast.Add):
                         pass
-                    elif isinstance(node, ast.Sub):  # pragma: nocover
-                        operator = '-'
-                    elif isinstance(node, ast.Mult):  # pragma: nocover
-                        operator = '*'
-                    elif isinstance(node, ast.Pow):  # pragma: nocover
-                        operator = '**'
-                    elif isinstance(node, ast.BitXor):  # pragma: nocover
-                        operator = '^'
+                    elif isinstance(node, ast.Sub):
+                        operator = "-"
+                    elif isinstance(node, ast.Mult):
+                        operator = "*"
+                    elif isinstance(node, ast.Pow):
+                        operator = "**"
+                    elif isinstance(node, ast.BitXor):
+                        operator = "^"
             # a safety way to avoid Exceptions
-            clause = compile('{1}{0}{2}'.format(
-                operator, keys['a'], keys['b']), '', 'eval')
+            clause = compile(f"{keys['a']}{operator}{keys['b']}")
             value = eval(clause, dict(__builtin__={}))
-            result = '{}.{}'.format(n, value)
+            result = f"{n}.{value}"
 
             self.tkk = result
 
-    def _lazy(self, value):
+    def _lazy(self, value: int):  # -> Callable[[], int]:
         """like lazy evaluation, this method returns a lambda function that
         returns value given.
         We won't be needing this because this seems to have been built for
@@ -112,30 +117,30 @@ class TokenAcquirer:
 
         the original code of this method is as follows:
 
-           ... code-block: javascript
+            ... code-block: javascript
 
-               var ek = function(a) {
-                return function() {
-                    return a;
-                };
-               }
+                var ek = function(a) {
+                    return function() {
+                        return a;
+                    };
+                }
         """
         return lambda: value
 
-    def _xr(self, a, b):
+    def _xr(self, a: int, b: str) -> int:
         size_b = len(b)
         c = 0
         while c < size_b - 2:
             d = b[c + 2]
-            d = ord(d[0]) - 87 if 'a' <= d else int(d)
-            d = rshift(a, d) if '+' == b[c + 1] else a << d
-            a = a + d & 4294967295 if '+' == b[c] else a ^ d
+            d = ord(d[0]) - 87 if "a" <= d else int(d)
+            d = rshift(a, d) if "+" == b[c + 1] else a << d
+            a = a + d & 4294967295 if "+" == b[c] else a ^ d
 
             c += 3
         return a
 
-    def acquire(self, text):
-        a = []
+    def acquire(self, text: str) -> str:
+        a: List[int] = []
         # Convert text to ints
         for i in text:
             val = ord(i)
@@ -145,15 +150,15 @@ class TokenAcquirer:
                 # Python doesn't natively use Unicode surrogates, so account for those
                 a += [
                     math.floor((val - 0x10000) / 0x400 + 0xD800),
-                    math.floor((val - 0x10000) % 0x400 + 0xDC00)
+                    math.floor((val - 0x10000) % 0x400 + 0xDC00),
                 ]
 
-        b = self.tkk if self.tkk != '0' else ''
-        d = b.split('.')
+        b = self.tkk if self.tkk != "0" else ""
+        d = b.split(".")
         b = int(d[0]) if len(d) > 1 else 0
 
         # assume e means char code array
-        e = []
+        e: List[int] = []
         g = 0
         size = len(a)
         while g < size:
@@ -167,10 +172,15 @@ class TokenAcquirer:
                     e.append(l >> 6 | 192)
                 else:
                     # append calculated value if l matches special condition
-                    if (l & 64512) == 55296 and g + 1 < size and \
-                            a[g + 1] & 64512 == 56320:
+                    if (
+                        (l & 64512) == 55296
+                        and g + 1 < size
+                        and a[g + 1] & 64512 == 56320
+                    ):
                         g += 1
-                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023)  # This bracket is important
+                        l = (
+                            65536 + ((l & 1023) << 10) + (a[g] & 1023)
+                        )  # This bracket is important
                         e.append(l >> 18 | 240)
                         e.append(l >> 12 & 63 | 128)
                     else:
@@ -178,19 +188,19 @@ class TokenAcquirer:
                     e.append(l >> 6 & 63 | 128)
                 e.append(l & 63 | 128)
             g += 1
-        a = b
+        a_ = b
         for i, value in enumerate(e):
-            a += value
-            a = self._xr(a, '+-a^+6')
-        a = self._xr(a, '+-3^+b+-f')
-        a ^= int(d[1]) if len(d) > 1 else 0
-        if a < 0:  # pragma: nocover
-            a = (a & 2147483647) + 2147483648
-        a %= 1000000  # int(1E6)
+            a_ += value
+            a_ = self._xr(a_, "+-a^+6")
+        a_ = self._xr(a_, "+-3^+b+-f")
+        a_ ^= int(d[1]) if len(d) > 1 else 0
+        if a_ < 0:
+            a_ = (a_ & 2147483647) + 2147483648
+        a_ %= 1000000  # int(1E6)
 
-        return '{}.{}'.format(a, a ^ b)
+        return f"{a_}.{a_ ^ b}"
 
-    def do(self, text):
+    def do(self, text: str):
         self._update()
         tk = self.acquire(text)
         return tk

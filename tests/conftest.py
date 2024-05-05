@@ -1,7 +1,8 @@
 from pytest import fixture
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 def translator():
-    from googletrans import Translator
+    from pygoogletrans import Translator
+
     return Translator()

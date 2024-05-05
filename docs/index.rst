@@ -4,16 +4,16 @@ Googletrans: Free and Unlimited Google translate API for Python
 
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
    :target: http://opensource.org/licenses/MIT
-.. image:: https://travis-ci.org/ssut/py-googletrans.svg?branch=master
-   :target: https://travis-ci.org/ssut/py-googletrans
+.. image:: https://travis-ci.org/Siddhesh-Agarwal/py-googletrans.svg?branch=master
+   :target: https://travis-ci.org/Siddhesh-Agarwal/py-googletrans
 .. image:: https://readthedocs.org/projects/py-googletrans/badge/?version=latest
    :target: https://readthedocs.org/projects/py-googletrans/?badge=latest
 .. image:: https://badge.fury.io/py/googletrans.svg
    :target: http://badge.fury.io/py/googletrans
-.. image:: https://coveralls.io/repos/github/ssut/py-googletrans/badge.svg
-   :target: https://coveralls.io/github/ssut/py-googletrans
-.. image:: https://codeclimate.com/github/ssut/py-googletrans/badges/gpa.svg
-   :target: https://codeclimate.com/github/ssut/py-googletrans
+.. image:: https://coveralls.io/repos/github/Siddhesh-Agarwal/py-googletrans/badge.svg
+   :target: https://coveralls.io/github/Siddhesh-Agarwal/py-googletrans
+.. image:: https://codeclimate.com/github/Siddhesh-Agarwal/py-googletrans/badges/gpa.svg
+   :target: https://codeclimate.com/github/Siddhesh-Agarwal/py-googletrans
 
 Googletrans is a **free** and **unlimited** python library that
 implemented Google Translate API. This uses the `Google Translate Ajax
@@ -193,6 +193,6 @@ googletrans.DEFAULT_SERVICE_URLS
 
 .. hint::
 
-   `DEFAULT_SERVICE_URLS <https://github.com/ssut/py-googletrans/blob/master/googletrans/constants.py#L3:1>`_ is the list of current available Google Translation service urls.
+   `DEFAULT_SERVICE_URLS <https://github.com/Siddhesh-Agarwal/py-googletrans/blob/master/googletrans/constants.py#L3:1>`_ is the list of current available Google Translation service urls.
    
    For using these service urls, please check `Customize service URL`_.

@@ -143,6 +143,10 @@ LANGUAGES = {
     'my': 'myanmar (burmese)',
     'ne': 'nepali',
     'no': 'norwegian',
+    # added this line
+    #############
+    'om': 'oromo',
+    #############
     'or': 'odia',
     'ps': 'pashto',
     'fa': 'persian',

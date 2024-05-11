@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-httpx = {extras = ["http2"], version = "*"}
+httpx = "*"
 pytest = "*"
 coverage = "*"
 httpcore = "*"

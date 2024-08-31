@@ -126,6 +126,7 @@ LANGUAGES = {
     'km': 'khmer',
     'ko': 'korean',
     'ku': 'kurdish (kurmanji)',
+    'ckb': 'kurdish (sorani)',
     'ky': 'kyrgyz',
     'lo': 'lao',
     'la': 'latin',

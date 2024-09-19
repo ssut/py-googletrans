@@ -66,10 +66,15 @@ class Translator:
             'User-Agent': user_agent,
         })
 
+        self.service_urls = ['translate.google.com']
+        self.client_type = 'webapp'
+        self.token_acquirer = TokenAcquirer(
+            client=self.client, host=self.service_urls[0])
+
         if timeout is not None:
             self.client.timeout = timeout
 
-        if (service_urls is not None):
+        if service_urls:
             #default way of working: use the defined values from user app
             self.service_urls = service_urls
             self.client_type = 'webapp'
@@ -83,11 +88,6 @@ class Translator:
                     self.service_urls = ['translate.googleapis.com']
                     self.client_type = 'gtx'
                     break
-        else:
-            self.service_urls = ['translate.google.com']
-            self.client_type = 'webapp'
-            self.token_acquirer = TokenAcquirer(
-                client=self.client, host=self.service_urls[0])
 
         self.raise_exception = raise_exception
 

@@ -174,6 +174,7 @@ LANGUAGES = {
     'te': 'telugu',
     'th': 'thai',
     'tr': 'turkish',
+    'tk': 'turkmen',
     'uk': 'ukrainian',
     'ur': 'urdu',
     'ug': 'uyghur',

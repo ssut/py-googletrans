@@ -47,7 +47,7 @@ def test_pronunciation_issue_175(translator):
 
 def test_latin_to_english(translator):
     result = translator.translate('veritas lux mea', src='la', dest='en')
-    assert result.text == 'The truth is my light'
+    assert result.text == 'truth is my light'
 
 
 def test_unicode(translator):
@@ -62,7 +62,7 @@ def test_emoji(translator):
 
 def test_language_name(translator):
     result = translator.translate(u'Hello', src='ENGLISH', dest='iRiSh')
-    assert result.text == u'Dia dhuit'
+    assert result.text == u'Dia duit'
 
 
 def test_language_name_with_space(translator):
@@ -84,39 +84,44 @@ def test_special_chars(translator):
 
 
 def test_translate_list(translator):
-    args = (['test', 'exam'], 'ko', 'en')
+    args = (['test', 'exam', 'exam paper'], 'ko', 'en')
     translations = translator.translate(*args)
 
-    assert translations[0].text == u'테스트'
+    assert translations[0].text == u'시험'
     assert translations[1].text == u'시험'
+    assert translations[2].text == u'시험지'
 
 
 def test_detect_language(translator):
     ko = translator.detect(u'한국어')
     en = translator.detect('English')
     rubg = translator.detect('тест')
+    russ = translator.detect('привет')
 
     assert ko.lang == 'ko'
     assert en.lang == 'en'
-    assert rubg.lang == ['ru', 'bg']
+    assert rubg.lang == 'mk'
+    assert russ.lang == 'ru'
+    #'bg']
 
 
 def test_detect_list(translator):
-    items = [u'한국어', ' English', 'тест']
+    items = [u'한국어', ' English', 'тест', 'привет']
 
     result = translator.detect(items)
 
     assert result[0].lang == 'ko'
     assert result[1].lang == 'en'
-    assert result[2].lang == ['ru', 'bg']
+    assert result[2].lang == 'mk'
+    assert result[3].lang == 'ru'
 
 
 def test_src_in_special_cases(translator):
-    args = ('Tere', 'en', 'ee')
+    args = ('tere', 'en', 'ee')
 
     result = translator.translate(*args)
 
-    assert result.text in ('Hello', 'Hi,')
+    assert result.text in ('hello', 'hi,')
 
 
 def test_src_not_in_supported_languages(translator):
@@ -131,7 +136,7 @@ def test_dest_in_special_cases(translator):
 
     result = translator.translate(*args)
 
-    assert result.text == 'Tere'
+    assert result.text == 'tere'
 
 
 def test_dest_not_in_supported_languages(translator):

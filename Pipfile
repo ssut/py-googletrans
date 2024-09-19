@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-httpx = {extras = ["http2"], version = "*"}
+httpx = {extras = ["http2"], version = "~=0.23"}
 
 [dev-packages]
 coveralls = "*"
@@ -13,4 +13,4 @@ coveralls = "*"
 sphinx = "*"
 
 [requires]
-python_version = ">=3.6"
+python_version = "^3.6"

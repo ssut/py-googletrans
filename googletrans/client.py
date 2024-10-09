@@ -6,6 +6,7 @@ You can translate text using this module.
 """
 import random
 import typing
+import re
 
 import httpcore
 import httpx
@@ -14,6 +15,7 @@ from httpx import Timeout
 from googletrans import urls, utils
 from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import (
+    DEFAULT_CLIENT_SERVICE_URLS,
     DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES,
     DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
 )
@@ -29,6 +31,7 @@ class Translator:
 
     :param service_urls: google translate url list. URLs will be used randomly.
                          For example ``['translate.google.com', 'translate.google.co.kr']``
+                         To preferably use the non webapp api, service url should be translate.googleapis.com
     :type service_urls: a sequence of strings
 
     :param user_agent: the User-Agent header to send when making requests.
@@ -49,9 +52,9 @@ class Translator:
     :type raise_exception: boolean
     """
 
-    def __init__(self, service_urls=None, user_agent=DEFAULT_USER_AGENT,
+    def __init__(self, service_urls=DEFAULT_CLIENT_SERVICE_URLS, user_agent=DEFAULT_USER_AGENT,
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = None,
+                 proxies: typing.Dict[str, httpcore.AsyncHTTPProxy] = None,
                  timeout: Timeout = None,
                  http2=True):
 
@@ -63,12 +66,29 @@ class Translator:
             'User-Agent': user_agent,
         })
 
+        self.service_urls = ['translate.google.com']
+        self.client_type = 'webapp'
+        self.token_acquirer = TokenAcquirer(
+            client=self.client, host=self.service_urls[0])
+
         if timeout is not None:
             self.client.timeout = timeout
 
-        self.service_urls = service_urls or ['translate.google.com']
-        self.token_acquirer = TokenAcquirer(
-            client=self.client, host=self.service_urls[0])
+        if service_urls:
+            #default way of working: use the defined values from user app
+            self.service_urls = service_urls
+            self.client_type = 'webapp'
+            self.tok1en_acquirer = TokenAcquirer(
+                client=self.client, host=self.service_urls[0])
+
+            #if we have a service url pointing to client api we force the use of it as defaut client
+            for t in enumerate(service_urls):
+                api_type = re.search('googleapis',service_urls[0])
+                if (api_type):
+                    self.service_urls = ['translate.googleapis.com']
+                    self.client_type = 'gtx'
+                    break
+
         self.raise_exception = raise_exception
 
     def _pick_service_url(self):
@@ -77,8 +97,11 @@ class Translator:
         return random.choice(self.service_urls)
 
     def _translate(self, text, dest, src, override):
-        token = self.token_acquirer.do(text)
-        params = utils.build_params(query=text, src=src, dest=dest,
+        token = 'xxxx' #dummy default value here as it is not used by api client
+        if self.client_type == 'webapp':
+            token = self.token_acquirer.do(text)
+
+        params = utils.build_params(client=self.client_type, query=text, src=src, dest=dest,
                                     token=token, override=override)
 
         url = urls.TRANSLATE.format(host=self._pick_service_url())

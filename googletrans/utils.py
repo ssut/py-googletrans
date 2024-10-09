@@ -3,9 +3,9 @@ import json
 import re
 
 
-def build_params(query, src, dest, token, override):
+def build_params(client,query, src, dest, token, override):
     params = {
-        'client': 'webapp',
+        'client': client,
         'sl': src,
         'tl': dest,
         'hl': dest,

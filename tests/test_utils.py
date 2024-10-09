@@ -28,6 +28,7 @@ def test_rshift():
 
 def test_build_params_with_override():
     params = utils.build_params(
+        client='',
         query='',
         src='',
         dest='',

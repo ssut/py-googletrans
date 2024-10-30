@@ -4,10 +4,6 @@ DEFAULT_CLIENT_SERVICE_URLS = (
     'translate.google.com',
 )
 
-DEFAULT_FALLBACK_SERVICE_URLS = (
-    'translate.googleapis.com',
-)
-
 DEFAULT_SERVICE_URLS = ('translate.google.ac', 'translate.google.ad', 'translate.google.ae',
                         'translate.google.al', 'translate.google.am', 'translate.google.as',
                         'translate.google.at', 'translate.google.az', 'translate.google.ba',

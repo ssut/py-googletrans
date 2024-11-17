@@ -54,13 +54,11 @@ class Translator:
 
     def __init__(self, service_urls=DEFAULT_CLIENT_SERVICE_URLS, user_agent=DEFAULT_USER_AGENT,
                  raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Dict[str, httpcore.AsyncHTTPProxy] = None,
-                 timeout: Timeout = None,
+                 proxies: typing.Optional[typing.Dict[typing.Union[str, httpx.URL], typing.Union[str, httpx.Proxy]]] = None,
+                 timeout: typing.Optional[Timeout] = None,
                  http2=True):
 
-        self.client = httpx.Client(http2=http2)
-        if proxies is not None:  # pragma: nocover
-            self.client.proxies = proxies
+        self.client = httpx.Client(http2=http2, proxies=proxies)
 
         self.client.headers.update({
             'User-Agent': user_agent,

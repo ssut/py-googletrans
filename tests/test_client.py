@@ -1,13 +1,16 @@
+from unittest.mock import patch
+
+import pytest
 from httpcore import TimeoutException
 from httpcore._exceptions import ConnectError
-from httpx import Timeout, Client, ConnectTimeout
-from unittest.mock import patch
+from httpx import Client, ConnectTimeout, Timeout
 from pytest import raises
 
 from googletrans import Translator
 
 
-def test_bind_multiple_service_urls():
+@pytest.mark.asyncio
+async def test_bind_multiple_service_urls():
     service_urls = [
         "translate.google.com",
         "translate.google.co.kr",
@@ -16,87 +19,97 @@ def test_bind_multiple_service_urls():
     translator = Translator(service_urls=service_urls)
     assert translator.service_urls == service_urls
 
-    assert translator.translate("test", dest="ko")
-    assert translator.detect("Hello")
+    assert await translator.translate("test", dest="ko")
+    assert await translator.detect("Hello")
 
 
-def test_api_service_urls():
+@pytest.mark.asyncio
+async def test_api_service_urls():
     service_urls = ["translate.googleapis.com"]
 
     translator = Translator(service_urls=service_urls)
     assert translator.service_urls == service_urls
 
-    assert translator.translate("test", dest="ko")
-    assert translator.detect("Hello")
+    assert await translator.translate("test", dest="ko")
+    assert await translator.detect("Hello")
 
 
-def test_source_language(translator):
-    result = translator.translate("안녕하세요.")
+@pytest.mark.asyncio
+async def test_source_language(translator: Translator):
+    result = await translator.translate("안녕하세요.")
     assert result.src == "ko"
 
 
-def test_pronunciation(translator):
-    result = translator.translate("안녕하세요.", dest="ja")
+@pytest.mark.asyncio
+async def test_pronunciation(translator: Translator):
+    result = await translator.translate("안녕하세요.", dest="ja")
     assert result.pronunciation == "Kon'nichiwa."
 
 
-def test_pronunciation_issue_175(translator):
-    result = translator.translate("Hello", src="en", dest="ru")
-
+@pytest.mark.asyncio
+async def test_pronunciation_issue_175(translator: Translator):
+    result = await translator.translate("Hello", src="en", dest="ru")
     assert result.pronunciation is not None
 
 
-def test_latin_to_english(translator):
-    result = translator.translate("veritas lux mea", src="la", dest="en")
+@pytest.mark.asyncio
+async def test_latin_to_english(translator: Translator):
+    result = await translator.translate("veritas lux mea", src="la", dest="en")
     assert result.text == "truth is my light"
 
 
-def test_unicode(translator):
-    result = translator.translate("안녕하세요.", src="ko", dest="ja")
+@pytest.mark.asyncio
+async def test_unicode(translator: Translator):
+    result = await translator.translate("안녕하세요.", src="ko", dest="ja")
     assert result.text == "こんにちは。"
 
 
-def test_emoji(translator):
-    result = translator.translate("😀")
+@pytest.mark.asyncio
+async def test_emoji(translator: Translator):
+    result = await translator.translate("😀")
     assert result.text == "😀"
 
 
-def test_language_name(translator):
-    result = translator.translate("Hello", src="ENGLISH", dest="iRiSh")
+@pytest.mark.asyncio
+async def test_language_name(translator: Translator):
+    result = await translator.translate("Hello", src="ENGLISH", dest="iRiSh")
     assert result.text == "Dia duit"
 
 
-def test_language_name_with_space(translator):
-    result = translator.translate("Hello", src="en", dest="chinese (simplified)")
+@pytest.mark.asyncio
+async def test_language_name_with_space(translator: Translator):
+    result = await translator.translate("Hello", src="en", dest="chinese (simplified)")
     assert result.dest == "zh-cn"
 
 
-def test_language_rfc1766(translator):
-    result = translator.translate("luna", src="it_ch@euro", dest="en")
+@pytest.mark.asyncio
+async def test_language_rfc1766(translator: Translator):
+    result = await translator.translate("luna", src="it_ch@euro", dest="en")
     assert result.text == "moon"
 
 
-def test_special_chars(translator):
+@pytest.mark.asyncio
+async def test_special_chars(translator: Translator):
     text = "©×《》"
-
-    result = translator.translate(text, src="en", dest="en")
+    result = await translator.translate(text, src="en", dest="en")
     assert result.text == text
 
 
-def test_translate_list(translator):
+@pytest.mark.asyncio
+async def test_translate_list(translator: Translator):
     args = (["test", "exam", "exam paper"], "ko", "en")
-    translations = translator.translate(*args)
-
+    translations = await translator.translate(*args)
     assert translations[0].text == "시험"
     assert translations[1].text == "시험"
     assert translations[2].text == "시험지"
 
 
-def test_detect_language(translator):
-    ko = translator.detect("한국어")
-    en = translator.detect("English")
-    rubg = translator.detect("тест")
-    russ = translator.detect("привет")
+@pytest.mark.asyncio
+async def test_detect_language(translator: Translator):
+    ko = await translator.detect("한국어")
+    en = await translator.detect("English")
+    rubg = await translator.detect("тест")
+    russ = await translator.detect("привет")
 
     assert ko.lang == "ko"
     assert en.lang == "en"
@@ -105,10 +118,10 @@ def test_detect_language(translator):
     #'bg']
 
 
-def test_detect_list(translator):
+@pytest.mark.asyncio
+async def test_detect_list(translator: Translator):
     items = ["한국어", " English", "тест", "привет"]
-
-    result = translator.detect(items)
+    result = await translator.detect(items)
 
     assert result[0].lang == "ko"
     assert result[1].lang == "en"
@@ -116,41 +129,40 @@ def test_detect_list(translator):
     assert result[3].lang == "ru"
 
 
-def test_src_in_special_cases(translator):
+@pytest.mark.asyncio
+async def test_src_in_special_cases(translator: Translator):
     args = ("tere", "en", "ee")
-
-    result = translator.translate(*args)
-
+    result = await translator.translate(*args)
     assert result.text in ("hello", "hi,")
 
 
-def test_src_not_in_supported_languages(translator):
+@pytest.mark.asyncio
+async def test_src_not_in_supported_languages(translator: Translator):
     args = ("Hello", "en", "zzz")
-
     with raises(ValueError):
-        translator.translate(*args)
+        await translator.translate(*args)
 
 
-def test_dest_in_special_cases(translator):
+@pytest.mark.asyncio
+async def test_dest_in_special_cases(translator: Translator):
     args = ("hello", "ee", "en")
-
-    result = translator.translate(*args)
-
+    result = await translator.translate(*args)
     assert result.text == "tere"
 
 
-def test_dest_not_in_supported_languages(translator):
+@pytest.mark.asyncio
+async def test_dest_not_in_supported_languages(translator: Translator):
     args = ("Hello", "zzz", "en")
-
     with raises(ValueError):
-        translator.translate(*args)
+        await translator.translate(*args)
 
 
-def test_timeout():
+@pytest.mark.asyncio
+async def test_timeout():
     # httpx will raise ConnectError in some conditions
     with raises((TimeoutException, ConnectError, ConnectTimeout)):
         translator = Translator(timeout=Timeout(0.0001))
-        translator.translate("안녕하세요.")
+        await translator.translate("안녕하세요.")
 
 
 class MockResponse:
@@ -159,7 +171,8 @@ class MockResponse:
         self.text = "tkk:'translation'"
 
 
+@pytest.mark.asyncio
 @patch.object(Client, "get", return_value=MockResponse("403"))
-def test_403_error(session_mock):
+async def test_403_error(session_mock):
     translator = Translator()
-    assert translator.translate("test", dest="ko")
+    assert await translator.translate("test", dest="ko")

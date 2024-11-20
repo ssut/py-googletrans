@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 A Translation module.
 
@@ -107,11 +106,7 @@ class Translator:
         return random.choice(self.service_urls)
 
     async def _translate(
-        self,
-        text: str,
-        dest: str,
-        src: str,
-        override: typing.Dict[str, typing.Any]
+        self, text: str, dest: str, src: str, override: typing.Dict[str, typing.Any]
     ) -> typing.Tuple[typing.List[typing.Any], Response]:
         token = "xxxx"  # dummy default value here as it is not used by api client
         if self.client_type == "webapp":
@@ -144,11 +139,7 @@ class Translator:
         return DUMMY_DATA, r
 
     def build_request(
-        self,
-        text: str,
-        dest: str,
-        src: str,
-        override: typing.Dict[str, typing.Any]
+        self, text: str, dest: str, src: str, override: typing.Dict[str, typing.Any]
     ) -> httpx.Request:
         """Async helper for making the translation request"""
         token = "xxxx"  # dummy default value here as it is not used by api client
@@ -169,8 +160,7 @@ class Translator:
         return self.client.build_request("GET", url, params=params)
 
     def _parse_extra_data(
-        self,
-        data: typing.List[typing.Any]
+        self, data: typing.List[typing.Any]
     ) -> typing.Dict[str, typing.Any]:
         response_parts_name_mapping = {
             0: "translation",
@@ -194,6 +184,20 @@ class Translator:
             )
 
         return extra
+
+    @typing.overload
+    async def translate(
+        self, text: str, dest: str = ..., src: str = ..., **kwargs: typing.Any
+    ) -> Translated: ...
+
+    @typing.overload
+    async def translate(
+        self,
+        text: typing.List[str],
+        dest: str = ...,
+        src: str = ...,
+        **kwargs: typing.Any,
+    ) -> typing.List[Translated]: ...
 
     async def translate(
         self,
@@ -309,10 +313,16 @@ class Translator:
 
         return result
 
+    @typing.overload
+    async def detect(self, text: str, **kwargs: typing.Any) -> Detected: ...
+
+    @typing.overload
     async def detect(
-        self,
-        text: typing.Union[str, typing.List[str]],
-        **kwargs: typing.Any
+        self, text: typing.List[str], **kwargs: typing.Any
+    ) -> typing.List[Detected]: ...
+
+    async def detect(
+        self, text: typing.Union[str, typing.List[str]], **kwargs: typing.Any
     ) -> typing.Union[Detected, typing.List[Detected]]:
         """Detect language of the input text
 

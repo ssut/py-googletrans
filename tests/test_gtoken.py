@@ -5,14 +5,14 @@ from googletrans import gtoken
 from pytest import fixture
 
 
-@fixture(scope='session')
+@fixture(scope="session")
 def acquirer():
     client = httpx.Client(http2=True)
     return gtoken.TokenAcquirer(client=client)
 
 
 def test_acquire_token(acquirer):
-    text = 'test'
+    text = "test"
 
     result = acquirer.do(text)
 
@@ -20,7 +20,7 @@ def test_acquire_token(acquirer):
 
 
 def test_acquire_token_ascii_less_than_2048(acquirer):
-    text = u'Ѐ'
+    text = "Ѐ"
 
     result = acquirer.do(text)
 
@@ -33,6 +33,7 @@ def test_acquire_token_ascii_matches_special_condition(acquirer):
             return unichr(i)
         except NameError:
             return chr(i)
+
     text = unichar(55296) + unichar(56320)
 
     result = acquirer.do(text)
@@ -41,7 +42,7 @@ def test_acquire_token_ascii_matches_special_condition(acquirer):
 
 
 def test_acquire_token_ascii_else(acquirer):
-    text = u'가'
+    text = "가"
 
     result = acquirer.do(text)
 
@@ -49,7 +50,7 @@ def test_acquire_token_ascii_else(acquirer):
 
 
 def test_reuse_valid_token(acquirer):
-    text = 'test'
+    text = "test"
 
     first = acquirer.do(text)
     second = acquirer.do(text)

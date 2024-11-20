@@ -1,0 +1,40 @@
+[project]
+name = "py-googletrans"
+version = "4.0.0"
+description = "An unofficial Google Translate API for Python"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+dependencies = ["httpx[http2]>=0.27.2"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Education",
+  "Intended Audience :: End Users/Desktop",
+  "License :: Freeware",
+  "Operating System :: POSIX",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: MacOS :: MacOS X",
+  "Topic :: Education",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "coveralls", "ruff>=0.7"]
+
+[tool.uv]
+dev-dependencies = ["ruff>=0.7"]
+
+[project.scripts]
+translate = "googletrans:translate"
+
+[project.urls]
+homepage = "https://github.com/ssut/py-googletrans"
+
+[[project.authors]]
+name = "SuHun Han"
+email = "ssut@ssut.me"

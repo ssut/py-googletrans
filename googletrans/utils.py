@@ -1,22 +1,23 @@
 """A conversion module for googletrans"""
+
 import json
 import re
 
 
-def build_params(client,query, src, dest, token, override):
+def build_params(client, query, src, dest, token, override):
     params = {
-        'client': client,
-        'sl': src,
-        'tl': dest,
-        'hl': dest,
-        'dt': ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
-        'ie': 'UTF-8',
-        'oe': 'UTF-8',
-        'otf': 1,
-        'ssel': 0,
-        'tsel': 0,
-        'tk': token,
-        'q': query,
+        "client": client,
+        "sl": src,
+        "tl": dest,
+        "hl": dest,
+        "dt": ["at", "bd", "ex", "ld", "md", "qca", "rw", "rm", "ss", "t"],
+        "ie": "UTF-8",
+        "oe": "UTF-8",
+        "otf": 1,
+        "ssel": 0,
+        "tsel": 0,
+        "tk": token,
+        "q": query,
     }
 
     if override is not None:
@@ -40,10 +41,10 @@ def legacy_format_json(original):
             states.append((p, text[p:nxt]))
 
     # replace all wiered characters in text
-    while text.find(',,') > -1:
-        text = text.replace(',,', ',null,')
-    while text.find('[,') > -1:
-        text = text.replace('[,', '[null,')
+    while text.find(",,") > -1:
+        text = text.replace(",,", ",null,")
+    while text.find("[,") > -1:
+        text = text.replace("[,", "[null,")
 
     # recover state
     for i, pos in enumerate(re.finditer('"', text)):
@@ -74,6 +75,5 @@ def format_json(original):
 
 
 def rshift(val, n):
-    """python port for '>>>'(right shift with padding)
-    """
+    """python port for '>>>'(right shift with padding)"""
     return (val % 0x100000000) >> n

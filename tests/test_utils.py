@@ -7,8 +7,17 @@ def test_format_json():
 
     result = utils.format_json(text)
 
-    assert result == [None, None, 'en', None, None, None, 0.96954316, None,
-                      [['en'], None, [0.96954316]]]
+    assert result == [
+        None,
+        None,
+        "en",
+        None,
+        None,
+        None,
+        0.96954316,
+        None,
+        [["en"], None, [0.96954316]],
+    ]
 
 
 def test_format_malformed_json():
@@ -28,14 +37,14 @@ def test_rshift():
 
 def test_build_params_with_override():
     params = utils.build_params(
-        client='',
-        query='',
-        src='',
-        dest='',
-        token='',
+        client="",
+        query="",
+        src="",
+        dest="",
+        token="",
         override={
-            'otf': '3',
+            "otf": "3",
         },
     )
 
-    assert params['otf'] == '3'
+    assert params["otf"] == "3"

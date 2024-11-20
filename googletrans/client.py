@@ -126,6 +126,8 @@ class Translator:
 
         if r.status_code == 200:
             data = utils.format_json(r.text)
+            if not isinstance(data, list):
+                data = [data]  # Convert dict to list to match return type
             return data, r
 
         if self.raise_exception:
@@ -138,13 +140,13 @@ class Translator:
         DUMMY_DATA[0][0][0] = text
         return DUMMY_DATA, r
 
-    def build_request(
+    async def build_request(
         self, text: str, dest: str, src: str, override: typing.Dict[str, typing.Any]
     ) -> httpx.Request:
         """Async helper for making the translation request"""
         token = "xxxx"  # dummy default value here as it is not used by api client
         if self.client_type == "webapp":
-            token = self.token_acquirer.do(text)
+            token = await self.token_acquirer.do(text)
 
         params = utils.build_params(
             client=self.client_type,

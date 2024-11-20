@@ -457,7 +457,7 @@ LANGUAGES = {
     "zu": "zulu",
 }
 
-LANGCODES = dict(map(reversed, LANGUAGES.items()))
+LANGCODES = {v: k for k, v in LANGUAGES.items()}
 DEFAULT_RAISE_EXCEPTION = False
 DUMMY_DATA = [
     [["", None, None, 0]],

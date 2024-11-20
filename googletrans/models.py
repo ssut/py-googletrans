@@ -1,8 +1,10 @@
+from typing import Optional
+
 from httpx import Response
 
 
 class Base:
-    def __init__(self, response: Response = None):
+    def __init__(self, response: Optional[Response] = None):
         self._response = response
 
 
@@ -17,7 +19,14 @@ class Translated(Base):
     """
 
     def __init__(
-        self, src, dest, origin, text, pronunciation, extra_data=None, **kwargs
+        self,
+        src: str,
+        dest: str,
+        origin: str,
+        text: str,
+        pronunciation: str,
+        extra_data: Optional[dict] = None,
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self.src = src
@@ -50,7 +59,7 @@ class Detected(Base):
     :param confidence: the confidence of detection result (0.00 to 1.00)
     """
 
-    def __init__(self, lang, confidence, **kwargs):
+    def __init__(self, lang: str, confidence: float, **kwargs):
         super().__init__(**kwargs)
         self.lang = lang
         self.confidence = confidence

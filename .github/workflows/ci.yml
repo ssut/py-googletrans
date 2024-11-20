@@ -20,4 +20,4 @@ jobs:
     - name: Install the project
       run: uv sync --all-extras --dev
     - name: Test with tox
-      run: tox
+      run: uv run tox

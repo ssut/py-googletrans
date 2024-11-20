@@ -10,7 +10,8 @@ import re
 import typing
 
 import httpx
-from httpx import Timeout
+from httpx import Response, Timeout
+from httpx._types import ProxiesTypes
 
 from googletrans import urls, utils
 from googletrans.constants import (
@@ -58,21 +59,19 @@ class Translator:
 
     def __init__(
         self,
-        service_urls=DEFAULT_CLIENT_SERVICE_URLS,
-        user_agent=DEFAULT_USER_AGENT,
-        raise_exception=DEFAULT_RAISE_EXCEPTION,
-        proxies: typing.Optional[
-            typing.Dict[typing.Union[str, httpx.URL], typing.Union[str, httpx.Proxy]]
-        ] = None,
+        service_urls: typing.Sequence[str] = DEFAULT_CLIENT_SERVICE_URLS,
+        user_agent: str = DEFAULT_USER_AGENT,
+        raise_exception: bool = DEFAULT_RAISE_EXCEPTION,
+        proxies: typing.Optional[ProxiesTypes] = None,
         timeout: typing.Optional[Timeout] = None,
-        http2=True,
+        http2: bool = True,
     ):
-        self.client = httpx.Client(http2=http2, proxies=proxies)
-
-        self.client.headers.update(
-            {
+        self.client = httpx.AsyncClient(
+            http2=http2,
+            proxies=proxies,
+            headers={
                 "User-Agent": user_agent,
-            }
+            },
         )
 
         self.service_urls = ["translate.google.com"]
@@ -102,15 +101,21 @@ class Translator:
 
         self.raise_exception = raise_exception
 
-    def _pick_service_url(self):
+    def _pick_service_url(self) -> str:
         if len(self.service_urls) == 1:
             return self.service_urls[0]
         return random.choice(self.service_urls)
 
-    def _translate(self, text, dest, src, override):
+    async def _translate(
+        self,
+        text: str,
+        dest: str,
+        src: str,
+        override: typing.Dict[str, typing.Any]
+    ) -> typing.Tuple[typing.List[typing.Any], Response]:
         token = "xxxx"  # dummy default value here as it is not used by api client
         if self.client_type == "webapp":
-            token = self.token_acquirer.do(text)
+            token = await self.token_acquirer.do(text)
 
         params = utils.build_params(
             client=self.client_type,
@@ -122,7 +127,7 @@ class Translator:
         )
 
         url = urls.TRANSLATE.format(host=self._pick_service_url())
-        r = self.client.get(url, params=params)
+        r = await self.client.get(url, params=params)
 
         if r.status_code == 200:
             data = utils.format_json(r.text)
@@ -138,7 +143,35 @@ class Translator:
         DUMMY_DATA[0][0][0] = text
         return DUMMY_DATA, r
 
-    def _parse_extra_data(self, data):
+    def build_request(
+        self,
+        text: str,
+        dest: str,
+        src: str,
+        override: typing.Dict[str, typing.Any]
+    ) -> httpx.Request:
+        """Async helper for making the translation request"""
+        token = "xxxx"  # dummy default value here as it is not used by api client
+        if self.client_type == "webapp":
+            token = self.token_acquirer.do(text)
+
+        params = utils.build_params(
+            client=self.client_type,
+            query=text,
+            src=src,
+            dest=dest,
+            token=token,
+            override=override,
+        )
+
+        url = urls.TRANSLATE.format(host=self._pick_service_url())
+
+        return self.client.build_request("GET", url, params=params)
+
+    def _parse_extra_data(
+        self,
+        data: typing.List[typing.Any]
+    ) -> typing.Dict[str, typing.Any]:
         response_parts_name_mapping = {
             0: "translation",
             1: "all-translations",
@@ -162,7 +195,13 @@ class Translator:
 
         return extra
 
-    def translate(self, text, dest="en", src="auto", **kwargs):
+    async def translate(
+        self,
+        text: typing.Union[str, typing.List[str]],
+        dest: str = "en",
+        src: str = "auto",
+        **kwargs: typing.Any,
+    ) -> typing.Union[Translated, typing.List[Translated]]:
         """Translate text from source language to destination language
 
         :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
@@ -223,12 +262,12 @@ class Translator:
         if isinstance(text, list):
             result = []
             for item in text:
-                translated = self.translate(item, dest=dest, src=src, **kwargs)
+                translated = await self.translate(item, dest=dest, src=src, **kwargs)
                 result.append(translated)
             return result
 
         origin = text
-        data, response = self._translate(text, dest, src, kwargs)
+        data, response = await self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
         translated = "".join([d[0] if d[0] else "" for d in data[0]])
@@ -270,7 +309,11 @@ class Translator:
 
         return result
 
-    def detect(self, text, **kwargs):
+    async def detect(
+        self,
+        text: typing.Union[str, typing.List[str]],
+        **kwargs: typing.Any
+    ) -> typing.Union[Detected, typing.List[Detected]]:
         """Detect language of the input text
 
         :param text: The source text(s) whose language you want to identify.
@@ -308,7 +351,7 @@ class Translator:
                 result.append(lang)
             return result
 
-        data, response = self._translate(text, "en", "auto", kwargs)
+        data, response = await self._translate(text, "en", "auto", kwargs)
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.

@@ -289,15 +289,16 @@ class Translator:
 
         pron = origin
         try:
-            pron = data[0][1][-2]
+            # Get pronunciation from [0][1][3] which contains romanized pronunciation
+            if data[0][1] and len(data[0][1]) > 3:
+                pron = data[0][1][3]
+            # Fallback to previous methods if not found
+            elif data[0][1] and len(data[0][1]) > 2:
+                pron = data[0][1][2]
+            elif data[0][1] and len(data[0][1]) >= 2:
+                pron = data[0][1][-2]
         except Exception:  # pragma: nocover
             pass
-
-        if pron is None:
-            try:
-                pron = data[0][1][2]
-            except:  # pragma: nocover  # noqa: E722
-                pass
 
         if dest in EXCLUDES and pron == origin:
             pron = translated

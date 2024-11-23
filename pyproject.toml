@@ -24,10 +24,10 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-asyncio", "coveralls", "ruff>=0.7"]
+dev = ["pytest", "pytest-asyncio", "pytest-cov", "ruff>=0.7"]
 
 [tool.uv]
-dev-dependencies = ["pytest", "pytest-asyncio", "ruff>=0.7"]
+dev-dependencies = ["pytest", "pytest-asyncio", "pytest-cov", "ruff>=0.7"]
 
 [project.scripts]
 translate = "googletrans:translate"

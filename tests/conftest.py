@@ -1,8 +1,16 @@
-from pytest import fixture
+import httpx
+import pytest
+
+from googletrans import Translator, gtoken
 
 
-@fixture(scope="session")
-def translator():
-    from googletrans import Translator
+@pytest.fixture(scope="function")
+async def translator():
+    async with Translator() as t:
+        yield t
 
-    return Translator()
+
+@pytest.fixture(scope="function")
+async def acquirer():
+    async with httpx.AsyncClient(http2=True) as client:
+        yield gtoken.TokenAcquirer(client=client)

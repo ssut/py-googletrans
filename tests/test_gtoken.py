@@ -1,15 +1,8 @@
 from typing import Any, Callable
 
-import httpx
 import pytest
 
 from googletrans import gtoken
-
-
-@pytest.fixture(scope="session")
-def acquirer() -> gtoken.TokenAcquirer:
-    client = httpx.AsyncClient(http2=True)
-    return gtoken.TokenAcquirer(client=client)
 
 
 @pytest.mark.asyncio

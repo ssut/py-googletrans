@@ -108,24 +108,23 @@ async def test_translate_list(translator: Translator):
 async def test_detect_language(translator: Translator):
     ko = await translator.detect("한국어")
     en = await translator.detect("English")
-    rubg = await translator.detect("тест")
+    rubg = await translator.detect("летóво")
     russ = await translator.detect("привет")
 
     assert ko.lang == "ko"
     assert en.lang == "en"
-    assert rubg.lang == "mk"
+    assert rubg.lang == "bg"
     assert russ.lang == "ru"
-    #'bg']
 
 
 @pytest.mark.asyncio
 async def test_detect_list(translator: Translator):
-    items = ["한국어", " English", "тест", "привет"]
+    items = ["한국어", " English", "летóво", "привет"]
     result = await translator.detect(items)
 
     assert result[0].lang == "ko"
     assert result[1].lang == "en"
-    assert result[2].lang == "mk"
+    assert result[2].lang == "bg"
     assert result[3].lang == "ru"
 
 

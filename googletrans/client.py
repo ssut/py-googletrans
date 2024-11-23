@@ -4,6 +4,7 @@ A Translation module.
 You can translate text using this module.
 """
 
+import asyncio
 import random
 import re
 import typing
@@ -64,6 +65,7 @@ class Translator:
         proxies: typing.Optional[ProxiesTypes] = None,
         timeout: typing.Optional[Timeout] = None,
         http2: bool = True,
+        list_operation_max_concurrency: int = 2,
     ):
         self.client = httpx.AsyncClient(
             http2=http2,
@@ -86,7 +88,7 @@ class Translator:
             # default way of working: use the defined values from user app
             self.service_urls = service_urls
             self.client_type = "webapp"
-            self.tok1en_acquirer = TokenAcquirer(
+            self.token_acquirer = TokenAcquirer(
                 client=self.client, host=self.service_urls[0]
             )
 
@@ -99,11 +101,18 @@ class Translator:
                     break
 
         self.raise_exception = raise_exception
+        self.list_operation_max_concurrency = list_operation_max_concurrency
 
     def _pick_service_url(self) -> str:
         if len(self.service_urls) == 1:
             return self.service_urls[0]
         return random.choice(self.service_urls)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.client.aclose()
 
     async def _translate(
         self, text: str, dest: str, src: str, override: typing.Dict[str, typing.Any]
@@ -266,10 +275,17 @@ class Translator:
                 raise ValueError("invalid destination language")
 
         if isinstance(text, list):
-            result = []
-            for item in text:
-                translated = await self.translate(item, dest=dest, src=src, **kwargs)
-                result.append(translated)
+            concurrency_limit = kwargs.pop(
+                "list_operation_max_concurrency", self.list_operation_max_concurrency
+            )
+            semaphore = asyncio.Semaphore(concurrency_limit)
+
+            async def translate_with_semaphore(item):
+                async with semaphore:
+                    return await self.translate(item, dest=dest, src=src, **kwargs)
+
+            tasks = [translate_with_semaphore(item) for item in text]
+            result = await asyncio.gather(*tasks)
             return result
 
         origin = text
@@ -289,16 +305,15 @@ class Translator:
 
         pron = origin
         try:
-            # Get pronunciation from [0][1][3] which contains romanized pronunciation
-            if data[0][1] and len(data[0][1]) > 3:
-                pron = data[0][1][3]
-            # Fallback to previous methods if not found
-            elif data[0][1] and len(data[0][1]) > 2:
-                pron = data[0][1][2]
-            elif data[0][1] and len(data[0][1]) >= 2:
-                pron = data[0][1][-2]
+            pron = data[0][1][-2]
         except Exception:  # pragma: nocover
             pass
+
+        if pron is None:
+            try:
+                pron = data[0][1][2]
+            except:  # pragma: nocover  # noqa: E722
+                pass
 
         if dest in EXCLUDES and pron == origin:
             pron = translated
@@ -358,10 +373,17 @@ class Translator:
             fr 0.043500196
         """
         if isinstance(text, list):
-            result = []
-            for item in text:
-                lang = self.detect(item)
-                result.append(lang)
+            concurrency_limit = kwargs.pop(
+                "list_operation_max_concurrency", self.list_operation_max_concurrency
+            )
+            semaphore = asyncio.Semaphore(concurrency_limit)
+
+            async def detect_with_semaphore(item):
+                async with semaphore:
+                    return await self.detect(item, **kwargs)
+
+            tasks = [detect_with_semaphore(item) for item in text]
+            result = await asyncio.gather(*tasks)
             return result
 
         data, response = await self._translate(text, "en", "auto", kwargs)

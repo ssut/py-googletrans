@@ -225,7 +225,7 @@ LANGUAGES = {
     "mfe": "mauritian creole",
     "mhr": "meadow mari",
     "mni-mtei": "meiteilon (manipuri)",
-    "min": "minang",
+    "min": "minangkabau",
     "lus": "mizo",
     "mn": "mongolian",
     "my": "myanmar (burmese)",

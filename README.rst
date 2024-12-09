@@ -11,7 +11,7 @@ implemented Google Translate API. This uses the `Google Translate Ajax
 API <https://translate.google.com>`__ to make calls to such methods as
 detect and translate.
 
-Compatible with Python 3.6+.
+Compatible with Python 3.8+.
 
 For details refer to the `API
 Documentation <https://py-googletrans.readthedocs.io/en/latest>`__.
@@ -24,15 +24,10 @@ Features
 -  Auto language detection
 -  Bulk translations
 -  Customizable service URL
+-  Async support
 -  HTTP/2 support
-
-TODO
-~~~~
-
-more features are coming soon.
-
 -  Proxy support
--  Internal session management (for better bulk translations)
+-  Complete type hints
 
 HTTP/2 support
 ~~~~~~~~~~~~~~
@@ -109,7 +104,7 @@ URLs are provided, it then randomly chooses a domain.
 Customize service URL to point to standard api
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Considering translate.google.<domain> url services use the webapp requiring a token, 
+Considering translate.google.<domain> url services use the webapp requiring a token,
 you can prefer to use the direct api than does not need any token to process.
 It can solve your problems of unstable token providing processes (refer to issue #234)
 

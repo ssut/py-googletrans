@@ -4,8 +4,6 @@ Googletrans
 |GitHub license| |travis status| |Documentation Status| |PyPI version|
 |Coverage Status| |Code Climate|
 
-ANNOUNCEMENT: `v4.0 is planned <https://github.com/ssut/py-googletrans/issues/411>`_.
-
 Googletrans is a **free** and **unlimited** python library that
 implemented Google Translate API. This uses the `Google Translate Ajax
 API <https://translate.google.com>`__ to make calls to such methods as
@@ -78,14 +76,21 @@ source language.
 
 .. code:: python
 
+    >>> import asyncio
     >>> from googletrans import Translator
-    >>> translator = Translator()
-    >>> translator.translate('안녕하세요.')
-    # <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
-    >>> translator.translate('안녕하세요.', dest='ja')
-    # <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
-    >>> translator.translate('veritas lux mea', src='la')
-    # <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
+    >>>
+    >>> async def translate_text():
+    ...     async with Translator() as translator:
+    ...         result = await translator.translate('안녕하세요.')
+    ...         print(result)  # <Translated src=ko dest=en text=Good evening. pronunciation=Good evening.>
+    ...
+    ...         result = await translator.translate('안녕하세요.', dest='ja')
+    ...         print(result)  # <Translated src=ko dest=ja text=こんにちは。 pronunciation=Kon'nichiwa.>
+    ...
+    ...         result = await translator.translate('veritas lux mea', src='la')
+    ...         print(result)  # <Translated src=la dest=en text=The truth is my light pronunciation=The truth is my light>
+    ...
+    >>> asyncio.run(translate_text())
 
 Customize service URL
 ~~~~~~~~~~~~~~~~~~~~~
@@ -125,12 +130,16 @@ for arrays as well.
 
 .. code:: python
 
-    >>> translations = translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
-    >>> for translation in translations:
-    ...    print(translation.origin, ' -> ', translation.text)
-    # The quick brown fox  ->  빠른 갈색 여우
-    # jumps over  ->  이상 점프
-    # the lazy dog  ->  게으른 개
+    >>> async def translate_bulk():
+    ...     async with Translator() as translator:
+    ...         translations = await translator.translate(['The quick brown fox', 'jumps over', 'the lazy dog'], dest='ko')
+    ...         for translation in translations:
+    ...             print(translation.origin, ' -> ', translation.text)
+    ...             # The quick brown fox  ->  빠른 갈색 여우
+    ...             # jumps over  ->  이상 점프
+    ...             # the lazy dog  ->  게으른 개
+    ...
+    >>> asyncio.run(translate_bulk())
 
 Language detection
 ~~~~~~~~~~~~~~~~~~
@@ -140,16 +149,21 @@ a given sentence.
 
 .. code:: python
 
-    >>> from googletrans import Translator
-    >>> translator = Translator()
-    >>> translator.detect('이 문장은 한글로 쓰여졌습니다.')
-    # <Detected lang=ko confidence=0.27041003>
-    >>> translator.detect('この文章は日本語で書かれました。')
-    # <Detected lang=ja confidence=0.64889508>
-    >>> translator.detect('This sentence is written in English.')
-    # <Detected lang=en confidence=0.22348526>
-    >>> translator.detect('Tiu frazo estas skribita en Esperanto.')
-    # <Detected lang=eo confidence=0.10538048>
+    >>> async def detect_languages():
+    ...     async with Translator() as translator:
+    ...         result = await translator.detect('이 문장은 한글로 쓰여졌습니다.')
+    ...         print(result)  # <Detected lang=ko confidence=0.27041003>
+    ...
+    ...         result = await translator.detect('この文章は日本語で書かれました。')
+    ...         print(result)  # <Detected lang=ja confidence=0.64889508>
+    ...
+    ...         result = await translator.detect('This sentence is written in English.')
+    ...         print(result)  # <Detected lang=en confidence=0.22348526>
+    ...
+    ...         result = await translator.detect('Tiu frazo estas skribita en Esperanto.')
+    ...         print(result)  # <Detected lang=eo confidence=0.10538048>
+    ...
+    >>> asyncio.run(detect_languages())
 
 GoogleTrans as a command line application
 -----------------------------------------

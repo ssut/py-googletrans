@@ -265,8 +265,8 @@ follows:
 
 .. |GitHub license| image:: https://img.shields.io/github/license/mashape/apistatus.svg
    :target: http://opensource.org/licenses/MIT
-.. |travis status| image:: https://travis-ci.org/ssut/py-googletrans.svg?branch=master
-   :target: https://travis-ci.org/ssut/py-googletrans
+.. |travis status| image:: https://github.com/ssut/py-googletrans/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/ssut/py-googletrans/actions/workflows/ci.yml
 .. |Documentation Status| image:: https://readthedocs.org/projects/py-googletrans/badge/?version=latest
    :target: https://readthedocs.org/projects/py-googletrans/?badge=latest
 .. |PyPI version| image:: https://badge.fury.io/py/googletrans.svg

@@ -3,6 +3,7 @@ import ast
 import math
 import re
 import time
+from typing import Any, Callable, Dict, List
 
 import httpx
 
@@ -35,23 +36,27 @@ class TokenAcquirer:
         950629.577246
     """
 
-    RE_TKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
-    RE_RAWTKK = re.compile(r'tkk:\'(.+?)\'', re.DOTALL)
+    RE_TKK = re.compile(r"tkk:\'(.+?)\'", re.DOTALL)
+    RE_RAWTKK = re.compile(r"tkk:\'(.+?)\'", re.DOTALL)
 
-    def __init__(self, client: httpx.Client, tkk='0', host='translate.google.com'):
+    def __init__(
+        self,
+        client: httpx.AsyncClient,
+        tkk: str = "0",
+        host: str = "translate.google.com",
+    ) -> None:
         self.client = client
         self.tkk = tkk
-        self.host = host if 'http' in host else 'https://' + host
+        self.host = host if "http" in host else "https://" + host
 
-    def _update(self):
-        """update tkk
-        """
+    async def _update(self) -> None:
+        """update tkk"""
         # we don't need to update the base TKK value when it is still valid
         now = math.floor(int(time.time() * 1000) / 3600000.0)
-        if self.tkk and int(self.tkk.split('.')[0]) == now:
+        if self.tkk and int(self.tkk.split(".")[0]) == now:
             return
 
-        r = self.client.get(self.host)
+        r = await self.client.get(self.host)
 
         raw_tkk = self.RE_TKK.search(r.text)
         if raw_tkk:
@@ -62,52 +67,58 @@ class TokenAcquirer:
 
         if code is not None:
             # this will be the same as python code after stripping out a reserved word 'var'
-            code = code.group(1).replace('var ', '')
+            code = code.group(1).replace("var ", "")
             # unescape special ascii characters such like a \x3d(=)
-            code = code.encode().decode('unicode-escape')
-            
+            code = code.encode().decode("unicode-escape")
+
         if code:
             tree = ast.parse(code)
             visit_return = False
-            operator = '+'
-            n, keys = 0, dict(a=0, b=0)
+            operator = "+"
+            n: int = 0
+            keys: Dict[str, int] = dict(a=0, b=0)
             for node in ast.walk(tree):
                 if isinstance(node, ast.Assign):
-                    name = node.targets[0].id
+                    name = None
+                    if isinstance(node.targets[0], ast.Name):
+                        name = node.targets[0].id
                     if name in keys:
-                        if isinstance(node.value, ast.Num):
-                            keys[name] = node.value.n
+                        if isinstance(node.value, ast.Constant):
+                            keys[name] = int(node.value.value)
                         # the value can sometimes be negative
-                        elif isinstance(node.value, ast.UnaryOp) and \
-                                isinstance(node.value.op, ast.USub):  # pragma: nocover
-                            keys[name] = -node.value.operand.n
+                        elif isinstance(node.value, ast.UnaryOp) and isinstance(
+                            node.value.op, ast.USub
+                        ):  # pragma: nocover
+                            if isinstance(node.value.operand, ast.Constant):
+                                keys[name] = -int(node.value.operand.value)
                 elif isinstance(node, ast.Return):
                     # parameters should be set after this point
                     visit_return = True
-                elif visit_return and isinstance(node, ast.Num):
-                    n = node.n
-                elif visit_return and n > 0:
+                elif visit_return and isinstance(node, ast.Constant):
+                    n = int(node.value)
+                elif visit_return and isinstance(n, int) and n > 0:
                     # the default operator is '+' but implement some more for
                     # all possible scenarios
                     if isinstance(node, ast.Add):  # pragma: nocover
                         pass
                     elif isinstance(node, ast.Sub):  # pragma: nocover
-                        operator = '-'
+                        operator = "-"
                     elif isinstance(node, ast.Mult):  # pragma: nocover
-                        operator = '*'
+                        operator = "*"
                     elif isinstance(node, ast.Pow):  # pragma: nocover
-                        operator = '**'
+                        operator = "**"
                     elif isinstance(node, ast.BitXor):  # pragma: nocover
-                        operator = '^'
+                        operator = "^"
             # a safety way to avoid Exceptions
-            clause = compile('{1}{0}{2}'.format(
-                operator, keys['a'], keys['b']), '', 'eval')
+            clause = compile(
+                "{1}{0}{2}".format(operator, keys["a"], keys["b"]), "", "eval"
+            )
             value = eval(clause, dict(__builtin__={}))
-            result = '{}.{}'.format(n, value)
+            result = "{}.{}".format(n, value)
 
             self.tkk = result
 
-    def _lazy(self, value):
+    def _lazy(self, value: Any) -> Callable[[], Any]:
         """like lazy evaluation, this method returns a lambda function that
         returns value given.
         We won't be needing this because this seems to have been built for
@@ -125,20 +136,20 @@ class TokenAcquirer:
         """
         return lambda: value
 
-    def _xr(self, a, b):
+    def _xr(self, a: int, b: str) -> int:
         size_b = len(b)
         c = 0
         while c < size_b - 2:
             d = b[c + 2]
-            d = ord(d[0]) - 87 if 'a' <= d else int(d)
-            d = rshift(a, d) if '+' == b[c + 1] else a << d
-            a = a + d & 4294967295 if '+' == b[c] else a ^ d
+            d = ord(d[0]) - 87 if "a" <= d else int(d)
+            d = rshift(a, d) if "+" == b[c + 1] else a << d
+            a = a + d & 4294967295 if "+" == b[c] else a ^ d
 
             c += 3
         return a
 
-    def acquire(self, text):
-        a = []
+    def acquire(self, text: str) -> str:
+        a: List[int] = []
         # Convert text to ints
         for i in text:
             val = ord(i)
@@ -148,19 +159,19 @@ class TokenAcquirer:
                 # Python doesn't natively use Unicode surrogates, so account for those
                 a += [
                     math.floor((val - 0x10000) / 0x400 + 0xD800),
-                    math.floor((val - 0x10000) % 0x400 + 0xDC00)
+                    math.floor((val - 0x10000) % 0x400 + 0xDC00),
                 ]
 
-        b = self.tkk if self.tkk != '0' else ''
-        d = b.split('.')
-        b = int(d[0]) if len(d) > 1 else 0
+        b = self.tkk if self.tkk != "0" else ""
+        d = b.split(".")
+        b_val = int(d[0]) if len(d) > 1 else 0
 
         # assume e means char code array
-        e = []
+        e: List[int] = []
         g = 0
         size = len(a)
         while g < size:
-            l = a[g]
+            l = a[g]  # noqa: E741
             # just append if l is less than 128(ascii: DEL)
             if l < 128:
                 e.append(l)
@@ -170,10 +181,15 @@ class TokenAcquirer:
                     e.append(l >> 6 | 192)
                 else:
                     # append calculated value if l matches special condition
-                    if (l & 64512) == 55296 and g + 1 < size and \
-                            a[g + 1] & 64512 == 56320:
+                    if (
+                        (l & 64512) == 55296
+                        and g + 1 < size
+                        and a[g + 1] & 64512 == 56320
+                    ):
                         g += 1
-                        l = 65536 + ((l & 1023) << 10) + (a[g] & 1023)  # This bracket is important
+                        l = (  # noqa: E741
+                            65536 + ((l & 1023) << 10) + (a[g] & 1023)
+                        )  # This bracket is important
                         e.append(l >> 18 | 240)
                         e.append(l >> 12 & 63 | 128)
                     else:
@@ -181,19 +197,19 @@ class TokenAcquirer:
                     e.append(l >> 6 & 63 | 128)
                 e.append(l & 63 | 128)
             g += 1
-        a = b
-        for i, value in enumerate(e):
-            a += value
-            a = self._xr(a, '+-a^+6')
-        a = self._xr(a, '+-3^+b+-f')
-        a ^= int(d[1]) if len(d) > 1 else 0
-        if a < 0:  # pragma: nocover
-            a = (a & 2147483647) + 2147483648
-        a %= 1000000  # int(1E6)
+        a_val = b_val
+        for value in e:
+            a_val += value
+            a_val = self._xr(a_val, "+-a^+6")
+        a_val = self._xr(a_val, "+-3^+b+-f")
+        a_val ^= int(d[1]) if len(d) > 1 else 0
+        if a_val < 0:  # pragma: nocover
+            a_val = (a_val & 2147483647) + 2147483648
+        a_val %= 1000000  # int(1E6)
 
-        return '{}.{}'.format(a, a ^ b)
+        return "{}.{}".format(a_val, a_val ^ b_val)
 
-    def do(self, text):
-        self._update()
+    async def do(self, text: str) -> str:
+        await self._update()
         tk = self.acquire(text)
         return tk

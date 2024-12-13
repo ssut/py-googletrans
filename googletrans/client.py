@@ -1,27 +1,32 @@
-# -*- coding: utf-8 -*-
 """
 A Translation module.
 
 You can translate text using this module.
 """
-import random
-import typing
-import re
 
-import httpcore
+import asyncio
+import random
+import re
+import typing
+
 import httpx
-from httpx import Timeout
+from httpx import Response, Timeout
+from httpx._types import ProxiesTypes
 
 from googletrans import urls, utils
-from googletrans.gtoken import TokenAcquirer
 from googletrans.constants import (
     DEFAULT_CLIENT_SERVICE_URLS,
-    DEFAULT_USER_AGENT, LANGCODES, LANGUAGES, SPECIAL_CASES,
-    DEFAULT_RAISE_EXCEPTION, DUMMY_DATA
+    DEFAULT_RAISE_EXCEPTION,
+    DEFAULT_USER_AGENT,
+    DUMMY_DATA,
+    LANGCODES,
+    LANGUAGES,
+    SPECIAL_CASES,
 )
-from googletrans.models import Translated, Detected
+from googletrans.gtoken import TokenAcquirer
+from googletrans.models import Detected, Translated
 
-EXCLUDES = ('en', 'ca', 'fr')
+EXCLUDES = ("en", "ca", "fr")
 
 
 class Translator:
@@ -52,94 +57,166 @@ class Translator:
     :type raise_exception: boolean
     """
 
-    def __init__(self, service_urls=DEFAULT_CLIENT_SERVICE_URLS, user_agent=DEFAULT_USER_AGENT,
-                 raise_exception=DEFAULT_RAISE_EXCEPTION,
-                 proxies: typing.Optional[typing.Dict[typing.Union[str, httpx.URL], typing.Union[str, httpx.Proxy]]] = None,
-                 timeout: typing.Optional[Timeout] = None,
-                 http2=True):
+    def __init__(
+        self,
+        service_urls: typing.Sequence[str] = DEFAULT_CLIENT_SERVICE_URLS,
+        user_agent: str = DEFAULT_USER_AGENT,
+        raise_exception: bool = DEFAULT_RAISE_EXCEPTION,
+        proxies: typing.Optional[ProxiesTypes] = None,
+        timeout: typing.Optional[Timeout] = None,
+        http2: bool = True,
+        list_operation_max_concurrency: int = 2,
+    ):
+        self.client = httpx.AsyncClient(
+            http2=http2,
+            proxies=proxies,
+            headers={
+                "User-Agent": user_agent,
+            },
+        )
 
-        self.client = httpx.Client(http2=http2, proxies=proxies)
-
-        self.client.headers.update({
-            'User-Agent': user_agent,
-        })
-
-        self.service_urls = ['translate.google.com']
-        self.client_type = 'webapp'
+        self.service_urls = ["translate.google.com"]
+        self.client_type = "webapp"
         self.token_acquirer = TokenAcquirer(
-            client=self.client, host=self.service_urls[0])
+            client=self.client, host=self.service_urls[0]
+        )
 
         if timeout is not None:
             self.client.timeout = timeout
 
         if service_urls:
-            #default way of working: use the defined values from user app
+            # default way of working: use the defined values from user app
             self.service_urls = service_urls
-            self.client_type = 'webapp'
-            self.tok1en_acquirer = TokenAcquirer(
-                client=self.client, host=self.service_urls[0])
+            self.client_type = "webapp"
+            self.token_acquirer = TokenAcquirer(
+                client=self.client, host=self.service_urls[0]
+            )
 
-            #if we have a service url pointing to client api we force the use of it as defaut client
+            # if we have a service url pointing to client api we force the use of it as defaut client
             for t in enumerate(service_urls):
-                api_type = re.search('googleapis',service_urls[0])
-                if (api_type):
-                    self.service_urls = ['translate.googleapis.com']
-                    self.client_type = 'gtx'
+                api_type = re.search("googleapis", service_urls[0])
+                if api_type:
+                    self.service_urls = ["translate.googleapis.com"]
+                    self.client_type = "gtx"
                     break
 
         self.raise_exception = raise_exception
+        self.list_operation_max_concurrency = list_operation_max_concurrency
 
-    def _pick_service_url(self):
+    def _pick_service_url(self) -> str:
         if len(self.service_urls) == 1:
             return self.service_urls[0]
         return random.choice(self.service_urls)
 
-    def _translate(self, text, dest, src, override):
-        token = 'xxxx' #dummy default value here as it is not used by api client
-        if self.client_type == 'webapp':
-            token = self.token_acquirer.do(text)
+    async def __aenter__(self):
+        return self
 
-        params = utils.build_params(client=self.client_type, query=text, src=src, dest=dest,
-                                    token=token, override=override)
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.client.aclose()
+
+    async def _translate(
+        self, text: str, dest: str, src: str, override: typing.Dict[str, typing.Any]
+    ) -> typing.Tuple[typing.List[typing.Any], Response]:
+        token = "xxxx"  # dummy default value here as it is not used by api client
+        if self.client_type == "webapp":
+            token = await self.token_acquirer.do(text)
+
+        params = utils.build_params(
+            client=self.client_type,
+            query=text,
+            src=src,
+            dest=dest,
+            token=token,
+            override=override,
+        )
 
         url = urls.TRANSLATE.format(host=self._pick_service_url())
-        r = self.client.get(url, params=params)
+        r = await self.client.get(url, params=params)
 
         if r.status_code == 200:
             data = utils.format_json(r.text)
+            if not isinstance(data, list):
+                data = [data]  # Convert dict to list to match return type
             return data, r
 
         if self.raise_exception:
-            raise Exception('Unexpected status code "{}" from {}'.format(
-                r.status_code, self.service_urls))
+            raise Exception(
+                'Unexpected status code "{}" from {}'.format(
+                    r.status_code, self.service_urls
+                )
+            )
 
         DUMMY_DATA[0][0][0] = text
         return DUMMY_DATA, r
 
-    def _parse_extra_data(self, data):
+    async def build_request(
+        self, text: str, dest: str, src: str, override: typing.Dict[str, typing.Any]
+    ) -> httpx.Request:
+        """Async helper for making the translation request"""
+        token = "xxxx"  # dummy default value here as it is not used by api client
+        if self.client_type == "webapp":
+            token = await self.token_acquirer.do(text)
+
+        params = utils.build_params(
+            client=self.client_type,
+            query=text,
+            src=src,
+            dest=dest,
+            token=token,
+            override=override,
+        )
+
+        url = urls.TRANSLATE.format(host=self._pick_service_url())
+
+        return self.client.build_request("GET", url, params=params)
+
+    def _parse_extra_data(
+        self, data: typing.List[typing.Any]
+    ) -> typing.Dict[str, typing.Any]:
         response_parts_name_mapping = {
-            0: 'translation',
-            1: 'all-translations',
-            2: 'original-language',
-            5: 'possible-translations',
-            6: 'confidence',
-            7: 'possible-mistakes',
-            8: 'language',
-            11: 'synonyms',
-            12: 'definitions',
-            13: 'examples',
-            14: 'see-also',
+            0: "translation",
+            1: "all-translations",
+            2: "original-language",
+            5: "possible-translations",
+            6: "confidence",
+            7: "possible-mistakes",
+            8: "language",
+            11: "synonyms",
+            12: "definitions",
+            13: "examples",
+            14: "see-also",
         }
 
         extra = {}
 
         for index, category in response_parts_name_mapping.items():
-            extra[category] = data[index] if (
-                index < len(data) and data[index]) else None
+            extra[category] = (
+                data[index] if (index < len(data) and data[index]) else None
+            )
 
         return extra
 
-    def translate(self, text, dest='en', src='auto', **kwargs):
+    @typing.overload
+    async def translate(
+        self, text: str, dest: str = ..., src: str = ..., **kwargs: typing.Any
+    ) -> Translated: ...
+
+    @typing.overload
+    async def translate(
+        self,
+        text: typing.List[str],
+        dest: str = ...,
+        src: str = ...,
+        **kwargs: typing.Any,
+    ) -> typing.List[Translated]: ...
+
+    async def translate(
+        self,
+        text: typing.Union[str, typing.List[str]],
+        dest: str = "en",
+        src: str = "auto",
+        **kwargs: typing.Any,
+    ) -> typing.Union[Translated, typing.List[Translated]]:
         """Translate text from source language to destination language
 
         :param text: The source text(s) to be translated. Batch translation is supported via sequence input.
@@ -178,16 +255,16 @@ class Translator:
             jumps over  ->  이상 점프
             the lazy dog  ->  게으른 개
         """
-        dest = dest.lower().split('_', 1)[0]
-        src = src.lower().split('_', 1)[0]
+        dest = dest.lower().split("_", 1)[0]
+        src = src.lower().split("_", 1)[0]
 
-        if src != 'auto' and src not in LANGUAGES:
+        if src != "auto" and src not in LANGUAGES:
             if src in SPECIAL_CASES:
                 src = SPECIAL_CASES[src]
             elif src in LANGCODES:
                 src = LANGCODES[src]
             else:
-                raise ValueError('invalid source language')
+                raise ValueError("invalid source language")
 
         if dest not in LANGUAGES:
             if dest in SPECIAL_CASES:
@@ -195,20 +272,27 @@ class Translator:
             elif dest in LANGCODES:
                 dest = LANGCODES[dest]
             else:
-                raise ValueError('invalid destination language')
+                raise ValueError("invalid destination language")
 
         if isinstance(text, list):
-            result = []
-            for item in text:
-                translated = self.translate(item, dest=dest, src=src, **kwargs)
-                result.append(translated)
+            concurrency_limit = kwargs.pop(
+                "list_operation_max_concurrency", self.list_operation_max_concurrency
+            )
+            semaphore = asyncio.Semaphore(concurrency_limit)
+
+            async def translate_with_semaphore(item):
+                async with semaphore:
+                    return await self.translate(item, dest=dest, src=src, **kwargs)
+
+            tasks = [translate_with_semaphore(item) for item in text]
+            result = await asyncio.gather(*tasks)
             return result
 
         origin = text
-        data, response = self._translate(text, dest, src, kwargs)
+        data, response = await self._translate(text, dest, src, kwargs)
 
         # this code will be updated when the format is changed.
-        translated = ''.join([d[0] if d[0] else '' for d in data[0]])
+        translated = "".join([d[0] if d[0] else "" for d in data[0]])
 
         extra_data = self._parse_extra_data(data)
 
@@ -228,21 +312,36 @@ class Translator:
         if pron is None:
             try:
                 pron = data[0][1][2]
-            except:  # pragma: nocover
+            except:  # pragma: nocover  # noqa: E722
                 pass
 
         if dest in EXCLUDES and pron == origin:
             pron = translated
 
         # put final values into a new Translated object
-        result = Translated(src=src, dest=dest, origin=origin,
-                            text=translated, pronunciation=pron,
-                            extra_data=extra_data,
-                            response=response)
+        result = Translated(
+            src=src,
+            dest=dest,
+            origin=origin,
+            text=translated,
+            pronunciation=pron,
+            extra_data=extra_data,
+            response=response,
+        )
 
         return result
 
-    def detect(self, text, **kwargs):
+    @typing.overload
+    async def detect(self, text: str, **kwargs: typing.Any) -> Detected: ...
+
+    @typing.overload
+    async def detect(
+        self, text: typing.List[str], **kwargs: typing.Any
+    ) -> typing.List[Detected]: ...
+
+    async def detect(
+        self, text: typing.Union[str, typing.List[str]], **kwargs: typing.Any
+    ) -> typing.Union[Detected, typing.List[Detected]]:
         """Detect language of the input text
 
         :param text: The source text(s) whose language you want to identify.
@@ -274,24 +373,31 @@ class Translator:
             fr 0.043500196
         """
         if isinstance(text, list):
-            result = []
-            for item in text:
-                lang = self.detect(item)
-                result.append(lang)
+            concurrency_limit = kwargs.pop(
+                "list_operation_max_concurrency", self.list_operation_max_concurrency
+            )
+            semaphore = asyncio.Semaphore(concurrency_limit)
+
+            async def detect_with_semaphore(item):
+                async with semaphore:
+                    return await self.detect(item, **kwargs)
+
+            tasks = [detect_with_semaphore(item) for item in text]
+            result = await asyncio.gather(*tasks)
             return result
 
-        data, response = self._translate(text, 'en', 'auto', kwargs)
+        data, response = await self._translate(text, "en", "auto", kwargs)
 
         # actual source language that will be recognized by Google Translator when the
         # src passed is equal to auto.
-        src = ''
+        src = ""
         confidence = 0.0
         try:
             if len(data[8][0]) > 1:
                 src = data[8][0]
                 confidence = data[8][-2]
             else:
-                src = ''.join(data[8][0])
+                src = "".join(data[8][0])
                 confidence = data[8][-2][0]
         except Exception:  # pragma: nocover
             pass

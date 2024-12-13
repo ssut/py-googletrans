@@ -1,8 +1,10 @@
+from typing import Optional
+
 from httpx import Response
 
 
 class Base:
-    def __init__(self, response: Response = None):
+    def __init__(self, response: Optional[Response] = None):
         self._response = response
 
 
@@ -16,8 +18,16 @@ class Translated(Base):
     :param pronunciation: pronunciation
     """
 
-    def __init__(self, src, dest, origin, text, pronunciation, extra_data=None,
-                 **kwargs):
+    def __init__(
+        self,
+        src: str,
+        dest: str,
+        origin: str,
+        text: str,
+        pronunciation: str,
+        extra_data: Optional[dict] = None,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self.src = src
         self.dest = dest
@@ -31,12 +41,9 @@ class Translated(Base):
 
     def __unicode__(self):  # pragma: nocover
         return (
-            u'Translated(src={src}, dest={dest}, text={text}, pronunciation={pronunciation}, '
-            u'extra_data={extra_data})'.format(
-                src=self.src, dest=self.dest, text=self.text,
-                pronunciation=self.pronunciation,
-                extra_data='"' + repr(self.extra_data)[:10] + '..."'
-            )
+            f"Translated(src={self.src}, dest={self.dest}, text={self.text}, "
+            f"pronunciation={self.pronunciation}, "
+            f'extra_data="{repr(self.extra_data)[:10]}...")'
         )
 
 
@@ -47,7 +54,7 @@ class Detected(Base):
     :param confidence: the confidence of detection result (0.00 to 1.00)
     """
 
-    def __init__(self, lang, confidence, **kwargs):
+    def __init__(self, lang: str, confidence: float, **kwargs):
         super().__init__(**kwargs)
         self.lang = lang
         self.confidence = confidence
@@ -56,5 +63,4 @@ class Detected(Base):
         return self.__unicode__()
 
     def __unicode__(self):  # pragma: nocover
-        return u'Detected(lang={lang}, confidence={confidence})'.format(
-            lang=self.lang, confidence=self.confidence)
+        return f"Detected(lang={self.lang}, confidence={self.confidence})"

@@ -1,16 +1,15 @@
 [project]
-name = "py-googletrans"
-version = "4.0.0"
+name = "googletrans"
+version = "4.0.1"
 description = "An unofficial Google Translate API for Python"
-readme = "README.md"
+readme = "README.rst"
 requires-python = ">=3.8"
-license = { file = "LICENSE" }
 dependencies = ["httpx[http2]>=0.27.2"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Education",
   "Intended Audience :: End Users/Desktop",
-  "License :: Freeware",
+  "License :: OSI Approved :: MIT License",
   "Operating System :: POSIX",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: MacOS :: MacOS X",
@@ -26,6 +25,9 @@ classifiers = [
 [project.optional-dependencies]
 dev = ["pytest", "pytest-asyncio", "pytest-cov", "ruff>=0.7"]
 
+[tool.setuptools]
+license-files = ["LICENSE"]
+
 [tool.uv]
 dev-dependencies = ["pytest", "pytest-asyncio", "pytest-cov", "ruff>=0.7"]
 
@@ -36,5 +38,9 @@ translate = "googletrans:translate"
 homepage = "https://github.com/ssut/py-googletrans"
 
 [[project.authors]]
-name = "SuHun Han"
-email = "ssut@ssut.me"
+name = "Suhun Han"
+email = "suhunhankr@gmail.com"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

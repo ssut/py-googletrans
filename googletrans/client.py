@@ -11,7 +11,7 @@ import typing
 
 import httpx
 from httpx import Response, Timeout
-from httpx._types import ProxiesTypes
+from httpx._types import ProxyTypes
 
 from googletrans import urls, utils
 from googletrans.constants import (
@@ -42,17 +42,11 @@ class Translator:
     :param user_agent: the User-Agent header to send when making requests.
     :type user_agent: :class:`str`
 
-    :param proxies: proxies configuration.
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy
-                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
-    :type proxies: dictionary
+    :param proxy: httpx proxy configuration.
 
     :param timeout: Definition of timeout for httpx library.
                     Will be used for every request.
     :type timeout: number or a double of numbers
-    :param proxies: proxies configuration.
-                    Dictionary mapping protocol or protocol and host to the URL of the proxy
-                    For example ``{'http': 'foo.bar:3128', 'http://host.name': 'foo.bar:4012'}``
     :param raise_exception: if `True` then raise exception if smth will go wrong
     :type raise_exception: boolean
     """
@@ -62,14 +56,14 @@ class Translator:
         service_urls: typing.Sequence[str] = DEFAULT_CLIENT_SERVICE_URLS,
         user_agent: str = DEFAULT_USER_AGENT,
         raise_exception: bool = DEFAULT_RAISE_EXCEPTION,
-        proxies: typing.Optional[ProxiesTypes] = None,
+        proxy: typing.Optional[ProxyTypes] = None,
         timeout: typing.Optional[Timeout] = None,
         http2: bool = True,
         list_operation_max_concurrency: int = 2,
     ):
         self.client = httpx.AsyncClient(
             http2=http2,
-            proxies=proxies,
+            proxy=proxy,
             headers={
                 "User-Agent": user_agent,
             },

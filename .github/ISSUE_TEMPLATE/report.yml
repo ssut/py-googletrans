@@ -25,8 +25,6 @@ body:
           required: true
         - label: "I have checked the [README](https://github.com/ssut/py-googletrans#readme) for basic usage, known limitations, and have searched existing issues"
           required: true
-    validations:
-      required: true
 
   - type: dropdown
     id: googletrans-version
@@ -39,14 +37,14 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
+  - type: dropdown
     id: issue-type
     attributes:
       label: "Issue Type"
       description: "What type of issue are you submitting?"
       options:
-        - label: "Bug Report"
-        - label: "Feature Request"
+        - "Bug Report"
+        - "Feature Request"
     validations:
       required: true
 
@@ -77,8 +75,6 @@ body:
         1. ...
         2. ...
         3. ...
-    validations:
-      required: true
 
   - type: textarea
     id: related-code
@@ -89,8 +85,6 @@ body:
         ```python
         # Insert code snippets here
         ```
-    validations:
-      required: false
 
   - type: textarea
     id: other-information
@@ -98,5 +92,3 @@ body:
       label: "Other Information"
       description: "List any other relevant information, such as stack traces or error messages, here."
       placeholder: "Any additional information that might be helpful."
-    validations:
-      required: false

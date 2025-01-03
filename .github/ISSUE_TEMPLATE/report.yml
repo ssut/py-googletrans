@@ -1,0 +1,102 @@
+name: Issue Report (Bug report or feature request)
+description: Report a bug or request a feature for the Googletrans library.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for contributing to the Googletrans project!
+        Please read the following carefully before submitting.
+
+        **Note:** The following types of issues will be automatically closed:
+        - Issues related to non-async function calls
+        - Rate-limiting issues (this is a Google limitation)
+        - Proxy configuration issues
+        - Issues about exceeding the 15k character limit
+        - Issues from versions prior to 4.0.1
+
+  - type: checkboxes
+    id: pre-submission-checklist
+    attributes:
+      label: "Before submitting, please confirm that:"
+      options:
+        - label: "I am using async/await syntax (non-sync calls are not supported since 4.0.0)"
+          required: true
+        - label: "This is not a rate-limiting issue or about exceeding the 15k character limit (Google's rate limits are not a library bug)"
+          required: true
+        - label: "I have checked the [README](https://github.com/ssut/py-googletrans#readme) for basic usage, known limitations, and have searched existing issues"
+          required: true
+    validations:
+      required: true
+
+  - type: dropdown
+    id: googletrans-version
+    attributes:
+      label: "Googletrans version"
+      description: "What version of Googletrans are you using?"
+      options:
+        - 4.0.1+
+      default: 0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: issue-type
+    attributes:
+      label: "Issue Type"
+      description: "What type of issue are you submitting?"
+      options:
+        - label: "Bug Report"
+        - label: "Feature Request"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: "Current Behavior"
+      description: "Describe how the bug manifests or the current behavior you are trying to improve."
+      placeholder: "Please provide a detailed description of the issue."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: "Expected Behavior"
+      description: "Describe what the behavior would be without the bug or what you would like the feature to do."
+      placeholder: "Please provide a detailed description of the expected outcome."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Please explain the steps required to duplicate the issue."
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-code
+    attributes:
+      label: "Related Code"
+      description: "Please provide a code snippet demonstrating the issue (using async/await syntax)"
+      placeholder: |
+        ```python
+        # Insert code snippets here
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: other-information
+    attributes:
+      label: "Other Information"
+      description: "List any other relevant information, such as stack traces or error messages, here."
+      placeholder: "Any additional information that might be helpful."
+    validations:
+      required: false

@@ -417,7 +417,7 @@ LANGUAGES = {
     "tl": "tagalog (filipino)",
     "tah": "tahitian",
     "tg": "tajik",
-    "ber-Latn": "tamazight",
+    "ber-latn": "tamazight",
     "ber": "tamazight (tifinagh)",
     "ta": "tamil",
     "tt": "tatar",

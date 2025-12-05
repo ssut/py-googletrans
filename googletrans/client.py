@@ -21,7 +21,6 @@ from googletrans.constants import (
     DUMMY_DATA,
     LANGCODES,
     LANGUAGES,
-    SPECIAL_CASES,
 )
 from googletrans.gtoken import TokenAcquirer
 from googletrans.models import Detected, Translated
@@ -253,17 +252,13 @@ class Translator:
         src = src.lower().split("_", 1)[0]
 
         if src != "auto" and src not in LANGUAGES:
-            if src in SPECIAL_CASES:
-                src = SPECIAL_CASES[src]
-            elif src in LANGCODES:
+            if src in LANGCODES:
                 src = LANGCODES[src]
             else:
                 raise ValueError("invalid source language")
 
         if dest not in LANGUAGES:
-            if dest in SPECIAL_CASES:
-                dest = SPECIAL_CASES[dest]
-            elif dest in LANGCODES:
+            if dest in LANGCODES:
                 dest = LANGCODES[dest]
             else:
                 raise ValueError("invalid destination language")

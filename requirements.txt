@@ -8,7 +8,7 @@ certifi==2024.8.30
     #   httpx
 h11==0.16.0
     # via httpcore
-h2==4.1.0
+h2==4.4.1
     # via httpx
 hpack==4.0.0
     # via h2
